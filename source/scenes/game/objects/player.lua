@@ -2,6 +2,15 @@ local pd <const> = playdate
 local gfx <const> = pd.graphics
 
 -- ================================================================================
+-- Constants
+-- ================================================================================
+-- --------------------------------------------------------------------------------
+-- Player Attributes
+-- --------------------------------------------------------------------------------
+-- Base movement speed (px / sec)
+local kPlayerSpeed <const> = 180
+
+-- ================================================================================
 -- Player States
 -- ================================================================================
 
@@ -22,7 +31,9 @@ class('PlayerActiveState', {
     key = kActiveState,
 }).extends('PlayerState')
 
--- TODO: update logic
+function PlayerActiveState:update()
+    self.player:handleMovement()
+end
 
 -- ================================================================================
 -- Player Sprite
@@ -35,6 +46,9 @@ class('Player', {
 }).extends('FSMSprite')
 
 function Player:init(x, y)
+    -- Attributes
+    self.speed = kPlayerSpeed
+
     -- TODO: real sprites
     self:setImage(self:createPlaceholderImage(20, 32))
     self:setCollideRect(0, 0, self:getSize())
@@ -57,4 +71,41 @@ function Player:createPlaceholderImage(w, h)
         gfx.fillRoundRect(0, 0, w, h, 4)
     gfx.popContext()
     return image
+end
+
+-- --------------------------------------------------------------------------------
+-- Movement
+-- --------------------------------------------------------------------------------
+
+-- Check for D-Pad inputs and handle player movement
+function Player:handleMovement()
+    local current, _, _ = pd.getButtonState()
+    local dx = 0
+    local dy = 0
+    -- Determine direction player should move
+    if (current & pd.kButtonUp) > 0 then
+        dy -= 1
+    end
+    if (current & pd.kButtonDown) > 0 then
+        dy += 1
+    end
+    if (current & pd.kButtonLeft) > 0 then
+        dx -= 1
+    end
+    if (current & pd.kButtonRight) > 0 then
+        dx += 1
+    end
+
+    -- Handle movement
+    if dx ~= 0 or dy ~= 0 then
+        local distance = self.speed * DELTA_TIME
+        -- Divide distance by sqrt 2 for diagonal movement
+        if dx ~= 0 and dy ~= 0 then
+            distance = distance / math.sqrt(2)
+        end
+        -- Calculate desired position and move with collisions
+        local targetX = self.x + dx * distance
+        local targetY = self.y + dy * distance
+        self:moveWithCollisions(targetX, targetY)
+    end
 end
