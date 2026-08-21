@@ -13,3 +13,5 @@ class('GameScene', {
 function GameScene:init()
     self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
 end
+
+-- TODO: crank indicator

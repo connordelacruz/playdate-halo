@@ -7,8 +7,18 @@ local gfx <const> = pd.graphics
 -- --------------------------------------------------------------------------------
 -- Player Attributes
 -- --------------------------------------------------------------------------------
+-- Sprite size
+local kPlayerWidth <const> = 20
+local kPlayerHeight <const> = 32
 -- Base movement speed (px / sec)
 local kPlayerSpeed <const> = 180
+-- --------------------------------------------------------------------------------
+-- Reticle
+-- --------------------------------------------------------------------------------
+-- Size of the reticle sprite
+local kReticleSize <const> = 8
+-- Radius of the invisible circle around the player that the reticle rotates on
+local kReticleRadius <const> = kPlayerHeight // 2 + kReticleSize
 
 -- ================================================================================
 -- Player States
@@ -33,6 +43,7 @@ class('PlayerActiveState', {
 
 function PlayerActiveState:update()
     self.player:handleMovement()
+    self.player:handleAiming()
 end
 
 -- ================================================================================
@@ -50,8 +61,11 @@ function Player:init(x, y)
     self.speed = kPlayerSpeed
 
     -- TODO: real sprites
-    self:setImage(self:createPlaceholderImage(20, 32))
+    self:setImage(self:createPlaceholderImage(kPlayerWidth, kPlayerHeight))
     self:setCollideRect(0, 0, self:getSize())
+
+    -- Reticle sprite
+    self.reticle = Reticle(x, y)
 
     -- Initialize states
     self:initStatesAndSetInitial()
@@ -108,4 +122,59 @@ function Player:handleMovement()
         local targetY = self.y + dy * distance
         self:moveWithCollisions(targetX, targetY)
     end
+end
+
+-- --------------------------------------------------------------------------------
+-- Aiming
+-- --------------------------------------------------------------------------------
+
+-- Update reticle position. Call after updating player position
+function Player:handleAiming()
+    self.reticle:updatePositionFromCrank(self.x, self.y)
+end
+
+
+-- ================================================================================
+-- Reticle Sprite
+-- ================================================================================
+class('Reticle').extends(gfx.sprite)
+
+function Reticle:init(originX, originY)
+    -- Radius for the invisible circle around player that the reticle rotates around
+    self.radius = kReticleRadius
+    -- TODO: z-index
+    self:setImage(self:createImage(kReticleSize, kReticleSize))
+
+    self:updatePositionFromCrank(originX, originY)
+    self:add()
+end
+
+-- --------------------------------------------------------------------------------
+-- Image
+-- --------------------------------------------------------------------------------
+
+function Reticle:createImage(w, h)
+    local image = gfx.image.new(w, h)
+    gfx.pushContext(image)
+        gfx.setStrokeLocation(gfx.kStrokeInside)
+        gfx.setLineWidth(2)
+        gfx.drawCircleInRect(0, 0, w, h)
+    gfx.popContext()
+    return image
+end
+
+-- --------------------------------------------------------------------------------
+-- Move Reticle
+-- --------------------------------------------------------------------------------
+
+function Reticle:updatePosition(originX, originY, degrees)
+    local x = originX + (self.radius * math.cos(math.rad(degrees)))
+    local y = originY + (self.radius * math.sin(math.rad(degrees)))
+    self:moveTo(x, y)
+end
+
+function Reticle:updatePositionFromCrank(originX, originY)
+    -- Offset by 90 degrees so up is up and down is down
+    local degrees = pd.getCrankPosition() - 90
+    self:updatePosition(originX, originY, degrees)
 end
