@@ -19,6 +19,9 @@ import 'util/core/__init__'
 -- import 'util/data'
 -- import 'util/music'
 -- import 'util/screenshake'
+-- Scenes
+import 'scenes/game/scene'
+
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -48,12 +51,12 @@ DEBUG_MANAGER:setFlag('verbose')
 -- ===============================================================================
 -- Global enum of scenes
 SCENES = {
-    placeholder = PlaceholderScene,
+    game = GameScene,
 }
 -- Scene Manager
 SCENE_MANAGER = SceneManager()
 -- Load initial scene
-SCENE_MANAGER:loadInitialScene(SCENES.placeholder)
+SCENE_MANAGER:loadInitialScene(SCENES.game)
 
 -- ===============================================================================
 -- Utility Objects
