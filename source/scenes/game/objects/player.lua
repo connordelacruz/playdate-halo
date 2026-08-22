@@ -65,7 +65,7 @@ function Player:init(x, y)
     self:setCollideRect(0, 0, self:getSize())
 
     -- Reticle sprite
-    self.reticle = Reticle(x, y)
+    self.reticle = Reticle(x, y, self:calculateAimingAngle())
 
     -- Initialize states
     self:initStatesAndSetInitial()
@@ -128,9 +128,15 @@ end
 -- Aiming
 -- --------------------------------------------------------------------------------
 
+-- Calculates the aiming angle based on the crank.
+-- Applies an offset so pointing the crank up angles the reticle up.
+function Player:calculateAimingAngle()
+    return pd.getCrankPosition() - 90
+end
+
 -- Update reticle position. Call after updating player position
 function Player:handleAiming()
-    self.reticle:updatePositionFromCrank(self.x, self.y)
+    self.reticle:updatePosition(self.x, self.y, self:calculateAimingAngle())
 end
 
 
@@ -139,13 +145,13 @@ end
 -- ================================================================================
 class('Reticle').extends(gfx.sprite)
 
-function Reticle:init(originX, originY)
+function Reticle:init(originX, originY, degrees)
     -- Radius for the invisible circle around player that the reticle rotates around
     self.radius = kReticleRadius
     -- TODO: z-index
     self:setImage(self:createImage(kReticleSize, kReticleSize))
 
-    self:updatePositionFromCrank(originX, originY)
+    self:updatePosition(originX, originY, degrees)
     self:add()
 end
 
@@ -171,10 +177,4 @@ function Reticle:updatePosition(originX, originY, degrees)
     local x = originX + (self.radius * math.cos(math.rad(degrees)))
     local y = originY + (self.radius * math.sin(math.rad(degrees)))
     self:moveTo(x, y)
-end
-
-function Reticle:updatePositionFromCrank(originX, originY)
-    -- Offset by 90 degrees so up is up and down is down
-    local degrees = pd.getCrankPosition() - 90
-    self:updatePosition(originX, originY, degrees)
 end
