@@ -14,9 +14,10 @@ local kPlayerHeight <const> = 32
 local kPlayerSpeed <const> = 120
 -- --------------------------------------------------------------------------------
 -- Reticle
+-- TODO: Let weapon define the reticle style
 -- --------------------------------------------------------------------------------
 -- Size of the reticle sprite
-local kReticleSize <const> = 9
+local kReticleSize <const> = 13
 -- Radius of the invisible circle around the player that the reticle rotates on
 local kReticleRadius <const> = kPlayerHeight // 2 + kReticleSize
 
@@ -42,8 +43,7 @@ class('PlayerActiveState', {
 }).extends('PlayerState')
 
 function PlayerActiveState:update()
-    self.player:handleMovement()
-    self.player:handleAiming()
+    self.player:handleInput()
 end
 
 -- ================================================================================
@@ -92,13 +92,25 @@ function Player:createPlaceholderImage(w, h)
 end
 
 -- --------------------------------------------------------------------------------
+-- Input Handling
+-- --------------------------------------------------------------------------------
+
+-- Handles D-pad, button, and crank input.
+function Player:handleInput()
+    -- Button inputs
+    local current, pressed, released = pd.getButtonState()
+    self:handleMovement(current, pressed, released)
+    self:handleButtons(current, pressed, released)
+    -- Crank inputs
+    self:handleAiming()
+end
+
+-- --------------------------------------------------------------------------------
 -- Movement
 -- --------------------------------------------------------------------------------
 
 -- Check for D-Pad inputs and handle player movement
-function Player:handleMovement()
-    -- TODO: top level function that gets button state, then passes current to functions for movement, a/b, etc
-    local current, _, _ = pd.getButtonState()
+function Player:handleMovement(current, pressed, released)
     local dx = 0
     local dy = 0
     -- Determine direction player should move
@@ -126,6 +138,18 @@ function Player:handleMovement()
         local targetX = self.x + dx * distance
         local targetY = self.y + dy * distance
         self:moveWithCollisions(targetX, targetY)
+    end
+end
+
+-- --------------------------------------------------------------------------------
+-- Buttons
+-- --------------------------------------------------------------------------------
+
+-- Handle A/B buttons.
+function Player:handleButtons(current, pressed, released)
+    -- Toggle weapon fire on B-press
+    if (pressed & pd.kButtonB) > 0 then
+        self:toggleWeaponFire()
     end
 end
 
@@ -159,6 +183,14 @@ function Player:giveWeapon(weaponClass)
     self.weapon = weaponClass(self)
 end
 
+-- Toggle whether held weapon is firing or not.
+-- Does nothing if no weapon held.
+function Player:toggleWeaponFire()
+    if self.weapon ~= nil then
+        self.weapon:toggleFire()
+    end
+end
+
 
 -- ================================================================================
 -- Reticle Sprite
@@ -182,9 +214,14 @@ end
 function Reticle:createImage(w, h)
     local image = gfx.image.new(w, h)
     gfx.pushContext(image)
-        gfx.setStrokeLocation(gfx.kStrokeInside)
-        gfx.setLineWidth(2)
+        gfx.setLineWidth(1)
         gfx.drawCircleInRect(0, 0, w, h)
+        gfx.drawLine(0, h // 2, w, h // 2)
+        gfx.drawLine(w // 2, 0, w // 2, h)
+        gfx.setColor(gfx.kColorWhite)
+        gfx.drawCircleAtPoint(w / 2, h / 2, 1.5)
+        gfx.setColor(gfx.kColorBlack)
+        gfx.drawPixel(w // 2, h // 2)
     gfx.popContext()
     return image
 end

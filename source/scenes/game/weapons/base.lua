@@ -10,8 +10,14 @@ local gfx <const> = pd.graphics
 -- --------------------------------------------------------------------------------
 -- Projectiles
 -- --------------------------------------------------------------------------------
--- projectile default size
-local kProjectileDefaultSize <const> = 6
+-- Projectile default size
+local kProjectileDefaultSize <const> = 8
+-- --------------------------------------------------------------------------------
+-- Weapons
+-- --------------------------------------------------------------------------------
+-- Default firing sound
+local kWeaponDefaultFiringSound <const> = pd.sound.sampleplayer.new('scenes/game/weapons/sounds/magnum_fire.wav')
+kWeaponDefaultFiringSound:setVolume(0.75)
 
 -- ================================================================================
 -- Projectile Class
@@ -144,11 +150,11 @@ class('Weapon', {
     -- TODO: weapon pickup image
     -- TODO: reticle image
     -- Sound to play when firing
-    fireSound = pd.sound.sampleplayer.new('scenes/game/weapons/sounds/magnum_fire.wav'),
+    fireSound = kWeaponDefaultFiringSound,
     -- Class of the projectile this shoots
     projectileClass = Projectile,
     -- Time between shots (ms)
-    timeBetweenShots = 500,
+    timeBetweenShots = 600,
     -- If true, ammo is unlimited
     bottomlessClip = true,
     -- Initial amount of ammo (ignored if bottomlessClip is true)
@@ -198,4 +204,18 @@ function Weapon:fire(originX, originY, angle)
     self:updateLastShotTimestamp()
     -- Play fire sound effect
     self.fireSound:play(1)
+end
+
+-- Set whether weapon should be firing or inactive.
+function Weapon:setIsFiring(flag)
+    if flag and self.state.key ~= WeaponFiringState.key then
+        self:setState(WeaponFiringState.key)
+    elseif not flag and self.state.key ~= WeaponInactiveState.key then
+        self:setState(WeaponInactiveState.key)
+    end
+end
+
+-- Toggle firing/inactive state.
+function Weapon:toggleFire()
+    self:setIsFiring(self.state.key == WeaponInactiveState.key)
 end
