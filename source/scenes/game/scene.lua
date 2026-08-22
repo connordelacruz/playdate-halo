@@ -1,4 +1,5 @@
 import 'scenes/game/objects/player'
+import 'scenes/game/objects/weapons/__init__'
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
