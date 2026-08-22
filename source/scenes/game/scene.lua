@@ -1,5 +1,5 @@
-import 'scenes/game/objects/player'
-import 'scenes/game/objects/weapons/__init__'
+import 'scenes/game/weapons/__init__'
+import 'scenes/game/entities/__init__'
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -13,6 +13,7 @@ class('GameScene', {
 
 function GameScene:init()
     self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
+    self.player:giveWeapon(MagnumWeapon)
 end
 
 -- TODO: crank indicator

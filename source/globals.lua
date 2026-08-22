@@ -15,7 +15,13 @@ SCREEN_CENTER_Y = SCREEN_HEIGHT / 2
 -- --------------------------------------------------------------------------------
 -- Tag names
 local kTagNames <const> = {
-    -- Define collision tags here
+    -- Player
+    'player',
+    -- Enemy
+    'enemy',
+    -- Projectiles
+    'projectileFriendly',
+    'projectileEnemy',
 }
 -- Generate tag values from above names
 local function generateTags()

@@ -2,6 +2,7 @@
 import 'CoreLibs/animation'
 import 'CoreLibs/animator'
 import 'CoreLibs/crank'
+import 'CoreLibs/easing'
 import 'CoreLibs/frameTimer'
 import 'CoreLibs/graphics'
 import 'CoreLibs/keyboard'

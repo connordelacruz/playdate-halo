@@ -1,1 +1,0 @@
-import 'scenes/game/objects/weapons/base'

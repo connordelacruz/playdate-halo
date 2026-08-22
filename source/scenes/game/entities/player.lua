@@ -11,12 +11,12 @@ local gfx <const> = pd.graphics
 local kPlayerWidth <const> = 20
 local kPlayerHeight <const> = 32
 -- Base movement speed (px / sec)
-local kPlayerSpeed <const> = 180
+local kPlayerSpeed <const> = 120
 -- --------------------------------------------------------------------------------
 -- Reticle
 -- --------------------------------------------------------------------------------
 -- Size of the reticle sprite
-local kReticleSize <const> = 8
+local kReticleSize <const> = 9
 -- Radius of the invisible circle around the player that the reticle rotates on
 local kReticleRadius <const> = kPlayerHeight // 2 + kReticleSize
 
@@ -49,6 +49,7 @@ end
 -- ================================================================================
 -- Player Sprite
 -- ================================================================================
+-- TODO: parent class Entity that can share logic with Enemy
 class('Player', {
     stateClasses = {
         PlayerActiveState,
@@ -59,10 +60,13 @@ class('Player', {
 function Player:init(x, y)
     -- Attributes
     self.speed = kPlayerSpeed
+    -- Held weapon
+    self.weapon = nil
 
     -- TODO: real sprites
     self:setImage(self:createPlaceholderImage(kPlayerWidth, kPlayerHeight))
     self:setCollideRect(0, 0, self:getSize())
+    self:setTag(TAGS.player)
 
     -- Reticle sprite
     self.reticle = Reticle(x, y, self:calculateAimingAngle())
@@ -93,6 +97,7 @@ end
 
 -- Check for D-Pad inputs and handle player movement
 function Player:handleMovement()
+    -- TODO: top level function that gets button state, then passes current to functions for movement, a/b, etc
     local current, _, _ = pd.getButtonState()
     local dx = 0
     local dy = 0
@@ -137,6 +142,21 @@ end
 -- Update reticle position. Call after updating player position
 function Player:handleAiming()
     self.reticle:updatePosition(self.x, self.y, self:calculateAimingAngle())
+end
+
+-- Get coordinates of origin to spawn projectiles from as well as the angle to fire projectiles at.
+-- Returns 3 values: originX, originY, and angle (degrees)
+function Player:getOriginAndAngle()
+    return self.x, self.y, self:calculateAimingAngle()
+end
+
+-- --------------------------------------------------------------------------------
+-- Weapons
+-- --------------------------------------------------------------------------------
+
+-- Give the player a new weapon.
+function Player:giveWeapon(weaponClass)
+    self.weapon = weaponClass(self)
 end
 
 
