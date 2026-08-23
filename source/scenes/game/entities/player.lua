@@ -8,13 +8,12 @@ local gfx <const> = pd.graphics
 -- Player Attributes
 -- --------------------------------------------------------------------------------
 -- Sprite size
-local kPlayerWidth <const> = 20
-local kPlayerHeight <const> = 32
+local kPlayerWidth <const> = 16
+local kPlayerHeight <const> = 24
 -- Base movement speed (px / sec)
-local kPlayerSpeed <const> = 120
+local kPlayerSpeed <const> = 140
 -- --------------------------------------------------------------------------------
 -- Reticle
--- TODO: Let weapon define the reticle style
 -- --------------------------------------------------------------------------------
 -- Size of the reticle sprite
 local kReticleSize <const> = 13
@@ -147,6 +146,7 @@ end
 
 -- Handle A/B buttons.
 function Player:handleButtons(current, pressed, released)
+    -- TODO: Maybe it would feel better to mash or hold B for shooting instead of auto-shooting? Try it out once more stuff is implemented
     -- Toggle weapon fire on B-press
     if (pressed & pd.kButtonB) > 0 then
         self:toggleWeaponFire()

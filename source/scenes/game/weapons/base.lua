@@ -17,14 +17,14 @@ local kProjectileDefaultSize <const> = 8
 -- --------------------------------------------------------------------------------
 -- Default firing sound
 local kWeaponDefaultFiringSound <const> = pd.sound.sampleplayer.new('scenes/game/weapons/sounds/magnum_fire.wav')
-kWeaponDefaultFiringSound:setVolume(0.75)
+kWeaponDefaultFiringSound:setVolume(0.25)
 
 -- ================================================================================
 -- Projectile Class
 -- ================================================================================
 class('Projectile', {
     -- Speed (px / sec)
-    speed = 500,
+    speed = 700,
     -- Damage
     damage = 1,
     -- Max time projectile can travel before expiring (ms)
