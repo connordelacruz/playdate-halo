@@ -29,6 +29,41 @@ function Entity:init(x, y)
 end
 
 -- --------------------------------------------------------------------------------
+-- Collisions
+-- --------------------------------------------------------------------------------
+
+-- TODO: Allow ally entities to overlap?
+function Entity:collisionResponse(other)
+    -- Default to freeze
+    local response = gfx.sprite.kCollisionTypeFreeze
+    -- Projectiles should overlap w/ entities
+    if other:getTag() == TAGS.projectile then
+        response = gfx.sprite.kCollisionTypeOverlap
+    end
+    return response
+end
+
+-- --------------------------------------------------------------------------------
+-- Health, Shields, and Dying
+-- --------------------------------------------------------------------------------
+
+-- Apply damage to this entity.
+function Entity:applyDamage(damage)
+    -- TODO: implement shields!
+    self.health -= damage
+    -- If damage was fatal, call kill()
+    if self.health <= 0 then
+        self:kill()
+    end
+end
+
+-- Kill this entity.
+function Entity:kill()
+    -- TODO: emit event so enemy and player deaths can be handled!
+    self:remove()
+end
+
+-- --------------------------------------------------------------------------------
 -- Weapons and Aiming
 -- --------------------------------------------------------------------------------
 

@@ -78,7 +78,28 @@ end
 
 function Projectile:updatePosition()
     local _, _, collisions, _ = self:moveWithCollisions(self:getTargetPosition())
-    -- TODO: collision handling, maybe return collisions so this can just be positional
+    self:handleCollisions(collisions)
+end
+
+-- --------------------------------------------------------------------------------
+-- Collisions
+-- --------------------------------------------------------------------------------
+
+function Projectile:handleCollisions(collisions)
+    for i=1, #collisions do
+        local collision = collisions[i]
+        local other = collision.other
+        local tag = other:getTag()
+        -- TODO: maybe just use single entity tag idk
+        if
+            (self.isFriendlyFire and tag == TAGS.enemy)
+            or (not self.isFriendlyFire and tag == TAGS.player)
+        then
+            -- TODO: prob extract this block to a function so we can implement rockets, snipers, etc differently:
+            other:applyDamage(self.damage)
+            self:remove()
+        end
+    end
 end
 
 -- --------------------------------------------------------------------------------

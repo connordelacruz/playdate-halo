@@ -99,21 +99,6 @@ function Player:createPlaceholderImage(w, h)
 end
 
 -- --------------------------------------------------------------------------------
--- Collisions
--- --------------------------------------------------------------------------------
-
--- TODO: prob reuse for enemies!
-function Player:collisionResponse(other)
-    -- Default to freeze
-    local response = gfx.sprite.kCollisionTypeFreeze
-    -- Projectiles should overlap
-    if other:getTag() == TAGS.projectile then
-        response = gfx.sprite.kCollisionTypeOverlap
-    end
-    return response
-end
-
--- --------------------------------------------------------------------------------
 -- Input Handling
 -- --------------------------------------------------------------------------------
 
