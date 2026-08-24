@@ -70,6 +70,8 @@ function Player:init(x, y)
 
     -- TODO: real sprites
     self:setImage(self:createPlaceholderImage(kPlayerWidth, kPlayerHeight))
+
+    -- Collisions
     self:setCollideRect(0, 0, self:getSize())
     self:setTag(TAGS.player)
 
@@ -100,12 +102,12 @@ end
 -- Collisions
 -- --------------------------------------------------------------------------------
 
--- TODO: just trying to get projectiles to not affect movement for now, will prob need to give this another pass
+-- TODO: prob reuse for enemies!
 function Player:collisionResponse(other)
     -- Default to freeze
     local response = gfx.sprite.kCollisionTypeFreeze
     -- Projectiles should overlap
-    if other:getTag() == TAGS.projecitle then
+    if other:getTag() == TAGS.projectile then
         response = gfx.sprite.kCollisionTypeOverlap
     end
     return response

@@ -41,12 +41,9 @@ function Projectile:init(originX, originY, angle, isFriendlyFire)
     self:setImage(self:createImage())
 
     -- Collisions
-    -- TODO: re-work to use masks 
     self:setCollideRect(0, 0, self:getSize())
     self:setTag(TAGS.projectile)
     self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
-    -- TODO: for debugging
-    self:setCollisionsEnabled(false)
 
     -- Add sprite
     self:moveTo(originX, originY)
