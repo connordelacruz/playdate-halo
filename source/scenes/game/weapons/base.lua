@@ -161,10 +161,10 @@ class('Weapon', {
     startingAmmo = 999,
 }).extends('FSMSprite')
 
-function Weapon:init(carrierSprite)
-    self.carrierSprite = carrierSprite
+function Weapon:init(carrierEntity)
+    self.carrierEntity = carrierEntity
     -- Whether this is a player's weapon or an enemy's
-    self.isFriendlyFire = self.carrierSprite.className == 'Player'
+    self.isFriendlyFire = self.carrierEntity.className == 'Player'
     -- Timestamp since last shot. Default to -1 so we can start firing right away
     self.lastShotTimestamp = -1
 
@@ -191,7 +191,7 @@ end
 -- Takes shot origin and angle.
 function Weapon:attemptToFire()
     if self:isCooldownOver() then
-        local originX, originY, angle = self.carrierSprite:getOriginAndAngle()
+        local originX, originY, angle = self.carrierEntity:getOriginAndAngle()
         self:fire(originX, originY, angle)
     end
 end

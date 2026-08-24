@@ -54,7 +54,7 @@ class('Player', {
         PlayerActiveState,
     },
     initialStateKey = PlayerActiveState.key
-}).extends('FSMSprite')
+}).extends('Entity')
 
 function Player:init(x, y)
     -- Attributes
@@ -168,20 +168,9 @@ function Player:handleAiming()
     self.reticle:updatePosition(self.x, self.y, self:calculateAimingAngle())
 end
 
--- Get coordinates of origin to spawn projectiles from as well as the angle to fire projectiles at.
--- Returns 3 values: originX, originY, and angle (degrees)
-function Player:getOriginAndAngle()
-    return self.x, self.y, self:calculateAimingAngle()
-end
-
 -- --------------------------------------------------------------------------------
 -- Weapons
 -- --------------------------------------------------------------------------------
-
--- Give the player a new weapon.
-function Player:giveWeapon(weaponClass)
-    self.weapon = weaponClass(self)
-end
 
 -- Toggle whether held weapon is firing or not.
 -- Does nothing if no weapon held.
