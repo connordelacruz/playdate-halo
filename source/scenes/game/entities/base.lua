@@ -5,15 +5,27 @@ local gfx <const> = pd.graphics
 -- 
 -- Shared behaviors between player, enemies, etc
 -- ================================================================================
--- TODO: Define attributes common to entities? speed maybe idk
-class('Entity').extends('FSMSprite')
+class('Entity', {
+    -- Whether this is friendly or an enemy
+    isFriendly = false,
+    -- Health and shield values base values
+    baseHealth = 1,
+    baseShields = 0,
+    -- Base movement speed (px / sec)
+    baseSpeed = 140,
+}).extends('FSMSprite')
 
--- Note: Constructors should be written custom for implementations of Entity.
+-- Base constructor. Initializes instance variables and not much else.
+-- Implementing classes should call <Class>.super.init(self, x, y) to initialize these,
+-- then handle everything else, including adding to sprite list.
 function Entity:init(x, y)
+    -- Held Weapon
     self.weapon = nil
-
-    self:moveTo(x, y)
-    self:add()
+    -- Current health and shields
+    self.health = self.baseHealth
+    self.shields = self.baseShields
+    -- Movement speed
+    self.speed = self.baseSpeed
 end
 
 -- --------------------------------------------------------------------------------

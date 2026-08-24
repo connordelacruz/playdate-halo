@@ -12,6 +12,9 @@ local kPlayerWidth <const> = 16
 local kPlayerHeight <const> = 24
 -- Base movement speed (px / sec)
 local kPlayerSpeed <const> = 140
+-- Base shields and health
+local kPlayerBaseHealth <const> = 3
+local kPlayerBaseShields <const> = 5
 -- --------------------------------------------------------------------------------
 -- Reticle
 -- --------------------------------------------------------------------------------
@@ -48,19 +51,21 @@ end
 -- ================================================================================
 -- Player Sprite
 -- ================================================================================
--- TODO: parent class Entity that can share logic with Enemy
 class('Player', {
     stateClasses = {
         PlayerActiveState,
     },
-    initialStateKey = PlayerActiveState.key
+    initialStateKey = PlayerActiveState.key,
+    -- Entity attributes:
+    isFriendly = true,
+    baseHealth = kPlayerBaseHealth,
+    baseShields = kPlayerBaseShields,
+    baseSpeed = kPlayerSpeed,
 }).extends('Entity')
 
 function Player:init(x, y)
-    -- Attributes
-    self.speed = kPlayerSpeed
-    -- Held weapon
-    self.weapon = nil
+    -- Initialize entity instance variables
+    Player.super.init(self, x, y)
 
     -- TODO: real sprites
     self:setImage(self:createPlaceholderImage(kPlayerWidth, kPlayerHeight))
