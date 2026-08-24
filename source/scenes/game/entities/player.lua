@@ -7,7 +7,8 @@ local gfx <const> = pd.graphics
 -- --------------------------------------------------------------------------------
 -- Player Attributes
 -- --------------------------------------------------------------------------------
--- Sprite size
+-- DEBUG: Sprite size
+-- TODO: won't need this when actual sprites are added:
 local kPlayerWidth <const> = 16
 local kPlayerHeight <const> = 24
 -- Base movement speed (px / sec)
@@ -93,6 +94,21 @@ function Player:createPlaceholderImage(w, h)
         gfx.fillRoundRect(0, 0, w, h, 4)
     gfx.popContext()
     return image
+end
+
+-- --------------------------------------------------------------------------------
+-- Collisions
+-- --------------------------------------------------------------------------------
+
+-- TODO: just trying to get projectiles to not affect movement for now, will prob need to give this another pass
+function Player:collisionResponse(other)
+    -- Default to freeze
+    local response = gfx.sprite.kCollisionTypeFreeze
+    -- Projectiles should overlap
+    if other:getTag() == TAGS.projecitle then
+        response = gfx.sprite.kCollisionTypeOverlap
+    end
+    return response
 end
 
 -- --------------------------------------------------------------------------------

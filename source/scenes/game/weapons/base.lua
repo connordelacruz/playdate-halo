@@ -39,15 +39,16 @@ function Projectile:init(originX, originY, angle, isFriendlyFire)
 
     -- Image
     self:setImage(self:createImage())
+
+    -- Collisions
+    -- TODO: re-work to use masks 
     self:setCollideRect(0, 0, self:getSize())
-    if isFriendlyFire then
-        self:setTag(TAGS.projectileFriendly)
-    else
-        self:setTag(TAGS.projectileEnemy)
-    end
-    -- TODO: disable collisions for now
+    self:setTag(TAGS.projectile)
+    self.collisionResponse = gfx.sprite.kCollisionTypeOverlap
+    -- TODO: for debugging
     self:setCollisionsEnabled(false)
 
+    -- Add sprite
     self:moveTo(originX, originY)
     self:add()
 end
@@ -164,7 +165,7 @@ class('Weapon', {
 function Weapon:init(carrierEntity)
     self.carrierEntity = carrierEntity
     -- Whether this is a player's weapon or an enemy's
-    self.isFriendlyFire = self.carrierEntity.className == 'Player'
+    self.isFriendlyFire = self.carrierEntity.isFriendly
     -- Timestamp since last shot. Default to -1 so we can start firing right away
     self.lastShotTimestamp = -1
 

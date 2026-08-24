@@ -7,6 +7,13 @@ local gfx <const> = pd.graphics
 -- ================================================================================
 
 -- ================================================================================
+-- Constants
+-- ================================================================================
+-- Placeholder image size
+local kEnemyWidth <const> = 16
+local kEnemyHeight <const> = 20
+
+-- ================================================================================
 -- Basic Enemy States
 -- ================================================================================
 -- --------------------------------------------------------------------------------
@@ -33,7 +40,7 @@ class('Enemy', {
     stateClasses = {
         EnemyInactiveState,
     },
-    initialStateKey = kEnemyInactiveState.key,
+    initialStateKey = EnemyInactiveState.key,
     -- Entity attributes:
     isFriendly = false,
     baseHealth = 1,
@@ -45,11 +52,31 @@ function Enemy:init(x, y)
     -- Initialize entity instance variables
     Enemy.super.init(self, x, y)
 
-    -- TODO: placeholder image and collisions
+    -- Placeholder image
+    self:setImage(self:createPlaceholderImage(kEnemyWidth, kEnemyHeight))
+
+    -- Collisions
+    self:setCollideRect(0, 0, self:getSize())
+    self:setTag(TAGS.enemy)
 
     -- Initialize states
     self:initStatesAndSetInitial()
     -- Move to initial position and add sprite
     self:moveTo(x, y)
     self:add()
+end
+
+-- --------------------------------------------------------------------------------
+-- Image
+-- --------------------------------------------------------------------------------
+
+-- DEBUG: Generate placeholder image
+function Enemy:createPlaceholderImage(w, h)
+    local image = gfx.image.new(w, h)
+    gfx.pushContext(image)
+        gfx.setLineWidth(2)
+        gfx.setStrokeLocation(gfx.kStrokeInside)
+        gfx.drawRoundRect(0, 0, w, h, 4)
+    gfx.popContext()
+    return image
 end

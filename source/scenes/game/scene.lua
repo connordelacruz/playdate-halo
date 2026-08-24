@@ -12,8 +12,17 @@ class('GameScene', {
 }).extends('Scene')
 
 function GameScene:init()
+    -- Spawn player in the center, give magnum to start
     self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
     self.player:giveWeapon(MagnumWeapon)
+
+    -- DEBUG: Spawn some hard-coded enemies for testing
+    self.enemies = {
+        Enemy(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4),
+        Enemy(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4),
+        Enemy(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT - SCREEN_HEIGHT / 4),
+        Enemy(SCREEN_WIDTH / 4, SCREEN_HEIGHT - SCREEN_HEIGHT / 4),
+    }
 end
 
 -- TODO: crank indicator

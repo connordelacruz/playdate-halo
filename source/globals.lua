@@ -20,8 +20,7 @@ local kTagNames <const> = {
     -- Enemy
     'enemy',
     -- Projectiles
-    'projectileFriendly',
-    'projectileEnemy',
+    'projectile',
 }
 -- Generate tag values from above names
 local function generateTags()
