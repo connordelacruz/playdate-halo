@@ -1,3 +1,4 @@
+import 'scenes/game/camera'
 import 'scenes/game/weapons/__init__'
 import 'scenes/game/entities/__init__'
 
@@ -15,6 +16,9 @@ function GameScene:init()
     -- Spawn player in the center, give magnum to start
     self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
     self.player:giveWeapon(MagnumWeapon)
+    -- Create camera and attach to player's reticle
+    self.camera = Camera()
+    self.camera:attachTo(self.player.reticle)
 
     -- DEBUG: Spawn some hard-coded enemies for testing
     self.enemies = {
