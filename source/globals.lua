@@ -9,6 +9,11 @@ SCREEN_WIDTH = pd.display.getWidth()
 SCREEN_HEIGHT = pd.display.getHeight()
 SCREEN_CENTER_X = SCREEN_WIDTH / 2
 SCREEN_CENTER_Y = SCREEN_HEIGHT / 2
+-- --------------------------------------------------------------------------------
+-- Indexes for facing directions (left or right)
+-- --------------------------------------------------------------------------------
+DIRECTION_RIGHT = 1
+DIRECTION_LEFT = 2
 
 -- --------------------------------------------------------------------------------
 -- Collisions

@@ -26,6 +26,10 @@ function Entity:init(x, y)
     self.shields = self.baseShields
     -- Movement speed
     self.speed = self.baseSpeed
+    -- Whether or not the entity is currently moving
+    self.isMoving = false
+    -- Facing direction
+    self.direction = DIRECTION_RIGHT
 end
 
 -- --------------------------------------------------------------------------------
@@ -64,12 +68,24 @@ function Entity:kill()
 end
 
 -- --------------------------------------------------------------------------------
--- Weapons and Aiming
+-- Weapons 
 -- --------------------------------------------------------------------------------
 
 -- Give the entity a new weapon.
 function Entity:giveWeapon(weaponClass)
     self.weapon = weaponClass(self)
+end
+
+-- --------------------------------------------------------------------------------
+-- Aiming and Direction
+-- --------------------------------------------------------------------------------
+
+-- Constrain angle to 0 - 360 degrees
+function Entity:constrainAngle(angle)
+    if angle < 0 then
+        angle += 360
+    end
+    return angle % 360
 end
 
 -- Returns the angle (in degrees) entity is aiming at.
@@ -82,5 +98,30 @@ end
 -- Get coordinates of origin to spawn projectiles from as well as the angle to fire projectiles at.
 -- Returns 3 values: originX, originY, and angle (degrees)
 function Entity:getOriginAndAngle()
-    return self.x, self.y, self:calculateAimingAngle()
+    return self.x, self.y, self:constrainAngle(self:calculateAimingAngle())
+end
+
+-- Determine whether angle is facing left or right. For sprite images.
+-- TODO: does this apply when not crankin it?:
+-- Angles relative to display:
+--       270
+--        |
+-- 180 ---+--- 0
+--        |
+--       90
+function Entity:getDirectionFromAngle(angle)
+    -- Constrain to 0 - 360
+    angle = self:constrainAngle(angle)
+    -- Defaulting to right (when angle is between 0 (inclusive) and 90 (exclusive), or 270 (inclusive) and 360 (exclusive))
+    local direction = DIRECTION_RIGHT
+    -- If angle is between 90 (inclusive) and 270 (exclusive), we're facing left
+    if angle >= 90 and angle < 270 then
+        direction = DIRECTION_LEFT
+    end
+    return direction
+end
+
+-- Shorthand to get direction from self:calculateAimingAngle() and set self.direction to the return value.
+function Entity:getDirectionFromAimingAngle()
+    self.direction = self:getDirectionFromAngle(self:calculateAimingAngle())
 end

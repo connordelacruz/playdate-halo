@@ -8,7 +8,7 @@ local gfx <const> = pd.graphics
 -- Player Attributes
 -- --------------------------------------------------------------------------------
 -- Base movement speed (px / sec)
-local kPlayerSpeed <const> = 140
+local kPlayerSpeed <const> = 120
 -- Base shields and health
 local kPlayerBaseHealth <const> = 3
 local kPlayerBaseShields <const> = 5
@@ -87,7 +87,7 @@ function Player:init(x, y)
 end
 
 -- --------------------------------------------------------------------------------
--- Image
+-- Images and Animations
 -- --------------------------------------------------------------------------------
 
 -- --------------------------------------------------------------------------------
@@ -154,13 +154,13 @@ function Player:handleButtons(current, pressed, released)
 end
 
 -- --------------------------------------------------------------------------------
--- Aiming
+-- Aiming and Direction
 -- --------------------------------------------------------------------------------
 
 -- Calculates the aiming angle based on the crank.
 -- Applies an offset so pointing the crank up angles the reticle up.
 function Player:calculateAimingAngle()
-    return pd.getCrankPosition() - 90
+    return self:constrainAngle(pd.getCrankPosition() - 90)
 end
 
 -- Update reticle position. Call after updating player position
