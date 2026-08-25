@@ -17,9 +17,6 @@ local kPlayerBaseShields <const> = 5
 -- --------------------------------------------------------------------------------
 -- Size of the reticle sprite
 local kReticleSize <const> = 13
--- Radius of the invisible circle around the player that the reticle rotates on
--- TODO: Do this dynamically. 16 is half the player sprite height, so calculate on init prob?
-local kReticleRadius <const> = 16 + kReticleSize
 
 -- ================================================================================
 -- Player States
@@ -76,7 +73,9 @@ function Player:init(x, y)
     self:setTag(TAGS.player)
 
     -- Reticle sprite
-    self.reticle = Reticle(x, y, self:calculateAimingAngle())
+    local reticleRotationRadius = self.height // 2 + kReticleSize
+    -- TODO: remove on self:remove()?
+    self.reticle = Reticle(x, y, self:calculateAimingAngle(), reticleRotationRadius)
 
     -- Initialize states
     self:initStatesAndSetInitial()
@@ -229,9 +228,9 @@ end
 -- ================================================================================
 class('Reticle').extends(gfx.sprite)
 
-function Reticle:init(originX, originY, degrees)
+function Reticle:init(originX, originY, degrees, radius)
     -- Radius for the invisible circle around player that the reticle rotates around
-    self.radius = kReticleRadius
+    self.radius = radius
     -- TODO: z-index
     self:setImage(self:createImage(kReticleSize, kReticleSize))
 
