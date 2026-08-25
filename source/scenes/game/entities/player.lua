@@ -44,6 +44,7 @@ class('PlayerActiveState', {
 
 function PlayerActiveState:update()
     self.player:handleInput()
+    self.player:setActiveImage()
 end
 
 -- ================================================================================
@@ -66,11 +67,9 @@ function Player:init(x, y)
     Player.super.init(self, x, y)
 
     -- Initialize spritesheets and animations
-    self.standWalkSpritesheet = gfx.imagetable.new('images/chief/chief-stand-walk')
-    -- TODO: initialize walking animation, do it based on aiming angle and update it if aim direction changes
-    -- TODO: standing image, use when not walking, update when aiming angle changes
-    -- TODO: DEBUG: static image for testing:
-    self:setImage(self.standWalkSpritesheet[1])
+    self:initImages()
+    -- Set initial image
+    self:setActiveImage()
 
     -- Collisions
     self:setCollideRect(0, 0, self:getSize())
@@ -90,6 +89,43 @@ end
 -- Images and Animations
 -- --------------------------------------------------------------------------------
 
+-- Initialize images and animations.
+function Player:initImages()
+    -- Idle and Walking
+    self.idleWalkSpritesheet = gfx.imagetable.new('images/chief/chief-idle-walk')
+    -- Frame 1 = idle, frames 2 - 4 = walk animation
+    -- Frames 1 - 4 = facing right, frames 5 - 8 = facing left
+    self.idleImages = {
+        [DIRECTION_RIGHT] = self.idleWalkSpritesheet[1],
+        [DIRECTION_LEFT] = self.idleWalkSpritesheet[5],
+    }
+    local walkingDelay = 100
+    local walkingLoopRight = gfx.animation.loop.new(walkingDelay, self.idleWalkSpritesheet)
+    walkingLoopRight.startFrame = 2
+    walkingLoopRight.endFrame = 4
+    local walkingLoopLeft = gfx.animation.loop.new(walkingDelay, self.idleWalkSpritesheet)
+    walkingLoopLeft.startFrame = 6
+    walkingLoopLeft.endFrame = 8
+    self.walkingLoops = {
+        [DIRECTION_RIGHT] = walkingLoopRight,
+        [DIRECTION_LEFT] = walkingLoopLeft,
+    }
+
+    -- Default fallback image
+    self.defaultImage = self.idleImages[DIRECTION_RIGHT]
+end
+
+-- Set image for active state (walking or idle).
+function Player:setActiveImage()
+    local newImage = self.defaultImage
+    if self.isMoving then
+        newImage = self.walkingLoops[self.direction]:image()
+    else
+        newImage = self.idleImages[self.direction]
+    end
+    self:setImage(newImage)
+end
+
 -- --------------------------------------------------------------------------------
 -- Input Handling
 -- --------------------------------------------------------------------------------
@@ -108,7 +144,8 @@ end
 -- Movement
 -- --------------------------------------------------------------------------------
 
--- Check for D-Pad inputs and handle player movement
+-- Check for D-Pad inputs and handle player movement.
+-- Updates self.isMoving.
 function Player:handleMovement(current, pressed, released)
     local dx = 0
     local dy = 0
@@ -128,6 +165,8 @@ function Player:handleMovement(current, pressed, released)
 
     -- Handle movement
     if dx ~= 0 or dy ~= 0 then
+        self.isMoving = true
+        -- Calculate distance to step
         local distance = self.speed * DELTA_TIME
         -- Divide distance by sqrt 2 for diagonal movement
         if dx ~= 0 and dy ~= 0 then
@@ -137,6 +176,8 @@ function Player:handleMovement(current, pressed, released)
         local targetX = self.x + dx * distance
         local targetY = self.y + dy * distance
         self:moveWithCollisions(targetX, targetY)
+    else
+        self.isMoving = false
     end
 end
 
@@ -163,8 +204,10 @@ function Player:calculateAimingAngle()
     return self:constrainAngle(pd.getCrankPosition() - 90)
 end
 
--- Update reticle position. Call after updating player position
+-- Update reticle position and self.direction.
+-- Call after updating player position.
 function Player:handleAiming()
+    self:updateDirectionFromAimingAngle()
     self.reticle:updatePosition(self.x, self.y, self:calculateAimingAngle())
 end
 

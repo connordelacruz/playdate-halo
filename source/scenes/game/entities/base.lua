@@ -122,6 +122,7 @@ function Entity:getDirectionFromAngle(angle)
 end
 
 -- Shorthand to get direction from self:calculateAimingAngle() and set self.direction to the return value.
-function Entity:getDirectionFromAimingAngle()
+-- Should be called anywhere aiming angle gets changed.
+function Entity:updateDirectionFromAimingAngle()
     self.direction = self:getDirectionFromAngle(self:calculateAimingAngle())
 end
