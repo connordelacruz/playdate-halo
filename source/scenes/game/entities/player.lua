@@ -7,10 +7,6 @@ local gfx <const> = pd.graphics
 -- --------------------------------------------------------------------------------
 -- Player Attributes
 -- --------------------------------------------------------------------------------
--- DEBUG: Sprite size
--- TODO: won't need this when actual sprites are added:
-local kPlayerWidth <const> = 16
-local kPlayerHeight <const> = 24
 -- Base movement speed (px / sec)
 local kPlayerSpeed <const> = 140
 -- Base shields and health
@@ -22,7 +18,8 @@ local kPlayerBaseShields <const> = 5
 -- Size of the reticle sprite
 local kReticleSize <const> = 13
 -- Radius of the invisible circle around the player that the reticle rotates on
-local kReticleRadius <const> = kPlayerHeight // 2 + kReticleSize
+-- TODO: Do this dynamically. 16 is half the player sprite height, so calculate on init prob?
+local kReticleRadius <const> = 16 + kReticleSize
 
 -- ================================================================================
 -- Player States
@@ -68,8 +65,12 @@ function Player:init(x, y)
     -- Initialize entity instance variables
     Player.super.init(self, x, y)
 
-    -- TODO: real sprites
-    self:setImage(self:createPlaceholderImage(kPlayerWidth, kPlayerHeight))
+    -- Initialize spritesheets and animations
+    self.standWalkSpritesheet = gfx.imagetable.new('images/chief/chief-stand-walk')
+    -- TODO: initialize walking animation, do it based on aiming angle and update it if aim direction changes
+    -- TODO: standing image, use when not walking, update when aiming angle changes
+    -- TODO: DEBUG: static image for testing:
+    self:setImage(self.standWalkSpritesheet[1])
 
     -- Collisions
     self:setCollideRect(0, 0, self:getSize())
@@ -88,15 +89,6 @@ end
 -- --------------------------------------------------------------------------------
 -- Image
 -- --------------------------------------------------------------------------------
-
--- DEBUG: Generate placeholder image
-function Player:createPlaceholderImage(w, h)
-    local image = gfx.image.new(w, h)
-    gfx.pushContext(image)
-        gfx.fillRoundRect(0, 0, w, h, 4)
-    gfx.popContext()
-    return image
-end
 
 -- --------------------------------------------------------------------------------
 -- Input Handling
