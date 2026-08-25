@@ -242,6 +242,7 @@ end
 -- Image
 -- --------------------------------------------------------------------------------
 
+-- TODO: this honestly isn't bad, maybe just add white outlines around it
 function Reticle:createImage(w, h)
     local image = gfx.image.new(w, h)
     gfx.pushContext(image)

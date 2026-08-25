@@ -19,6 +19,7 @@ DIRECTION_LEFT = 2
 -- Collisions
 -- --------------------------------------------------------------------------------
 -- Tag names
+-- TODO: use masks? can define collides with behavior
 local kTagNames <const> = {
     -- Player
     'player',
@@ -26,6 +27,8 @@ local kTagNames <const> = {
     'enemy',
     -- Projectiles
     'projectile',
+    -- Level boundaries
+    'wall',
 }
 -- Generate tag values from above names
 local function generateTags()
@@ -41,6 +44,10 @@ TAGS = generateTags()
 -- --------------------------------------------------------------------------------
 -- Z-Index Values
 -- --------------------------------------------------------------------------------
+-- Range: (-32768, 32767)
 Z_INDEX = {
-    -- Define common z-index vals here
+    -- Entities
+    entity = 1000,
+    -- Stage background
+    background = -1000,
 }

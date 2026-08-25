@@ -1,4 +1,5 @@
 import 'scenes/game/camera'
+import 'scenes/game/stage'
 import 'scenes/game/weapons/__init__'
 import 'scenes/game/entities/__init__'
 
@@ -13,6 +14,9 @@ class('GameScene', {
 }).extends('Scene')
 
 function GameScene:init()
+    -- Create stage and boundaries
+    -- TODO: figure out better stage size. This is just for testing
+    self.stage = Stage(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2)
     -- Spawn player in the center, give magnum to start
     self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
     self.player:giveWeapon(MagnumWeapon)

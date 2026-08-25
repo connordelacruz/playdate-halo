@@ -30,6 +30,9 @@ function Entity:init(x, y)
     self.isMoving = false
     -- Facing direction
     self.direction = DIRECTION_RIGHT
+
+    -- Z-index
+    self:setZIndex(Z_INDEX.entity)
 end
 
 -- --------------------------------------------------------------------------------
