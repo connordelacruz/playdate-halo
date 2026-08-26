@@ -12,6 +12,7 @@ class('MagnumProjectile').extends('Projectile')
 -- ================================================================================
 -- Weapon Class
 -- ================================================================================
+-- TODO: explicitly define attributes
 class('MagnumWeapon', {
     projectileClass = MagnumProjectile,
 }).extends('Weapon')

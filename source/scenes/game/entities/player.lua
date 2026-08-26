@@ -89,6 +89,7 @@ end
 -- --------------------------------------------------------------------------------
 
 -- Initialize images and animations.
+-- TODO: extract any common logic to Entity, maybe make a call to initImages() part of its init()
 function Player:initImages()
     -- Idle and Walking
     self.idleWalkSpritesheet = gfx.imagetable.new('images/chief/chief-idle-walk')

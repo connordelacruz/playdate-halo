@@ -26,10 +26,10 @@ function GameScene:init()
 
     -- DEBUG: Spawn some hard-coded enemies for testing
     self.enemies = {
-        Enemy(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4),
-        Enemy(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4),
-        Enemy(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT - SCREEN_HEIGHT / 4),
-        Enemy(SCREEN_WIDTH / 4, SCREEN_HEIGHT - SCREEN_HEIGHT / 4),
+        Grunt(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4),
+        Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4),
+        Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT - SCREEN_HEIGHT / 4),
+        Grunt(SCREEN_WIDTH / 4, SCREEN_HEIGHT - SCREEN_HEIGHT / 4),
     }
 end
 

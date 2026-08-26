@@ -33,6 +33,11 @@ class('EnemyInactiveState', {
     key = kEnemyInactiveState,
 }).extends('EnemyState')
 
+-- --------------------------------------------------------------------------------
+-- TODO: common enemy states:
+-- idle, searching, chasing, firing, retreating, dying
+-- --------------------------------------------------------------------------------
+
 -- ================================================================================
 -- Enemy Entity Base Class
 -- ================================================================================
@@ -48,18 +53,23 @@ class('Enemy', {
     baseSpeed = 120,
 }).extends('Entity')
 
+-- TODO: enemies should have reference to the player for their AI
 function Enemy:init(x, y)
     -- Initialize entity instance variables
     Enemy.super.init(self, x, y)
+
+    -- TODO: we gotta figure out what stays here as common and what gets extracted to subclasses
 
     -- Placeholder image
     self:setImage(self:createPlaceholderImage(kEnemyWidth, kEnemyHeight))
 
     -- Collisions
+    -- TODO: collide rect should be set after implementing class sets image. tag can be set here tho
     self:setCollideRect(0, 0, self:getSize())
     self:setTag(TAGS.enemy)
 
     -- Initialize states
+    -- TODO: REMOVE??
     self:initStatesAndSetInitial()
     -- Move to initial position and add sprite
     self:moveTo(x, y)
