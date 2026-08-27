@@ -76,6 +76,7 @@ end
 -- --------------------------------------------------------------------------------
 local kEnemyIdleState <const> = 'idle'
 local kEnemyPatrolState <const> = 'patrol'
+local kEnemyFiringState <const> = 'firing'
 
 -- --------------------------------------------------------------------------------
 -- Idle
@@ -121,6 +122,35 @@ function EnemyPatrolState:exit()
 end
 
 -- --------------------------------------------------------------------------------
+-- Firing at Player
+-- --------------------------------------------------------------------------------
+class('EnemyFiringState', {
+    key = kEnemyFiringState,
+    minDuration = 2000,
+    maxDuration = 4000,
+    nextStateOptionKeys = {
+        -- TODO: refine behavior
+        kEnemyFiringState,
+    },
+}).extends('EnemyState')
+
+function EnemyFiringState:enter()
+    EnemyFiringState.super.enter(self)
+
+    self.enemy.isMoving = false
+    -- TODO: random angle for testing
+    self.enemy:setRandomAngle()
+    self.enemy:toggleWeaponFire(true)
+end
+
+-- TODO: aiming and stuff, set active image
+function EnemyFiringState:update()
+    self.enemy:setActiveImage()
+
+    self:changeStateIfPastDuration()
+end
+
+-- --------------------------------------------------------------------------------
 -- TODO: common enemy states:
 -- idle, searching, chasing, firing, retreating, dying
 -- --------------------------------------------------------------------------------
@@ -132,10 +162,11 @@ class('Enemy', {
     stateClasses = {
         EnemyIdleState,
         EnemyPatrolState,
+        EnemyFiringState,
     },
-    initialStateKey = EnemyIdleState.key,
-    -- TODO: TESTING:
     -- initialStateKey = EnemyIdleState.key,
+    -- TODO: TESTING WEAPONS
+    initialStateKey = EnemyFiringState.key,
     -- Entity attributes:
     isFriendly = false,
     baseHealth = 1,

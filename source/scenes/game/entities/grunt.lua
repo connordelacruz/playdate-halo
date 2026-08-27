@@ -7,12 +7,18 @@ local gfx <const> = pd.graphics
 -- ================================================================================
 -- Grunt Entity Class
 -- ================================================================================
--- TODO: define attributes, we're using the defaults for now
-class('Grunt').extends('Enemy')
+class('Grunt', {
+    baseHealth = 1,
+    baseShields = 0,
+    baseSpeed = 50,
+}).extends('Enemy')
 
 -- TODO: enemies need reference to player
 function Grunt:init(x, y)
     Grunt.super.init(self, x, y)
+
+    -- Give grunts a plasma pistol
+    self:giveWeapon(PlasmaPistolWeapon)
 
     -- Initialize states
     self:initStatesAndSetInitial()

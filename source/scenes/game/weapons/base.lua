@@ -234,6 +234,10 @@ function Weapon:setIsFiring(flag)
 end
 
 -- Toggle firing/inactive state.
-function Weapon:toggleFire()
-    self:setIsFiring(self.state.key == WeaponInactiveState.key)
+-- flag is optional, default behavior is to toggle to opposite of current state.
+function Weapon:toggleFire(flag)
+    if flag == nil then
+        flag = self.state.key == WeaponInactiveState.key
+    end
+    self:setIsFiring(flag)
 end

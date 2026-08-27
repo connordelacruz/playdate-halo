@@ -130,6 +130,15 @@ function Entity:giveWeapon(weaponClass)
     self.weapon = weaponClass(self)
 end
 
+-- Toggle whether held weapon is firing or not.
+-- flag is optional, default behavior is to toggle to the opposite of current weapon state.
+-- Does nothing if no weapon held.
+function Entity:toggleWeaponFire(flag)
+    if self.weapon ~= nil then
+        self.weapon:toggleFire(flag)
+    end
+end
+
 -- --------------------------------------------------------------------------------
 -- Aiming and Direction
 -- --------------------------------------------------------------------------------

@@ -202,18 +202,6 @@ function Player:handleAiming()
 end
 
 -- --------------------------------------------------------------------------------
--- Weapons
--- --------------------------------------------------------------------------------
-
--- Toggle whether held weapon is firing or not.
--- Does nothing if no weapon held.
-function Player:toggleWeaponFire()
-    if self.weapon ~= nil then
-        self.weapon:toggleFire()
-    end
-end
-
--- --------------------------------------------------------------------------------
 -- Lifecycle
 -- --------------------------------------------------------------------------------
 
