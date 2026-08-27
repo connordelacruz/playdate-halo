@@ -1,34 +1,35 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 -- ================================================================================
--- Magnum Weapon and Projectiles
+-- Plasma Pistol Weapon and Projectiles
 -- ================================================================================
-local kMagnumFiringSound <const> = pd.sound.sampleplayer.new('sounds/weapons/magnum_fire.wav')
-kMagnumFiringSound:setVolume(0.25)
+local kPlasmaPistolFiringSound <const> = pd.sound.sampleplayer.new('sounds/weapons/plasma_fire.wav')
+kPlasmaPistolFiringSound:setVolume(0.25)
 
 -- ================================================================================
--- Projectile Class
+-- Projectile
 -- ================================================================================
-class('MagnumProjectile', {
-    speed = 700,
+class('PlasmaPistolProjectile', {
+    speed = 600,
     damage = 1,
     maxTime = 700,
 }).extends('Projectile')
 
-function MagnumProjectile:createImage()
+function PlasmaPistolProjectile:createImage()
     local image = gfx.image.new(8, 8)
     gfx.pushContext(image)
-        gfx.fillCircleInRect(0, 0, image.width, image.height)
+        gfx.setLineWidth(2)
+        gfx.drawCircleInRect(0, 0, image.width, image.height)
     gfx.popContext()
     return image
 end
 
 -- ================================================================================
--- Weapon Class
+-- Weapon
 -- ================================================================================
-class('MagnumWeapon', {
-    projectileClass = MagnumProjectile,
-    fireSound = kMagnumFiringSound,
-    timeBetweenShots = 600,
+class('PlasmaPistolWeapon', {
+    projectileClass = PlasmaPistolProjectile,
+    fireSound = kPlasmaPistolFiringSound,
+    timeBetweenShots = 500,
     bottomlessClip = true,
 }).extends('Weapon')

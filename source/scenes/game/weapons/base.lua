@@ -16,7 +16,7 @@ local kProjectileDefaultSize <const> = 8
 -- Weapons
 -- --------------------------------------------------------------------------------
 -- Default firing sound
-local kWeaponDefaultFiringSound <const> = pd.sound.sampleplayer.new('scenes/game/weapons/sounds/magnum_fire.wav')
+local kWeaponDefaultFiringSound <const> = pd.sound.sampleplayer.new('sounds/weapons/magnum_fire.wav')
 kWeaponDefaultFiringSound:setVolume(0.25)
 
 -- ================================================================================
@@ -166,13 +166,13 @@ class('Weapon', {
     initialStateKey = WeaponInactiveState.key,
 
     -- TODO: weapon pickup image
-    -- TODO: reticle image
     -- Sound to play when firing
     fireSound = kWeaponDefaultFiringSound,
     -- Class of the projectile this shoots
     projectileClass = Projectile,
     -- Time between shots (ms)
     timeBetweenShots = 600,
+    -- TODO: implement ammo
     -- If true, ammo is unlimited
     bottomlessClip = true,
     -- Initial amount of ammo (ignored if bottomlessClip is true)

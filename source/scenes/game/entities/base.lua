@@ -4,7 +4,7 @@ local gfx <const> = pd.graphics
 -- Constants
 -- ================================================================================
 -- Placeholder image
-local kPlaceholderImage = gfx.image.new(16, 20)
+local kPlaceholderImage <const> = gfx.image.new(16, 20)
 gfx.pushContext(kPlaceholderImage)
     gfx.setLineWidth(2)
     gfx.setStrokeLocation(gfx.kStrokeInside)
