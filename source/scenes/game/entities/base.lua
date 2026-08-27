@@ -1,6 +1,17 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 -- ================================================================================
+-- Constants
+-- ================================================================================
+-- Placeholder image
+local kPlaceholderImage = gfx.image.new(16, 20)
+gfx.pushContext(kPlaceholderImage)
+    gfx.setLineWidth(2)
+    gfx.setStrokeLocation(gfx.kStrokeInside)
+    gfx.drawRoundRect(0, 0, kPlaceholderImage.width, kPlaceholderImage.height, 4)
+gfx.popContext()
+
+-- ================================================================================
 -- Base Entity Class
 -- 
 -- Shared behaviors between player, enemies, etc
@@ -15,6 +26,7 @@ class('Entity', {
     baseSpeed = 140,
 }).extends('FSMSprite')
 
+-- TODO: UPDATE DOCS
 -- Base constructor. Initializes instance variables and not much else.
 -- Implementing classes should call <Class>.super.init(self, x, y) to initialize these,
 -- then handle everything else, including adding to sprite list.
@@ -31,8 +43,47 @@ function Entity:init(x, y)
     -- Facing direction
     self.direction = DIRECTION_RIGHT
 
+    -- Initialize images and animations, as well as default image.
+    self:initImages()
+    -- Implementing classes should set self.defaultImage in initImages().
+    -- But if they don't, set a graceful default here.
+    if self.defaultImage == nil then
+        self.defaultImage = kPlaceholderImage
+    end
+    -- Set default image.
+    self:setDefaultImage()
+
+    -- Set collide rect. Implementing classes should handle collision tags.
+    self:setCollideRect(0, 0, self:getSize())
+
     -- Z-index
     self:setZIndex(Z_INDEX.entity)
+
+    -- Move to initial position and add sprite
+    self:moveTo(x, y)
+    self:add()
+end
+
+-- --------------------------------------------------------------------------------
+-- Images
+-- --------------------------------------------------------------------------------
+
+-- Initialize images and animations.
+-- Implementations should set self.defaultImage!
+function Entity:initImages()
+    self.defaultImage = kPlaceholderImage
+end
+
+-- Set image to default.
+-- self.defaultImage MUST be set (duh).
+function Entity:setDefaultImage()
+    self:setImage(self.defaultImage)
+end
+
+-- Set image for "active" states (i.e. Entity is alive, walking, idling, etc).
+-- Put logic in here for animating walking, walking vs idling, facing direction, etc.
+function Entity:setActiveImage()
+    self:setDefaultImage()
 end
 
 -- --------------------------------------------------------------------------------
@@ -126,4 +177,16 @@ end
 -- Should be called anywhere aiming angle gets changed.
 function Entity:updateDirectionFromAimingAngle()
     self.direction = self:getDirectionFromAngle(self:calculateAimingAngle())
+end
+
+-- --------------------------------------------------------------------------------
+-- Lifecycle
+-- --------------------------------------------------------------------------------
+
+-- Remove weapon (if one is held) when removing an Entity.
+function Entity:remove()
+    if self.weapon ~= nil then
+        self.weapon:remove()
+    end
+    Entity.super.remove(self)
 end

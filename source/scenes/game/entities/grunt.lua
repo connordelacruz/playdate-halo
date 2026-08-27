@@ -14,18 +14,6 @@ class('Grunt').extends('Enemy')
 function Grunt:init(x, y)
     Grunt.super.init(self, x, y)
 
-    -- Initialize spritesheets and animations
-    self:initImages()
-    -- Set initial image
-    self:setActiveImage()
-
-    -- TODO: DEBUGGING: add active state that sets active image and test animations / directions
-    -- self.direction = math.random(DIRECTION_RIGHT, DIRECTION_LEFT)
-    -- self.isMoving = true
-
-    -- Collisions
-    self:setCollideRect(0, 0, self:getSize())
-
     -- Initialize states
     self:initStatesAndSetInitial()
     -- Move to initial position and add sprite

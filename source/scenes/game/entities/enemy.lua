@@ -83,52 +83,18 @@ class('Enemy', {
 
 -- TODO: enemies should have reference to the player for their AI
 function Enemy:init(x, y)
-    -- Initialize entity instance variables
+    -- Initialize entity instance variables, images, collide rect
     Enemy.super.init(self, x, y)
     -- Angle enemy is facing/walking
     self.angle = 0
     -- Keep track of last state change
     self.lastStateChangeTimestamp = pd.getCurrentTimeMilliseconds()
 
-    -- TODO: we gotta figure out what stays here as common and what gets extracted to subclasses
-
-    -- Placeholder image
-    -- TODO: very messy, call initImages() instead of setting here
-    self.defaultImage = self:createPlaceholderImage(kEnemyWidth, kEnemyHeight)
-    self:setImage(self.defaultImage)
-
     -- Collisions
-    -- TODO: collide rect should be set after implementing class sets image. tag can be set here tho
-    self:setCollideRect(0, 0, self:getSize())
     self:setTag(TAGS.enemy)
 
     -- Initialize states
-    -- TODO: REMOVE??
     self:initStatesAndSetInitial()
-    -- Move to initial position and add sprite
-    self:moveTo(x, y)
-    self:add()
-end
-
--- --------------------------------------------------------------------------------
--- Image
--- --------------------------------------------------------------------------------
-
--- DEBUG: Generate placeholder image
-function Enemy:createPlaceholderImage(w, h)
-    local image = gfx.image.new(w, h)
-    gfx.pushContext(image)
-        gfx.setLineWidth(2)
-        gfx.setStrokeLocation(gfx.kStrokeInside)
-        gfx.drawRoundRect(0, 0, w, h, 4)
-    gfx.popContext()
-    return image
-end
-
--- Set image for an active state (walking or idle).
--- Default just always returns placeholder.
-function Enemy:setActiveImage()
-    return self.defaultImage
 end
 
 -- --------------------------------------------------------------------------------

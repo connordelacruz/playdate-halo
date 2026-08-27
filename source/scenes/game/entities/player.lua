@@ -60,28 +60,18 @@ class('Player', {
 }).extends('Entity')
 
 function Player:init(x, y)
-    -- Initialize entity instance variables
+    -- Initialize entity instance variables, images, collide rect
     Player.super.init(self, x, y)
 
-    -- Initialize spritesheets and animations
-    self:initImages()
-    -- Set initial image
-    self:setActiveImage()
-
     -- Collisions
-    self:setCollideRect(0, 0, self:getSize())
     self:setTag(TAGS.player)
 
     -- Reticle sprite
     local reticleRotationRadius = self.height // 2 + kReticleSize
-    -- TODO: remove on self:remove()?
     self.reticle = Reticle(x, y, self:calculateAimingAngle(), reticleRotationRadius)
 
     -- Initialize states
     self:initStatesAndSetInitial()
-    -- Move to initial position and add sprite
-    self:moveTo(x, y)
-    self:add()
 end
 
 -- --------------------------------------------------------------------------------
@@ -221,6 +211,16 @@ function Player:toggleWeaponFire()
     if self.weapon ~= nil then
         self.weapon:toggleFire()
     end
+end
+
+-- --------------------------------------------------------------------------------
+-- Lifecycle
+-- --------------------------------------------------------------------------------
+
+-- Remove reticle when Player is removed.
+function Player:remove()
+    self.reticle:remove()
+    Player.super.remove(self)
 end
 
 
