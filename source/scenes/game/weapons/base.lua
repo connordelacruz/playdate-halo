@@ -68,8 +68,7 @@ end
 -- --------------------------------------------------------------------------------
 
 function Projectile:getTargetPosition()
-    -- TODO: this was copied over from breakout ball, but I'm wondering if the negative sin is valid?
-    -- TODO: prob should just store self.angle as radians to save a calculation
+    -- TODO: this is pretty much the same as Enemy movement, extract?
     local rad = math.rad(self.angle)
     local newX = self.x + (self.speed * math.cos(rad) * DELTA_TIME)
     local newY = self.y + (self.speed * math.sin(rad) * DELTA_TIME)

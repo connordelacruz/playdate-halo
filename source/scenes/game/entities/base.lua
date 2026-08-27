@@ -85,9 +85,7 @@ end
 
 -- Constrain angle to 0 - 360 degrees
 function Entity:constrainAngle(angle)
-    if angle < 0 then
-        angle += 360
-    end
+    -- Modulo handles negative angles exactly how we need them! I always forget that.
     return angle % 360
 end
 
