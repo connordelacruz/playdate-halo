@@ -164,7 +164,7 @@ class('Weapon', {
         WeaponInactiveState,
         WeaponFiringState,
     },
-    initialStateKey = WeaponFiringState.key,
+    initialStateKey = WeaponInactiveState.key,
 
     -- TODO: weapon pickup image
     -- TODO: reticle image
