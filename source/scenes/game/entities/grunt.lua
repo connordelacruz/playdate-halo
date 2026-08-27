@@ -13,9 +13,8 @@ class('Grunt', {
     baseSpeed = 50,
 }).extends('Enemy')
 
--- TODO: enemies need reference to player
-function Grunt:init(x, y)
-    Grunt.super.init(self, x, y)
+function Grunt:init(x, y, player)
+    Grunt.super.init(self, x, y, player)
 
     -- Give grunts a plasma pistol
     self:giveWeapon(PlasmaPistolWeapon)

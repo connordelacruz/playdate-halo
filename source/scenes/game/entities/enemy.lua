@@ -174,10 +174,11 @@ class('Enemy', {
     baseSpeed = 50,
 }).extends('Entity')
 
--- TODO: enemies should have reference to the player for their AI
-function Enemy:init(x, y)
+function Enemy:init(x, y, player)
     -- Initialize entity instance variables, images, collide rect
     Enemy.super.init(self, x, y)
+    -- Keep reference to player for enemy AI logic
+    self.player = player
     -- Angle enemy is facing/walking
     self.angle = 0
     -- Keep track of last state change
