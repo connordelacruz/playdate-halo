@@ -7,40 +7,101 @@ local gfx <const> = pd.graphics
 -- ================================================================================
 
 -- ================================================================================
--- Constants
--- ================================================================================
--- Placeholder image size
-local kEnemyWidth <const> = 16
-local kEnemyHeight <const> = 20
-
--- ================================================================================
 -- Basic Enemy States
 -- ================================================================================
 -- --------------------------------------------------------------------------------
 -- Common Constructor
 -- --------------------------------------------------------------------------------
-class('EnemyState').extends('State')
+class('EnemyState', {
+    -- Min/max time (ms) before picking a new state (if applicable)
+    minDuration = 3000,
+    maxDuration = 5000,
+    -- Keys of states this one can randomly pick from when duration is up
+    nextStateOptionKeys = {},
+}).extends('State')
 
 function EnemyState:init(enemy)
     self.enemy = enemy
+    -- How long to stay in this state before picking a next one.
+    -- Set on enter().
+    self.duration = -1
 end
+
+-- Set duration (ms) for current state.
+-- Parameter is optional, default behavior is to pick a random value between min and max.
+function EnemyState:setDuration(duration)
+    if duration == nil then
+        duration = math.random(self.minDuration, self.maxDuration)
+    end
+    self.duration = duration
+end
+
+-- Returns true if duration has passed since state change.
+function EnemyState:hasDurationPassed()
+    return pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.duration
+end
+
+-- Returns key of next state, randomly selected from nextStateOptionKeys.
+-- (Defaults to this state's key if next state is empty)
+function EnemyState:pickNextState()
+    -- Default to current state
+    local nextStateKey = self.key
+    if #self.nextStateOptionKeys > 0 then
+        nextStateKey = self.nextStateOptionKeys[math.random(1, #self.nextStateOptionKeys)]
+    end
+    return nextStateKey
+end
+
+-- Checks if duration has passed, then picks a new state and transitions to it.
+function EnemyState:changeStateIfPastDuration()
+    if self:hasDurationPassed() then
+        local nextStateKey = self:pickNextState()
+        self.enemy:setState(nextStateKey)
+    end
+end
+
+-- Common enter(), sets duration.
+function EnemyState:enter()
+    self:setDuration()
+end
+
+-- Common update(), checks if duration has passed and transitions state accordingly.
+function EnemyState:update()
+    self:changeStateIfPastDuration()
+end
+
+-- --------------------------------------------------------------------------------
+-- State Key Constants
+-- (Defined before classes so they can be used in nextStateOptionKeys)
+-- --------------------------------------------------------------------------------
+local kEnemyIdleState <const> = 'idle'
+local kEnemyPatrolState <const> = 'patrol'
 
 -- --------------------------------------------------------------------------------
 -- Idle
 -- --------------------------------------------------------------------------------
 class('EnemyIdleState', {
-    key = 'idle',
+    key = kEnemyIdleState,
+    nextStateOptionKeys = {
+        kEnemyPatrolState,
+    },
 }).extends('EnemyState')
 
 -- --------------------------------------------------------------------------------
 -- Patrol: Walk aimlessly
 -- --------------------------------------------------------------------------------
 class('EnemyPatrolState', {
-    key = 'patrol',
+    key = kEnemyPatrolState,
+    nextStateOptionKeys = {
+        kEnemyIdleState,
+        kEnemyPatrolState,
+    },
 }).extends('EnemyState')
 
 -- On enter: pick random angle and set is moving
 function EnemyPatrolState:enter()
+    EnemyPatrolState.super.enter(self)
+
     self.enemy.isMoving = true
     self.enemy:setRandomAngle()
 end
@@ -49,7 +110,8 @@ end
 function EnemyPatrolState:update()
     self.enemy:handleMove()
     self.enemy:setActiveImage()
-    -- TODO: check duration, switch state if time is up
+
+    self:changeStateIfPastDuration()
 end
 
 -- Exit: set not moving, set active image one last time.
@@ -71,9 +133,9 @@ class('Enemy', {
         EnemyIdleState,
         EnemyPatrolState,
     },
-    -- initialStateKey = EnemyIdleState.key,
+    initialStateKey = EnemyIdleState.key,
     -- TODO: TESTING:
-    initialStateKey = EnemyPatrolState.key,
+    -- initialStateKey = EnemyIdleState.key,
     -- Entity attributes:
     isFriendly = false,
     baseHealth = 1,
