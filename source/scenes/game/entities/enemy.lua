@@ -14,8 +14,8 @@ local gfx <const> = pd.graphics
 -- --------------------------------------------------------------------------------
 class('EnemyState', {
     -- Min/max time (ms) before picking a new state (if applicable)
-    minDuration = 3000,
-    maxDuration = 5000,
+    minDuration = 2000,
+    maxDuration = 4000,
     -- Keys of states this one can randomly pick from when duration is up
     nextStateOptionKeys = {},
 }).extends('State')
@@ -86,6 +86,7 @@ class('EnemyIdleState', {
     nextStateOptionKeys = {
         kEnemyPatrolState,
     },
+    minDuration = 500,
 }).extends('EnemyState')
 
 -- --------------------------------------------------------------------------------
@@ -128,7 +129,7 @@ end
 class('EnemyFiringState', {
     key = kEnemyFiringState,
     minDuration = 1000,
-    maxDuration = 3000,
+    maxDuration = 2500,
     nextStateOptionKeys = {
         -- TODO: refine behavior
         -- kEnemyFiringState,

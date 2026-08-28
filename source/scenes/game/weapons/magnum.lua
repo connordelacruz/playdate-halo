@@ -9,10 +9,11 @@ kMagnumFiringSound:setVolume(0.25)
 -- ================================================================================
 -- Projectile Class
 -- ================================================================================
+-- TODO: do the math, bullets shouldn't fly that far off screen
 class('MagnumProjectile', {
-    speed = 700,
+    speed = 800,
     damage = 1,
-    maxTime = 700,
+    maxTime = 500,
 }).extends('Projectile')
 
 function MagnumProjectile:createImage()
@@ -29,6 +30,6 @@ end
 class('MagnumWeapon', {
     projectileClass = MagnumProjectile,
     fireSound = kMagnumFiringSound,
-    timeBetweenShots = 600,
+    timeBetweenShots = 500,
     bottomlessClip = true,
 }).extends('Weapon')

@@ -9,8 +9,9 @@ kPlasmaPistolFiringSound:setVolume(0.25)
 -- ================================================================================
 -- Projectile
 -- ================================================================================
+-- TODO: do the math, bullets shouldn't fly that far off screen
 class('PlasmaPistolProjectile', {
-    speed = 600,
+    speed = 300,
     damage = 1,
     maxTime = 700,
 }).extends('Projectile')
@@ -30,6 +31,6 @@ end
 class('PlasmaPistolWeapon', {
     projectileClass = PlasmaPistolProjectile,
     fireSound = kPlasmaPistolFiringSound,
-    timeBetweenShots = 500,
+    timeBetweenShots = 300,
     bottomlessClip = true,
 }).extends('Weapon')
