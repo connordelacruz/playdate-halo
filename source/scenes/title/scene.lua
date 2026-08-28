@@ -12,14 +12,25 @@ class('TitleScene', {
 
 function TitleScene:init()
     self.bg = BackgroundVideo()
-    -- TODO: music fade out
     -- TODO: rename file
     MUSIC_MANAGER:loadAndPlayTrack('music/title-mono-22k')
 
-    -- TODO: listen for input, transition to game
+    -- TODO: logo, menu
+end
+
+function TitleScene:handleInput()
+    local current, pressed, released = pd.getButtonState()
+    if (pressed & pd.kButtonA) > 0 then
+        SCENE_MANAGER:switchScene(SCENES.game)
+    end
+end
+
+function TitleScene:update()
+    self:handleInput()
 end
 
 -- Stop music on scene change
 function TitleScene:exit()
+    -- TODO: music fade out
     MUSIC_MANAGER:stop()
 end

@@ -92,4 +92,5 @@ function pd.update()
     gfx.sprite.update()
     pd.timer.updateTimers()
     pd.frameTimer.updateTimers()
+    SCENE_MANAGER:update()
 end
