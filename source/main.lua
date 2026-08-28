@@ -33,7 +33,7 @@ local gfx <const> = pd.graphics
 -- ===============================================================================
 -- Debug flag names
 local kDebugFlagNames <const> = {
-    -- Define debug flag name strings here
+    'skipTitleScreen',
 }
 -- DebugManager object
 DEBUG_MANAGER = DebugManager(kDebugFlagNames)
@@ -47,6 +47,11 @@ DEBUG_MANAGER = DebugManager(kDebugFlagNames)
 -- --------------------------------------------------------------------------------
 -- Verbose logging.
 DEBUG_MANAGER:setFlag('verbose')
+-- --------------------------------------------------------------------------------
+-- Scenes
+-- --------------------------------------------------------------------------------
+-- Skip the title screen and start the game scene at launch
+-- DEBUG_MANAGER:setFlag('skipTitleScreen')
 
 -- ===============================================================================
 -- Utility Objects
@@ -72,8 +77,8 @@ SCENES = {
 -- Scene Manager
 SCENE_MANAGER = SceneManager()
 -- Load initial scene
--- TODO: debug option to skip title
-SCENE_MANAGER:loadInitialScene(SCENES.title)
+local initialScene = DEBUG_MANAGER:isFlagSet('skipTitleScreen') and SCENES.game or SCENES.title
+SCENE_MANAGER:loadInitialScene(initialScene)
 
 -- ===============================================================================
 -- Setup
