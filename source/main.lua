@@ -18,8 +18,8 @@ import 'globals'
 -- Core utilities
 import 'util/core/__init__'
 -- Optional utilities (uncomment as needed)
--- import 'util/data'
--- import 'util/music'
+import 'util/data'
+import 'util/music'
 -- import 'util/screenshake'
 -- Scenes
 import 'scenes/__init__'
@@ -49,6 +49,19 @@ DEBUG_MANAGER = DebugManager(kDebugFlagNames)
 DEBUG_MANAGER:setFlag('verbose')
 
 -- ===============================================================================
+-- Utility Objects
+-- (Be sure to uncomment imports!)
+-- ===============================================================================
+-- Save/Load Data
+DATA_MANAGER = DataManager()
+
+-- Music Manager (Note: Dependent on DATA_MANAGER for prefs)
+MUSIC_MANAGER = MusicManager()
+
+-- Screen Shaker
+-- SCREEN_SHAKE = ScreenShake()
+
+-- ===============================================================================
 -- Scenes
 -- ===============================================================================
 -- Global enum of scenes
@@ -61,19 +74,6 @@ SCENE_MANAGER = SceneManager()
 -- Load initial scene
 -- TODO: debug option to skip title
 SCENE_MANAGER:loadInitialScene(SCENES.title)
-
--- ===============================================================================
--- Utility Objects
--- (Be sure to uncomment imports!)
--- ===============================================================================
--- Save/Load Data
--- DATA_MANAGER = DataManager()
-
--- Music Manager (Note: Dependent on DATA_MANAGER for prefs)
--- MUSIC_MANAGER = MusicManager()
-
--- Screen Shaker
--- SCREEN_SHAKE = ScreenShake()
 
 -- ===============================================================================
 -- Setup
