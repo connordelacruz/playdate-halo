@@ -95,7 +95,8 @@ class('EnemyPatrolState', {
     key = kEnemyPatrolState,
     nextStateOptionKeys = {
         kEnemyIdleState,
-        kEnemyPatrolState,
+        -- kEnemyPatrolState,
+        kEnemyFiringState,
     },
 }).extends('EnemyState')
 
@@ -126,11 +127,12 @@ end
 -- --------------------------------------------------------------------------------
 class('EnemyFiringState', {
     key = kEnemyFiringState,
-    minDuration = 2000,
-    maxDuration = 4000,
+    minDuration = 1000,
+    maxDuration = 3000,
     nextStateOptionKeys = {
         -- TODO: refine behavior
-        kEnemyFiringState,
+        -- kEnemyFiringState,
+        kEnemyPatrolState,
     },
 }).extends('EnemyState')
 
@@ -150,6 +152,10 @@ function EnemyFiringState:update()
     self:changeStateIfPastDuration()
 end
 
+function EnemyFiringState:exit()
+    self.enemy:toggleWeaponFire(false)
+end
+
 -- --------------------------------------------------------------------------------
 -- TODO: common enemy states:
 -- idle, searching, chasing, firing, retreating, dying
@@ -165,8 +171,8 @@ class('Enemy', {
         EnemyFiringState,
     },
     -- initialStateKey = EnemyIdleState.key,
-    -- TODO: TESTING WEAPONS
-    initialStateKey = EnemyFiringState.key,
+    -- TODO: TESTING 
+    initialStateKey = EnemyPatrolState.key,
     -- Entity attributes:
     isFriendly = false,
     baseHealth = 1,
@@ -216,6 +222,16 @@ function Enemy:setRandomAngle()
     self:setAngle(math.random(360))
 end
 
+-- Flip x direction.
+function Enemy:flipX()
+    self:setAngle(180 - self.angle)
+end
+
+-- Flip y direction.
+function Enemy:flipY()
+    self:setAngle(360 - self.angle)
+end
+
 -- Based on entity speed and facing angle, return target coordinates for moving this frame.
 function Enemy:getTargetPosition()
     local rad = math.rad(self.angle)
@@ -225,12 +241,28 @@ function Enemy:getTargetPosition()
     return newX, newY
 end
 
--- Move enemy in facing direction.
+-- Move enemy in facing direction. Handle collisions.
 -- NOTE: does not set isMoving, that should be handled by states.
 function Enemy:handleMove()
     local _, _, collisions, _ = self:moveWithCollisions(self:getTargetPosition())
-    -- TODO: collisions!
-    -- self:handleCollisions(collisions)
+    self:handleCollisions(collisions)
+end
+
+-- Turn around if we hit a wall or other obstacle while moving.
+function Enemy:handleCollisions(collisions)
+    for i=1,#collisions do
+        local collision = collisions[i]
+        -- If we hit something we can't walk through, we need to turn around.
+        if collision.type ~= gfx.sprite.kCollisionTypeOverlap then
+            -- Determine if we hit a vertical or horizontal obstacle.
+            if collision.normal.x ~= 0 then
+                self:flipX()
+            end
+            if collision.normal.y ~= 0 then
+                self:flipY()
+            end
+        end
+    end
 end
 
 -- --------------------------------------------------------------------------------
