@@ -15,7 +15,12 @@ function TitleScene:init()
     -- TODO: rename file
     MUSIC_MANAGER:loadAndPlayTrack('music/title-mono-22k')
 
-    -- TODO: logo, menu
+    local logoImage = gfx.image.new('images/title/logo.png')
+    self.logo = gfx.sprite.new(logoImage)
+    self.logo:moveTo(SCREEN_CENTER_X, SCREEN_HEIGHT // 3)
+    self.logo:add()
+
+    -- TODO: MENU
 end
 
 function TitleScene:handleInput()
