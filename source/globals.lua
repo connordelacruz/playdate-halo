@@ -49,5 +49,5 @@ Z_INDEX = {
     -- Entities
     entity = 1000,
     -- Stage background
-    background = -1000,
+    background = -9999,
 }

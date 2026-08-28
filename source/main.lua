@@ -22,7 +22,7 @@ import 'util/core/__init__'
 -- import 'util/music'
 -- import 'util/screenshake'
 -- Scenes
-import 'scenes/game/scene'
+import 'scenes/__init__'
 
 
 local pd <const> = playdate
@@ -53,12 +53,14 @@ DEBUG_MANAGER:setFlag('verbose')
 -- ===============================================================================
 -- Global enum of scenes
 SCENES = {
+    title = TitleScene,
     game = GameScene,
 }
 -- Scene Manager
 SCENE_MANAGER = SceneManager()
 -- Load initial scene
-SCENE_MANAGER:loadInitialScene(SCENES.game)
+-- TODO: debug option to skip title
+SCENE_MANAGER:loadInitialScene(SCENES.title)
 
 -- ===============================================================================
 -- Utility Objects
