@@ -79,7 +79,7 @@ end
 -- --------------------------------------------------------------------------------
 
 -- Initialize images and animations.
--- TODO: extract any common logic to Entity, maybe make a call to initImages() part of its init()
+-- TODO: can probably abstract this even more, i.e. common loops for universal actions (idle, walking, death)
 function Player:initImages()
     -- Idle and Walking
     self.idleWalkSpritesheet = gfx.imagetable.new('images/chief/chief-idle-walk')
@@ -101,9 +101,30 @@ function Player:initImages()
         [DIRECTION_LEFT] = walkingLoopLeft,
     }
 
+    -- TODO: this animation is way too simple, but fine for now
+    self.deathSpritesheet = gfx.imagetable.new('images/chief/chief-death')
+    -- Frames 1-2 facing right, frames 3-4 facing left
+    local deathDelay = 100
+    local deathLoopRight = gfx.animation.loop.new(deathDelay, self.deathSpritesheet, false)
+    -- Pause until needed
+    deathLoopRight.paused = true
+    deathLoopRight.startFrame = 1
+    deathLoopRight.endFrame = 2
+    local deathLoopLeft = gfx.animation.loop.new(deathDelay, self.deathSpritesheet, false)
+    -- Pause until needed
+    deathLoopLeft.paused = true
+    deathLoopLeft.startFrame = 3
+    deathLoopLeft.endFrame = 4
+    self.deathLoops = {
+        [DIRECTION_RIGHT] = deathLoopRight,
+        [DIRECTION_LEFT] = deathLoopLeft,
+    }
+
     -- Default fallback image
     self.defaultImage = self.idleImages[DIRECTION_RIGHT]
 end
+
+-- TODO: all of this is shared between Player and Grunt, so if we ensure the appropriate image vars are set, we can move these all up to Entity:
 
 -- Set image for active state (walking or idle).
 function Player:setActiveImage()
@@ -114,6 +135,15 @@ function Player:setActiveImage()
         newImage = self.idleImages[self.direction]
     end
     self:setImage(newImage)
+end
+
+function Player:playDeathAnimation()
+    self.deathLoops[self.direction].paused = false
+end
+
+function Player:setDeathImage()
+    self:setImage(self.deathLoops[self.direction]:image())
+    return self.deathLoops[self.direction]:isValid()
 end
 
 -- --------------------------------------------------------------------------------
