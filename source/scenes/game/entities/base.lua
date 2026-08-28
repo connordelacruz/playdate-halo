@@ -119,6 +119,16 @@ end
 -- Images
 -- --------------------------------------------------------------------------------
 
+-- TODO: Better abstraction:
+-- TODO: All entities should have idleImages, walkingLoops, deathLoops, and defaultImage
+-- TODO:    - Pretty much all of these are the same except for spritesheet filepath and start/end frames
+-- TODO:    - delay should be possible to override, but default to 100 cuz that's what we use everywhere
+-- TODO: If we abstract the above, then we can also abstract these:
+-- TODO:    - setActiveImage()
+-- TODO:    - playDeathAnimation()
+-- TODO:    - setDeathImage()
+
+
 -- Initialize images and animations.
 -- Implementations should set self.defaultImage!
 function Entity:initImages()
