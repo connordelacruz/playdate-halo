@@ -12,6 +12,52 @@ gfx.pushContext(kPlaceholderImage)
 gfx.popContext()
 
 -- ================================================================================
+-- States
+-- (Common ones that can be used with implementation-specific states)
+-- ================================================================================
+-- --------------------------------------------------------------------------------
+-- Common constructor
+-- --------------------------------------------------------------------------------
+class('EntityState').extends('State')
+
+function EntityState:init(entity)
+    self.entity = entity
+end
+
+-- --------------------------------------------------------------------------------
+-- Dummy Inactive State
+-- (Placeholder, implemnting classes need not use this)
+-- --------------------------------------------------------------------------------
+class('EntityInactiveState', {
+    key = 'inactive',
+}).extends('EntityState')
+
+-- --------------------------------------------------------------------------------
+-- Death (play animation, remove sprite when it finishes)
+-- --------------------------------------------------------------------------------
+class('EntityDeathState', {
+    key = 'death',
+}).extends('EntityState')
+
+-- Play death loop on enter
+function EntityDeathState:enter()
+    self.entity:playDeathAnimation()
+end
+
+-- Set animation frame on update. Force state exit when it completes.
+function EntityDeathState:update()
+    local isPlaying = self.entity:setDeathImage()
+    if not isPlaying then
+        self:exit()
+    end
+end
+
+-- Remove entity sprite on exit.
+function EntityDeathState:exit()
+    self.entity:remove()
+end
+
+-- ================================================================================
 -- Base Entity Class
 -- 
 -- Shared behaviors between player, enemies, etc
@@ -24,6 +70,11 @@ class('Entity', {
     baseShields = 0,
     -- Base movement speed (px / sec)
     baseSpeed = 140,
+    -- Placeholder state stuff, implementing classes should override.
+    stateClasses = {
+        EntityInactiveState,
+    },
+    initialStateKey = EntityInactiveState.key,
 }).extends('FSMSprite')
 
 -- TODO: UPDATE DOCS
@@ -86,6 +137,22 @@ function Entity:setActiveImage()
     self:setDefaultImage()
 end
 
+-- TODO: play death animation, set image from that, indicate when animation finishes
+
+-- Function to call that starts the death animation loop for facing direction.
+-- Implementing classes must initialize their death animation in initImages().
+-- It should be paused when initialized, and this function should unpause it.
+function Entity:playDeathAnimation()
+    DEBUG_MANAGER:vPrint(self.className .. ':playDeathAnimation() not implemented')
+end
+
+-- Set image from death animation. The above function should be called first to unpause it.
+-- Return value should be true if the animation is still playing, false otherwise (i.e. :isValid())
+function Entity:setDeathImage()
+    self:setDefaultImage()
+    return false
+end
+
 -- --------------------------------------------------------------------------------
 -- Collisions
 -- --------------------------------------------------------------------------------
@@ -115,10 +182,10 @@ function Entity:applyDamage(damage)
     end
 end
 
--- Kill this entity.
+-- Transition to death state.
 function Entity:kill()
     -- TODO: emit event so enemy and player deaths can be handled!
-    self:remove()
+    self:setState(EntityDeathState.key)
 end
 
 -- --------------------------------------------------------------------------------
@@ -186,6 +253,16 @@ end
 -- Should be called anywhere aiming angle gets changed.
 function Entity:updateDirectionFromAimingAngle()
     self.direction = self:getDirectionFromAngle(self:calculateAimingAngle())
+end
+
+-- --------------------------------------------------------------------------------
+-- States
+-- --------------------------------------------------------------------------------
+
+-- Mixin common Entity states automatically.
+function Entity:initStatesAndSetInitial()
+    self.stateClasses[#self.stateClasses+1] = EntityDeathState
+    Entity.super.initStatesAndSetInitial(self)
 end
 
 -- --------------------------------------------------------------------------------

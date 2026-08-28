@@ -54,6 +54,7 @@ end
 -- Image
 -- --------------------------------------------------------------------------------
 
+-- TODO: just take image as an attribute, that way we're not drawing it fresh each time
 -- Returns the image for the projectile sprite.
 function Projectile:createImage()
     local image = gfx.image.new(kProjectileDefaultSize, kProjectileDefaultSize)

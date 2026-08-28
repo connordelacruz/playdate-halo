@@ -51,7 +51,23 @@ function Grunt:initImages()
         [DIRECTION_LEFT] = walkingLoopLeft,
     }
 
-    -- TODO: death sprites
+    self.deathSpritesheet = gfx.imagetable.new('images/grunt/grunt-death')
+    -- Frames 1-4 = facing right, frames 5-8 = facing left
+    local deathDelay = 100
+    local deathLoopRight = gfx.animation.loop.new(deathDelay, self.deathSpritesheet, false)
+    -- Pause until needed
+    deathLoopRight.paused = true
+    deathLoopRight.startFrame = 1
+    deathLoopRight.endFrame = 4
+    local deathLoopLeft = gfx.animation.loop.new(deathDelay, self.deathSpritesheet, false)
+    -- Pause until needed
+    deathLoopLeft.paused = true
+    deathLoopLeft.startFrame = 5
+    deathLoopLeft.endFrame = 8
+    self.deathLoops = {
+        [DIRECTION_RIGHT] = deathLoopRight,
+        [DIRECTION_LEFT] = deathLoopLeft,
+    }
 
     -- Default fallback image
     self.defaultImage = self.idleImages[DIRECTION_RIGHT]
@@ -66,4 +82,15 @@ function Grunt:setActiveImage()
         newImage = self.idleImages[self.direction]
     end
     self:setImage(newImage)
+end
+
+-- Unpause death animation.
+function Grunt:playDeathAnimation()
+    self.deathLoops[self.direction].paused = false
+end
+
+-- Set image from death animation. Return whether it's still playing.
+function Grunt:setDeathImage()
+    self:setImage(self.deathLoops[self.direction]:image())
+    return self.deathLoops[self.direction]:isValid()
 end
