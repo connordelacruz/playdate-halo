@@ -1,8 +1,9 @@
+import 'scenes/game/ui/__init__'
+import 'scenes/game/weapons/__init__'
+import 'scenes/game/entities/__init__'
 import 'scenes/game/lifecycle'
 import 'scenes/game/camera'
 import 'scenes/game/stage'
-import 'scenes/game/weapons/__init__'
-import 'scenes/game/entities/__init__'
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics

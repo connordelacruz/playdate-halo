@@ -1,0 +1,1 @@
+import 'scenes/game/ui/gameover'

@@ -46,6 +46,10 @@ TAGS = generateTags()
 -- --------------------------------------------------------------------------------
 -- Range: (-32768, 32767)
 Z_INDEX = {
+    -- UI popovers
+    popup = 9999,
+    -- UI overlays
+    ui = 8000,
     -- Entities
     entity = 1000,
     -- Stage background

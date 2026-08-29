@@ -22,6 +22,7 @@ function TitleScene:init()
     --          (it's got alpha on some pixels tho which is making it annoying to edit)
     local logoImage = gfx.image.new('images/title/logo.png')
     self.logo = gfx.sprite.new(logoImage)
+    self.logo:setZIndex(Z_INDEX.ui)
     self.logo:moveTo(SCREEN_CENTER_X, SCREEN_HEIGHT // 3)
     self.logo:add()
 
@@ -52,6 +53,7 @@ class('TitleUI').extends(gfx.sprite)
 
 function TitleUI:init(x, y)
     self:initUI()
+    self:setZIndex(Z_INDEX.ui)
     self:moveTo(x, y)
     self:add()
 end

@@ -1,3 +1,5 @@
+import 'scenes/game/ui/gameover'
+
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
@@ -38,8 +40,7 @@ class('GameOverState', {
 
 function GameOverState:enter()
     self.gameOverTimestamp = pd.getCurrentTimeMilliseconds()
-    -- TODO: display "Game Over" text
-    DEBUG_MANAGER:vPrint('GameOverState:enter()')
+    self.gm:showGameOverText()
 end
 
 function GameOverState:update()
@@ -69,6 +70,19 @@ function GameMaster:init()
     self:add()
 end
 
+-- --------------------------------------------------------------------------------
+-- State
+-- --------------------------------------------------------------------------------
+
 function GameMaster:triggerGameOver()
     self:setState(GameOverState.key)
+end
+
+-- --------------------------------------------------------------------------------
+-- UI
+-- --------------------------------------------------------------------------------
+
+function GameMaster:showGameOverText()
+    -- TODO: animate in or whatever
+    local gameOverUI = GameOverUI(SCREEN_CENTER_X, SCREEN_CENTER_Y)
 end
