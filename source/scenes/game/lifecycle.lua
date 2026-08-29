@@ -67,7 +67,28 @@ class('GameMaster', {
 
 function GameMaster:init()
     self:initStatesAndSetInitial()
+
+    -- TODO: come up with convention for registering (AND DE-REGISTERING listeners:)
+    self.eventListeners = {
+        death = function(entity)
+            self:onEntityDeath(entity)
+        end,
+    }
+    EVENTS:registerListeners(self.eventListeners)
+
     self:add()
+end
+
+-- --------------------------------------------------------------------------------
+-- Event Listeners
+-- --------------------------------------------------------------------------------
+
+-- Callback for 'death' event.
+function GameMaster:onEntityDeath(entity)
+    -- If the player died, trigger game over
+    if entity.className == 'Player' then
+        self:triggerGameOver()
+    end
 end
 
 -- --------------------------------------------------------------------------------
@@ -85,4 +106,14 @@ end
 function GameMaster:showGameOverText()
     -- TODO: animate in or whatever
     local gameOverUI = GameOverUI(SCREEN_CENTER_X, SCREEN_CENTER_Y)
+end
+
+-- --------------------------------------------------------------------------------
+-- Cleanup
+-- --------------------------------------------------------------------------------
+
+-- De-register event listeners on remove()
+function GameMaster:remove()
+    EVENTS:deregisterListeners(self.eventListeners)
+    GameMaster.super.remove(self)
 end

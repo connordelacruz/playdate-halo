@@ -30,7 +30,7 @@ end
 -- ===============================================================================
 -- Scene Manager Class
 -- 
--- Based on https://github.com/SquidGodDev/Playdate-Scene-Management
+-- Inpsired by: https://github.com/SquidGodDev/Playdate-Scene-Management
 -- ===============================================================================
 class('SceneManager').extends()
 

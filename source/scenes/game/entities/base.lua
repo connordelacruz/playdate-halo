@@ -193,8 +193,9 @@ function Entity:applyDamage(damage)
 end
 
 -- Transition to death state.
+-- Emits 'death' event.
 function Entity:kill()
-    -- TODO: emit event so enemy and player deaths can be handled!
+    self:emitDeathEvent()
     self:setState(EntityDeathState.key)
 end
 
@@ -273,6 +274,16 @@ end
 function Entity:initStatesAndSetInitial()
     self.stateClasses[#self.stateClasses+1] = EntityDeathState
     Entity.super.initStatesAndSetInitial(self)
+end
+
+-- --------------------------------------------------------------------------------
+-- Events
+-- --------------------------------------------------------------------------------
+
+-- Broadcast Entity death event.
+function Entity:emitDeathEvent()
+    -- TODO: come up with some kinda way to store global constants for event names?
+    EVENTS:emit('death', self)
 end
 
 -- --------------------------------------------------------------------------------

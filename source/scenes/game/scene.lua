@@ -16,8 +16,6 @@ class('GameScene', {
 }).extends('Scene')
 
 function GameScene:init()
-    -- TODO: for testing, pass gm to player and hard-code call to above function on death
-    -- TODO: implement event manager and add a listener here for player death event
     self.gm = GameMaster()
 
     -- Create stage and boundaries
@@ -25,9 +23,7 @@ function GameScene:init()
     self.stage = Stage(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2)
 
     -- Spawn player in the center, give magnum to start
-    -- TODO: remove gm param
-    self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y,
-                         self.gm)
+    self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
     self.player:giveWeapon(MagnumWeapon)
 
     -- Create camera and attach to player's reticle

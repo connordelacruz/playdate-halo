@@ -19,6 +19,7 @@ import 'toyboxes'
 import 'util/core/__init__'
 -- Optional utilities (uncomment as needed)
 import 'util/data'
+import 'util/events'
 import 'util/music'
 -- import 'util/screenshake'
 -- Scenes
@@ -59,6 +60,9 @@ DEBUG_MANAGER:setFlag('skipTitleScreen')
 -- ===============================================================================
 -- Save/Load Data
 DATA_MANAGER = DataManager()
+
+-- Event Listener System
+EVENTS = Events(DEBUG_MANAGER)
 
 -- Music Manager (Note: Dependent on DATA_MANAGER for prefs)
 MUSIC_MANAGER = MusicManager()
