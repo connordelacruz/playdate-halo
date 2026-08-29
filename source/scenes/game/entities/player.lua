@@ -59,9 +59,13 @@ class('Player', {
     baseSpeed = kPlayerSpeed,
 }).extends('Entity')
 
-function Player:init(x, y)
+-- TODO: once event system is in place, we shouldn't need reference to gm
+function Player:init(x, y, gameMaster)
     -- Initialize entity instance variables, images, collide rect
     Player.super.init(self, x, y)
+
+    -- TODO: TEMP: need game master to trigger game over
+    self.gm = gameMaster
 
     -- Collisions
     self:setTag(TAGS.player)
@@ -72,6 +76,16 @@ function Player:init(x, y)
 
     -- Initialize states
     self:initStatesAndSetInitial()
+end
+
+-- --------------------------------------------------------------------------------
+-- TODO: TEMP KILL OVERRIDE
+-- --------------------------------------------------------------------------------
+function Player:kill()
+    -- TODO: Entity:kill() should just emit an event that can be used to determine if player dies
+    -- For now, force a game over
+    self.gm:triggerGameOver()
+    Player.super.kill(self)
 end
 
 -- --------------------------------------------------------------------------------
