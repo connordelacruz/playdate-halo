@@ -14,7 +14,7 @@ import 'CoreLibs/ui'
 -- Global variables
 import 'globals'
 -- Toybox-managed libraries
--- import 'toyboxes'
+import 'toyboxes'
 -- Core utilities
 import 'util/core/__init__'
 -- Optional utilities (uncomment as needed)
