@@ -29,6 +29,7 @@ end
 -- Weapon
 -- ================================================================================
 class('PlasmaPistolWeapon', {
+    name = 'Plasma Pistol',
     projectileClass = PlasmaPistolProjectile,
     fireSound = kPlasmaPistolFiringSound,
     timeBetweenShots = 300,

@@ -166,11 +166,13 @@ class('Weapon', {
     },
     initialStateKey = WeaponInactiveState.key,
 
+    -- Display name
+    name = 'Weapon',
+    -- Class of the projectile this shoots
+    projectileClass = Projectile,
     -- TODO: weapon pickup image
     -- Sound to play when firing
     fireSound = kWeaponDefaultFiringSound,
-    -- Class of the projectile this shoots
-    projectileClass = Projectile,
     -- Time between shots (ms)
     timeBetweenShots = 600,
     -- TODO: implement ammo
@@ -184,6 +186,8 @@ function Weapon:init(carrierEntity)
     self.carrierEntity = carrierEntity
     -- Whether this is a player's weapon or an enemy's
     self.isFriendlyFire = self.carrierEntity.isFriendly
+    -- TODO: implement ammo
+    self.ammo = self.startingAmmo
     -- Timestamp since last shot. Default to -1 so we can start firing right away
     self.lastShotTimestamp = -1
 

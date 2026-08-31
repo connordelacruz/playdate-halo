@@ -28,6 +28,7 @@ end
 -- Weapon Class
 -- ================================================================================
 class('MagnumWeapon', {
+    name = 'Magnum',
     projectileClass = MagnumProjectile,
     fireSound = kMagnumFiringSound,
     timeBetweenShots = 500,

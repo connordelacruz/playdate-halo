@@ -18,6 +18,7 @@ class('HUD').extends(gfx.sprite)
 function HUD:init()
     self.elements = {
         HealthHUDElement(0, 0, 0.0, 0.0),
+        WeaponHUDElement(SCREEN_WIDTH, 0, 1.0, 0.0),
     }
     self:add()
 end
@@ -98,7 +99,7 @@ end
 function HUDElement:updateUI()
     -- TODO: make it optional to recompute layout
     self.uiTree:layout()
-    self.uiTree:draw()
+    self:setImage(self.uiTree:draw())
 end
 
 -- De-register listeners on removal
@@ -127,21 +128,21 @@ end
 
 -- TODO: temp UI, make pretty
 function HealthHUDElement:buildUITree()
-    -- TODO: Initial values from where??
     self.shieldsTxt = txt(
-        'shields: 0',
+        'Shields: 0',
         {
             stroke = 1,
         }
     )
     self.healthTxt = txt(
-        'health: 0',
+        'Health: 0',
         {
             stroke = 1,
         }
     )
     local container = box(
         {
+            hAlign = playout.kAlignStart,
             padding = 4,
         },
         {
@@ -158,13 +159,74 @@ function HealthHUDElement:updateValues(player)
 end
 
 function HealthHUDElement:updateShields(val)
-    -- TODO: make pretty
-    self.shieldsTxt.text = 'shields: ' .. tostring(val)
+    self.shieldsTxt.text = 'Shields: ' .. tostring(val)
     self:updateUI()
 end
 
 function HealthHUDElement:updateHealth(val)
-    -- TODO: make pretty
-    self.healthTxt.text = 'health: ' .. tostring(val)
+    self.healthTxt.text = 'Health: ' .. tostring(val)
+    self:updateUI()
+end
+
+-- --------------------------------------------------------------------------------
+-- Weapon and Ammo
+-- --------------------------------------------------------------------------------
+class('WeaponHUDElement').extends('HUDElement')
+
+function WeaponHUDElement:init(x, y, centerX, centerY)
+    self.eventListeners = {
+        [EVENT_TYPES.playerWeaponPickup] = function (weapon)
+            self:updateValues(weapon)
+        end,
+    }
+    WeaponHUDElement.super.init(self, x, y, centerX, centerY)
+end
+
+-- TODO: temp UI, make it pretty
+function WeaponHUDElement:buildUITree()
+    -- TODO: will there be a case where there's no weapon normally?
+    self.weaponNameTxt = txt(
+        'None',
+        {
+            stroke = 1,
+            alignment = kTextAlignment.right,
+        }
+    )
+    self.ammoTxt = txt(
+        'x0',
+        {
+            stroke = 1,
+            alignment = kTextAlignment.right,
+        }
+    )
+    local container = box(
+        {
+            hAlign = playout.kAlignEnd,
+            padding = 4,
+        },
+        {
+            self.weaponNameTxt,
+            self.ammoTxt,
+        }
+    )
+    return playout.tree.new(container)
+end
+
+function WeaponHUDElement:updateValues(weapon)
+    -- TODO: account for nil??
+    self:updateWeaponName(weapon.name)
+    self:updateAmmo(weapon.ammo)
+end
+
+function WeaponHUDElement:updateWeaponName(name)
+    DEBUG_MANAGER:vPrint(name)
+    self.weaponNameTxt.text = name
+    self:updateUI()
+end
+
+-- TODO: bottomless?
+function WeaponHUDElement:updateAmmo(ammo)
+    DEBUG_MANAGER:vPrint(ammo)
+    self.ammoTxt.text = 'x' .. tostring(ammo)
     self:updateUI()
 end
