@@ -179,6 +179,7 @@ class('Enemy', {
     baseHealth = 1,
     baseShields = 0,
     baseSpeed = 50,
+    points = 100,
 }).extends('Entity')
 
 function Enemy:init(x, y, player)

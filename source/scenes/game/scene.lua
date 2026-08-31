@@ -3,11 +3,11 @@ import 'scenes/game/weapons/__init__'
 import 'scenes/game/entities/__init__'
 import 'scenes/game/lifecycle'
 import 'scenes/game/camera'
+import 'scenes/game/scorekeeper'
 import 'scenes/game/stage'
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
-
 -- ================================================================================
 -- Game Scene Class
 -- ================================================================================
@@ -21,6 +21,8 @@ function GameScene:init()
     -- Create stage and boundaries
     -- TODO: stage size + using stage to place entities instead of PD coordinates
     self.stage = Stage(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2)
+    -- Initialize score keeper
+    self.scoreKeeper = ScoreKeeper()
 
     -- Initialize HUD
     self.hud = HUD()

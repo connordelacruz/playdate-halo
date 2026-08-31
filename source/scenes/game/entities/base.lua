@@ -70,6 +70,8 @@ class('Entity', {
     baseShields = 0,
     -- Base movement speed (px / sec)
     baseSpeed = 140,
+    -- Point value if player kills an unfriendly entity
+    points = 0,
     -- Event types to emit
     spawnEventType = EVENT_TYPES.spawn,
     healthChangeEventType = EVENT_TYPES.healthChange,

@@ -11,6 +11,7 @@ class('Grunt', {
     baseHealth = 1,
     baseShields = 0,
     baseSpeed = 50,
+    points = 100,
 }).extends('Enemy')
 
 function Grunt:init(x, y, player)
