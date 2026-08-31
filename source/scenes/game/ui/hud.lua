@@ -11,9 +11,22 @@ local img <const> = playout.image.new
 -- ================================================================================
 -- Constants
 -- ================================================================================
--- TODO: add common style stuff
--- Monospace font for score TODO: find one that fits desired style
-local kScoreFont <const> = gfx.font.new('fonts/Roobert-11-Mono-Condensed')
+-- --------------------------------------------------------------------------------
+-- Styling
+-- --------------------------------------------------------------------------------
+-- Text
+local kHUDFont <const> = gfx.font.new('fonts/Roobert-11-Mono-Condensed')
+local kTextStroke <const> = 1
+local kTextStyles <const> = {
+    font = kHUDFont,
+    -- NOTE: playout.text does not honor these styles:
+    stroke = kTextStroke,
+}
+-- Containers
+local kContainerPadding <const> = 4
+local kContainerStyles <const> = {
+    padding = kContainerPadding,
+}
 
 -- ================================================================================
 -- HUD Sprite Class
@@ -140,19 +153,21 @@ function HealthHUDElement:buildUITree()
     self.shieldsTxt = txt(
         'Shields: 0',
         {
-            stroke = 1,
+            style = kTextStyles,
+            stroke = kTextStroke,
         }
     )
     self.healthTxt = txt(
         'Health: 0',
         {
-            stroke = 1,
+            style = kTextStyles,
+            stroke = kTextStroke,
         }
     )
     local container = box(
         {
             hAlign = playout.kAlignStart,
-            padding = 4,
+            style = kContainerStyles,
         },
         {
             self.shieldsTxt,
@@ -174,69 +189,6 @@ end
 
 function HealthHUDElement:updateHealth(val)
     self.healthTxt.text = 'Health: ' .. tostring(val)
-    self:updateUI()
-end
-
--- --------------------------------------------------------------------------------
--- Weapon and Ammo
--- --------------------------------------------------------------------------------
-class('WeaponHUDElement').extends('HUDElement')
-
-function WeaponHUDElement:init(...)
-    self.eventListeners = {
-        [EVENT_TYPES.playerWeaponPickup] = function (weapon)
-            self:updateValues(weapon)
-        end,
-    }
-    WeaponHUDElement.super.init(self, ...)
-end
-
--- TODO: temp UI, make it pretty
-function WeaponHUDElement:buildUITree()
-    -- TODO: will there be a case where there's no weapon normally?
-    self.weaponNameTxt = txt(
-        'None',
-        {
-            stroke = 1,
-            alignment = kTextAlignment.right,
-        }
-    )
-    self.ammoTxt = txt(
-        'x0',
-        {
-            stroke = 1,
-            alignment = kTextAlignment.right,
-        }
-    )
-    local container = box(
-        {
-            hAlign = playout.kAlignEnd,
-            padding = 4,
-        },
-        {
-            self.weaponNameTxt,
-            self.ammoTxt,
-        }
-    )
-    return playout.tree.new(container)
-end
-
-function WeaponHUDElement:updateValues(weapon)
-    -- TODO: account for nil??
-    self:updateWeaponName(weapon.name)
-    self:updateAmmo(weapon.ammo)
-end
-
-function WeaponHUDElement:updateWeaponName(name)
-    DEBUG_MANAGER:vPrint(name)
-    self.weaponNameTxt.text = name
-    self:updateUI()
-end
-
--- TODO: bottomless?
-function WeaponHUDElement:updateAmmo(ammo)
-    DEBUG_MANAGER:vPrint(ammo)
-    self.ammoTxt.text = 'x' .. tostring(ammo)
     self:updateUI()
 end
 
@@ -264,13 +216,13 @@ function ScoreHUDElement:buildUITree()
         self:formatScore(0),
         {
             alignment = kTextAlignment.center,
-            font = kScoreFont,
-            stroke = 1,
+            style = kTextStyles,
+            stroke = kTextStroke,
         }
     )
     local container = box(
         {
-            padding = 4,
+            style = kContainerStyles,
         },
         {
             self.scoreTxt,
@@ -282,4 +234,69 @@ end
 function ScoreHUDElement:updateScore(score)
     self.scoreTxt.text = self:formatScore(score)
     self:updateUI(true)
+end
+
+-- --------------------------------------------------------------------------------
+-- Weapon and Ammo
+-- --------------------------------------------------------------------------------
+class('WeaponHUDElement').extends('HUDElement')
+
+function WeaponHUDElement:init(...)
+    self.eventListeners = {
+        [EVENT_TYPES.playerWeaponPickup] = function (weapon)
+            self:updateValues(weapon)
+        end,
+    }
+    WeaponHUDElement.super.init(self, ...)
+end
+
+-- TODO: temp UI, make it pretty
+function WeaponHUDElement:buildUITree()
+    -- TODO: will there be a case where there's no weapon normally?
+    self.weaponNameTxt = txt(
+        'None',
+        {
+            alignment = kTextAlignment.right,
+            style = kTextStyles,
+            stroke = kTextStroke,
+        }
+    )
+    self.ammoTxt = txt(
+        'x0',
+        {
+            alignment = kTextAlignment.right,
+            style = kTextStyles,
+            stroke = kTextStroke,
+        }
+    )
+    local container = box(
+        {
+            hAlign = playout.kAlignEnd,
+            style = kContainerStyles,
+        },
+        {
+            self.weaponNameTxt,
+            self.ammoTxt,
+        }
+    )
+    return playout.tree.new(container)
+end
+
+function WeaponHUDElement:updateValues(weapon)
+    -- TODO: account for nil??
+    self:updateWeaponName(weapon.name)
+    self:updateAmmo(weapon.ammo)
+end
+
+function WeaponHUDElement:updateWeaponName(name)
+    DEBUG_MANAGER:vPrint(name)
+    self.weaponNameTxt.text = name
+    self:updateUI()
+end
+
+-- TODO: bottomless?
+function WeaponHUDElement:updateAmmo(ammo)
+    DEBUG_MANAGER:vPrint(ammo)
+    self.ammoTxt.text = 'x' .. tostring(ammo)
+    self:updateUI()
 end
