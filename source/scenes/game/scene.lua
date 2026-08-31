@@ -22,6 +22,8 @@ function GameScene:init()
     -- TODO: stage size + using stage to place entities instead of PD coordinates
     self.stage = Stage(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2)
 
+    -- Initialize HUD
+    self.hud = HUD()
     -- Spawn player in the center, give magnum to start
     self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
     self.player:giveWeapon(MagnumWeapon)

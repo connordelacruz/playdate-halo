@@ -16,7 +16,18 @@ local img <const> = playout.image.new
 class('HUD').extends(gfx.sprite)
 
 function HUD:init()
-    -- TODO: initialize sub-components
+    self.elements = {
+        HealthHUDElement(0, 0, 0.0, 0.0),
+    }
+    self:add()
+end
+
+-- Remove HUD elements when top level sprite removed
+function HUD:remove()
+    for i=1,#self.elements do
+        self.elements[i]:remove()
+    end
+    HUD.super.remove(self)
 end
 
 -- ================================================================================
@@ -27,7 +38,7 @@ end
 -- --------------------------------------------------------------------------------
 class('HUDElement').extends(gfx.sprite)
 
-function HUDElement:init(x, y)
+function HUDElement:init(x, y, centerX, centerY)
     self:setZIndex(Z_INDEX.ui)
     self:setIgnoresDrawOffset(true)
 
@@ -40,6 +51,15 @@ function HUDElement:init(x, y)
         self.eventListeners = {}
     end
     EVENTS:registerListeners(self.eventListeners)
+
+    -- Default to top-left corner if center values not set
+    if centerX == nil then
+        centerX = 0.0
+    end
+    if centerY == nil then
+        centerY = 0.0
+    end
+    self:setCenter(centerX, centerY)
 
     self:moveTo(x, y)
     self:add()
@@ -74,6 +94,13 @@ function HUDElement:buildUITree()
     return playout.tree.new(tmpContainer)
 end
 
+-- Update UI.
+function HUDElement:updateUI()
+    -- TODO: make it optional to recompute layout
+    self.uiTree:layout()
+    self.uiTree:draw()
+end
+
 -- De-register listeners on removal
 function HUDElement:remove()
     EVENTS:deregisterListeners(self.eventListeners)
@@ -83,3 +110,50 @@ end
 -- --------------------------------------------------------------------------------
 -- Health and Shields
 -- --------------------------------------------------------------------------------
+class('HealthHUDElement').extends('HUDElement')
+
+function HealthHUDElement:init(x, y, centerX, centerY)
+    self.eventListeners = {
+        -- TODO: define update event listeners
+    }
+    HealthHUDElement.super.init(self, x, y, centerX, centerY)
+end
+
+-- TODO: temp UI, make pretty
+function HealthHUDElement:buildUITree()
+    -- TODO: Initial values from where??
+    self.shieldsTxt = txt(
+        'shields: 0',
+        {
+            stroke = 1,
+        }
+    )
+    self.healthTxt = txt(
+        'health: 0',
+        {
+            stroke = 1,
+        }
+    )
+    local container = box(
+        {
+            padding = 4,
+        },
+        {
+            self.shieldsTxt,
+            self.healthTxt,
+        }
+    )
+    return playout.tree.new(container)
+end
+
+function HealthHUDElement:updateShields(val)
+    -- TODO: make pretty
+    self.shieldsTxt.text = 'shields: ' .. tostring(val)
+    self:updateUI()
+end
+
+function HealthHUDElement:updateHealth(val)
+    -- TODO: make pretty
+    self.healthTxt.text = 'health: ' .. tostring(val)
+    self:updateUI()
+end
