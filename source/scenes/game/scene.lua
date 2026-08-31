@@ -41,4 +41,9 @@ function GameScene:init()
     }
 end
 
--- TODO: crank indicator
+-- Show crank indicator if docked.
+function GameScene:update()
+    if pd.isCrankDocked() then
+        pd.ui.crankIndicator:draw()
+    end
+end
