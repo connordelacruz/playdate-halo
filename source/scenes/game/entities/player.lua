@@ -62,6 +62,7 @@ class('Player', {
     healthChangeEventType = EVENT_TYPES.playerHealthChange,
     shieldChangeEventType = EVENT_TYPES.playerShieldChange,
     deathEventType = EVENT_TYPES.playerDeath,
+    weaponPickupEventType = EVENT_TYPES.playerWeaponPickup,
 }).extends('Entity')
 
 function Player:init(x, y)

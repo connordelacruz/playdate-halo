@@ -44,12 +44,13 @@ TAGS = generateTags()
 -- --------------------------------------------------------------------------------
 -- Events
 -- --------------------------------------------------------------------------------
--- Events for Entity objects
+-- Events for Entity objects.
 local kEntityEventNames <const> = {
     'spawn',
     'healthChange',
     'shieldChange',
     'death',
+    'weaponPickup',
 }
 -- Events for player.
 -- All Entity events, but prefixed with 'player' and honoring camel case.
@@ -65,7 +66,7 @@ local function generatePlayerEventNames()
 end
 local kPlayerEventNames <const> = generatePlayerEventNames()
 
--- Build event name list
+-- Build event name list.
 local function generateEventNames()
     local eventNames = {}
     for i=1,#kEntityEventNames do

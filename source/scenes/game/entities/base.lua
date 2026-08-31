@@ -75,6 +75,7 @@ class('Entity', {
     healthChangeEventType = EVENT_TYPES.healthChange,
     shieldChangeEventType = EVENT_TYPES.shieldChange,
     deathEventType = EVENT_TYPES.death,
+    weaponPickupEventType = EVENT_TYPES.weaponPickup,
     -- Placeholder state stuff, implementing classes should override.
     stateClasses = {
         EntityInactiveState,
@@ -235,8 +236,10 @@ end
 -- --------------------------------------------------------------------------------
 
 -- Give the entity a new weapon.
+-- Emits weapon pickup event.
 function Entity:giveWeapon(weaponClass)
     self.weapon = weaponClass(self)
+    self:emitWeaponPickupEvent()
 end
 
 -- Toggle whether held weapon is firing or not.
@@ -326,6 +329,10 @@ end
 
 function Entity:emitDeathEvent()
     EVENTS:emit(self.deathEventType, self)
+end
+
+function Entity:emitWeaponPickupEvent()
+    EVENTS:emit(self.weaponPickupEventType, self.weapon)
 end
 
 -- --------------------------------------------------------------------------------
