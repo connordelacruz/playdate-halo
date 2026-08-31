@@ -70,6 +70,9 @@ class('Entity', {
     baseShields = 0,
     -- Base movement speed (px / sec)
     baseSpeed = 140,
+    -- Event types to emit
+    spawnEventType = EVENT_TYPES.spawn,
+    deathEventType = EVENT_TYPES.death,
     -- Placeholder state stuff, implementing classes should override.
     stateClasses = {
         EntityInactiveState,
@@ -113,6 +116,9 @@ function Entity:init(x, y)
     -- Move to initial position and add sprite
     self:moveTo(x, y)
     self:add()
+
+    -- Emit spawn event
+    self:emitSpawnEvent()
 end
 
 -- --------------------------------------------------------------------------------
@@ -280,9 +286,12 @@ end
 -- Events
 -- --------------------------------------------------------------------------------
 
--- Broadcast Entity death event.
+function Entity:emitSpawnEvent()
+    EVENTS:emit(self.spawnEventType, self)
+end
+
 function Entity:emitDeathEvent()
-    EVENTS:emit(EVENT_TYPES.death, self)
+    EVENTS:emit(self.deathEventType, self)
 end
 
 -- --------------------------------------------------------------------------------

@@ -69,8 +69,8 @@ function GameMaster:init()
     self:initStatesAndSetInitial()
 
     self.eventListeners = {
-        [EVENT_TYPES.death] = function(entity)
-            self:onEntityDeath(entity)
+        [EVENT_TYPES.playerDeath] = function(entity)
+            self:onPlayerDeath(entity)
         end,
     }
     EVENTS:registerListeners(self.eventListeners)
@@ -82,12 +82,10 @@ end
 -- Event Listeners
 -- --------------------------------------------------------------------------------
 
--- Callback for 'death' event.
-function GameMaster:onEntityDeath(entity)
+-- Callback for 'playerDeath' event.
+function GameMaster:onPlayerDeath(entity)
     -- If the player died, trigger game over
-    if entity.className == 'Player' then
-        self:triggerGameOver()
-    end
+    self:triggerGameOver()
 end
 
 -- --------------------------------------------------------------------------------

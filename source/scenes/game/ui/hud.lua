@@ -114,7 +114,10 @@ class('HealthHUDElement').extends('HUDElement')
 
 function HealthHUDElement:init(x, y, centerX, centerY)
     self.eventListeners = {
-        -- TODO: define update event listeners
+        [EVENT_TYPES.playerSpawn] = function (player)
+            self:updateValues(player)
+        end
+        -- TODO: listeners for health/shield updates
     }
     HealthHUDElement.super.init(self, x, y, centerX, centerY)
 end
@@ -144,6 +147,11 @@ function HealthHUDElement:buildUITree()
         }
     )
     return playout.tree.new(container)
+end
+
+function HealthHUDElement:updateValues(player)
+    self:updateShields(player.shields)
+    self:updateHealth(player.health)
 end
 
 function HealthHUDElement:updateShields(val)

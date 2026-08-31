@@ -57,6 +57,9 @@ class('Player', {
     baseHealth = kPlayerBaseHealth,
     baseShields = kPlayerBaseShields,
     baseSpeed = kPlayerSpeed,
+    -- Event types:
+    spawnEventType = EVENT_TYPES.playerSpawn,
+    deathEventType = EVENT_TYPES.playerDeath,
 }).extends('Entity')
 
 function Player:init(x, y)

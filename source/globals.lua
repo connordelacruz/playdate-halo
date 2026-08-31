@@ -46,8 +46,12 @@ TAGS = generateTags()
 -- --------------------------------------------------------------------------------
 -- Define event name constants
 local kEventNames <const> = {
-    -- Entity death
+    -- Generic entity events
+    'spawn',
     'death',
+    -- Player entity events
+    'playerSpawn',
+    'playerDeath',
 }
 -- Generate event types global from above names
 local function generateEventTypes()
