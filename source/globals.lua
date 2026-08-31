@@ -44,19 +44,40 @@ TAGS = generateTags()
 -- --------------------------------------------------------------------------------
 -- Events
 -- --------------------------------------------------------------------------------
--- Define event name constants
-local kEventNames <const> = {
-    -- Generic entity events
+-- Events for Entity objects
+local kEntityEventNames <const> = {
     'spawn',
     'healthChange',
     'shieldChange',
     'death',
-    -- Player entity events
-    'playerSpawn',
-    'playerHealthChange',
-    'playerShieldChange',
-    'playerDeath',
 }
+-- Events for player.
+-- All Entity events, but prefixed with 'player' and honoring camel case.
+-- (E.g. 'spawn' -> 'playerSpawn')
+local function generatePlayerEventNames()
+    local playerEventNames = {}
+    for i=1,#kEntityEventNames do
+        local name = kEntityEventNames[i]
+        -- Prefix and capitalize first letter of generic name
+        playerEventNames[i] = 'player' .. name:gsub('^%l', string.upper)
+    end
+    return playerEventNames
+end
+local kPlayerEventNames <const> = generatePlayerEventNames()
+
+-- Build event name list
+local function generateEventNames()
+    local eventNames = {}
+    for i=1,#kEntityEventNames do
+        eventNames[#eventNames+1] = kEntityEventNames[i]
+    end
+    for i=1,#kPlayerEventNames do
+        eventNames[#eventNames+1] = kPlayerEventNames[i]
+    end
+    return eventNames
+end
+local kEventNames <const> = generateEventNames()
+
 -- Generate event types global from above names
 local function generateEventTypes()
     local eventTypes = {}
