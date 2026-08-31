@@ -9,6 +9,13 @@ local img <const> = playout.image.new
 -- ================================================================================
 
 -- ================================================================================
+-- Constants
+-- ================================================================================
+-- TODO: add common style stuff
+-- Monospace font for score TODO: find one that fits desired style
+local kScoreFont <const> = gfx.font.new('fonts/Roobert-11-Mono-Condensed')
+
+-- ================================================================================
 -- HUD Sprite Class
 -- 
 -- Contains and manages each HUD element
@@ -18,6 +25,7 @@ class('HUD').extends(gfx.sprite)
 function HUD:init()
     self.elements = {
         HealthHUDElement(0, 0, 0.0, 0.0),
+        ScoreHUDElement(SCREEN_CENTER_X, 0, 0.5, 0.0),
         WeaponHUDElement(SCREEN_WIDTH, 0, 1.0, 0.0),
     }
     self:add()
@@ -96,9 +104,10 @@ function HUDElement:buildUITree()
 end
 
 -- Update UI.
-function HUDElement:updateUI()
-    -- TODO: make it optional to recompute layout
-    self.uiTree:layout()
+function HUDElement:updateUI(skipLayoutRecompute)
+    if not skipLayoutRecompute then
+        self.uiTree:layout()
+    end
     self:setImage(self.uiTree:draw())
 end
 
@@ -113,7 +122,7 @@ end
 -- --------------------------------------------------------------------------------
 class('HealthHUDElement').extends('HUDElement')
 
-function HealthHUDElement:init(x, y, centerX, centerY)
+function HealthHUDElement:init(...)
     self.eventListeners = {
         [EVENT_TYPES.playerSpawn] = function (player)
             self:updateValues(player)
@@ -123,7 +132,7 @@ function HealthHUDElement:init(x, y, centerX, centerY)
         end,
         -- TODO: listeners for shield updates
     }
-    HealthHUDElement.super.init(self, x, y, centerX, centerY)
+    HealthHUDElement.super.init(self, ...)
 end
 
 -- TODO: temp UI, make pretty
@@ -173,13 +182,13 @@ end
 -- --------------------------------------------------------------------------------
 class('WeaponHUDElement').extends('HUDElement')
 
-function WeaponHUDElement:init(x, y, centerX, centerY)
+function WeaponHUDElement:init(...)
     self.eventListeners = {
         [EVENT_TYPES.playerWeaponPickup] = function (weapon)
             self:updateValues(weapon)
         end,
     }
-    WeaponHUDElement.super.init(self, x, y, centerX, centerY)
+    WeaponHUDElement.super.init(self, ...)
 end
 
 -- TODO: temp UI, make it pretty
@@ -229,4 +238,48 @@ function WeaponHUDElement:updateAmmo(ammo)
     DEBUG_MANAGER:vPrint(ammo)
     self.ammoTxt.text = 'x' .. tostring(ammo)
     self:updateUI()
+end
+
+-- --------------------------------------------------------------------------------
+-- Score
+-- --------------------------------------------------------------------------------
+class('ScoreHUDElement').extends('HUDElement')
+
+function ScoreHUDElement:init(...)
+    self.eventListeners = {
+        [EVENT_TYPES.scoreChange] = function (score)
+            self:updateScore(score)
+        end
+    }
+    ScoreHUDElement.super.init(self, ...)
+end
+
+-- Helper to 0-pad score
+function ScoreHUDElement:formatScore(val)
+    return string.format('%09d', val)
+end
+
+function ScoreHUDElement:buildUITree()
+    self.scoreTxt = txt(
+        self:formatScore(0),
+        {
+            alignment = kTextAlignment.center,
+            font = kScoreFont,
+            stroke = 1,
+        }
+    )
+    local container = box(
+        {
+            padding = 4,
+        },
+        {
+            self.scoreTxt,
+        }
+    )
+    return playout.tree.new(container)
+end
+
+function ScoreHUDElement:updateScore(score)
+    self.scoreTxt.text = self:formatScore(score)
+    self:updateUI(true)
 end

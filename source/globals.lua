@@ -65,6 +65,10 @@ local function generatePlayerEventNames()
     return playerEventNames
 end
 local kPlayerEventNames <const> = generatePlayerEventNames()
+-- Events for scoring.
+local kScoreEventNames <const> = {
+    'scoreChange',
+}
 
 -- Build event name list.
 local function generateEventNames()
@@ -75,6 +79,10 @@ local function generateEventNames()
     for i=1,#kPlayerEventNames do
         eventNames[#eventNames+1] = kPlayerEventNames[i]
     end
+    for i=1,#kScoreEventNames do
+        eventNames[#eventNames+1] = kScoreEventNames[i]
+    end
+
     return eventNames
 end
 local kEventNames <const> = generateEventNames()
