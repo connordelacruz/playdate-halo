@@ -59,6 +59,8 @@ class('Player', {
     baseSpeed = kPlayerSpeed,
     -- Event types:
     spawnEventType = EVENT_TYPES.playerSpawn,
+    healthChangeEventType = EVENT_TYPES.playerHealthChange,
+    shieldChangeEventType = EVENT_TYPES.playerShieldChange,
     deathEventType = EVENT_TYPES.playerDeath,
 }).extends('Entity')
 

@@ -72,6 +72,8 @@ class('Entity', {
     baseSpeed = 140,
     -- Event types to emit
     spawnEventType = EVENT_TYPES.spawn,
+    healthChangeEventType = EVENT_TYPES.healthChange,
+    shieldChangeEventType = EVENT_TYPES.shieldChange,
     deathEventType = EVENT_TYPES.death,
     -- Placeholder state stuff, implementing classes should override.
     stateClasses = {
@@ -189,13 +191,36 @@ end
 -- --------------------------------------------------------------------------------
 
 -- Apply damage to this entity.
+-- Kill if health is 0 or below.
 function Entity:applyDamage(damage)
-    -- TODO: implement shields!
-    self.health -= damage
+    -- TODO: implement shields and event emitter
+    self:subtractHealth(damage)
     -- If damage was fatal, call kill()
     if self.health <= 0 then
         self:kill()
     end
+end
+
+-- Set Entity health.
+-- Emit health change event.
+function Entity:setHealth(val)
+    self.health = val
+    self:emitHealthChangeEvent()
+end
+
+-- Shorthand to subtract value from health.
+function Entity:subtractHealth(val)
+    self:setHealth(self.health - val)
+end
+
+-- Shorthand to add value to health.
+function Entity:addHealth(val)
+    self:setHealth(self.health + val)
+end
+
+-- Restore health to base value.
+function Entity:restoreHealthToMax()
+    self:setHealth(self.baseHealth)
 end
 
 -- Transition to death state.
@@ -288,6 +313,15 @@ end
 
 function Entity:emitSpawnEvent()
     EVENTS:emit(self.spawnEventType, self)
+end
+
+function Entity:emitHealthChangeEvent()
+    EVENTS:emit(self.healthChangeEventType, self)
+end
+
+-- TODO: prob want to distinguish between damage and recharge?
+function Entity:emitShieldChangeEvent()
+    EVENTS:emit(self.shieldChangeEventType, self)
 end
 
 function Entity:emitDeathEvent()

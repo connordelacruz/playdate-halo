@@ -116,8 +116,11 @@ function HealthHUDElement:init(x, y, centerX, centerY)
     self.eventListeners = {
         [EVENT_TYPES.playerSpawn] = function (player)
             self:updateValues(player)
-        end
-        -- TODO: listeners for health/shield updates
+        end,
+        [EVENT_TYPES.playerHealthChange] = function (player)
+            self:updateHealth(player.health)
+        end,
+        -- TODO: listeners for shield updates
     }
     HealthHUDElement.super.init(self, x, y, centerX, centerY)
 end

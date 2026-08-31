@@ -48,9 +48,13 @@ TAGS = generateTags()
 local kEventNames <const> = {
     -- Generic entity events
     'spawn',
+    'healthChange',
+    'shieldChange',
     'death',
     -- Player entity events
     'playerSpawn',
+    'playerHealthChange',
+    'playerShieldChange',
     'playerDeath',
 }
 -- Generate event types global from above names
