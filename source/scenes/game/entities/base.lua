@@ -282,8 +282,7 @@ end
 
 -- Broadcast Entity death event.
 function Entity:emitDeathEvent()
-    -- TODO: come up with some kinda way to store global constants for event names?
-    EVENTS:emit('death', self)
+    EVENTS:emit(EVENT_TYPES.death, self)
 end
 
 -- --------------------------------------------------------------------------------

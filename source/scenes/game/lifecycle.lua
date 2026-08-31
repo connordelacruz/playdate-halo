@@ -68,9 +68,8 @@ class('GameMaster', {
 function GameMaster:init()
     self:initStatesAndSetInitial()
 
-    -- TODO: come up with convention for registering (AND DE-REGISTERING listeners:)
     self.eventListeners = {
-        death = function(entity)
+        [EVENT_TYPES.death] = function(entity)
             self:onEntityDeath(entity)
         end,
     }

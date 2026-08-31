@@ -42,6 +42,25 @@ end
 TAGS = generateTags()
 
 -- --------------------------------------------------------------------------------
+-- Events
+-- --------------------------------------------------------------------------------
+-- Define event name constants
+local kEventNames <const> = {
+    -- Entity death
+    'death',
+}
+-- Generate event types global from above names
+local function generateEventTypes()
+    local eventTypes = {}
+    for i=1,#kEventNames do
+        eventTypes[kEventNames[i]] = kEventNames[i]
+    end
+    return eventTypes
+end
+-- Event types
+EVENT_TYPES = generateEventTypes()
+
+-- --------------------------------------------------------------------------------
 -- Z-Index Values
 -- --------------------------------------------------------------------------------
 -- Range: (-32768, 32767)
