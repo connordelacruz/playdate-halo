@@ -12,6 +12,16 @@ local gfx <const> = pd.graphics
 -- --------------------------------------------------------------------------------
 -- Projectile default size
 local kProjectileDefaultSize <const> = 8
+-- Projectile default image
+local function createImage()
+    local image = gfx.image.new(kProjectileDefaultSize, kProjectileDefaultSize)
+    gfx.pushContext(image)
+        gfx.fillCircleInRect(0, 0, image.width, image.height)
+    gfx.popContext()
+    return image
+end
+local kProjectileDefaultImage <const> = createImage()
+
 -- --------------------------------------------------------------------------------
 -- Weapons
 -- --------------------------------------------------------------------------------
@@ -23,6 +33,8 @@ kWeaponDefaultFiringSound:setVolume(0.25)
 -- Projectile Class
 -- ================================================================================
 class('Projectile', {
+    -- Image
+    image = kProjectileDefaultImage,
     -- Speed (px / sec)
     speed = 700,
     -- Damage
@@ -38,7 +50,7 @@ function Projectile:init(originX, originY, angle, isFriendlyFire)
     self.firedTimestamp = pd.getCurrentTimeMilliseconds()
 
     -- Image
-    self:setImage(self:createImage())
+    self:setImage(self.image)
 
     -- Collisions
     self:setCollideRect(0, 0, self:getSize())
@@ -48,20 +60,6 @@ function Projectile:init(originX, originY, angle, isFriendlyFire)
     -- Add sprite
     self:moveTo(originX, originY)
     self:add()
-end
-
--- --------------------------------------------------------------------------------
--- Image
--- --------------------------------------------------------------------------------
-
--- TODO: just take image as an attribute, that way we're not drawing it fresh each time
--- Returns the image for the projectile sprite.
-function Projectile:createImage()
-    local image = gfx.image.new(kProjectileDefaultSize, kProjectileDefaultSize)
-    gfx.pushContext(image)
-        gfx.fillCircleInRect(0, 0, image.width, image.height)
-    gfx.popContext()
-    return image
 end
 
 -- --------------------------------------------------------------------------------

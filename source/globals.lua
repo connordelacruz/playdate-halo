@@ -19,7 +19,6 @@ DIRECTION_LEFT = 2
 -- Collisions
 -- --------------------------------------------------------------------------------
 -- Tag names
--- TODO: use masks? can define collides with behavior
 local kTagNames <const> = {
     -- Player
     'player',
