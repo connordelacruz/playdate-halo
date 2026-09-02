@@ -311,6 +311,13 @@ function Entity:giveWeapon(weaponClass)
     self:emitWeaponPickupEvent()
 end
 
+-- Attempt to fire single projectile.
+function Entity:attemptToFireWeapon()
+    if self.weapon ~= nil then
+        self.weapon:attemptToFire()
+    end
+end
+
 -- Toggle whether held weapon is firing or not.
 -- flag is optional, default behavior is to toggle to the opposite of current weapon state.
 -- Does nothing if no weapon held.

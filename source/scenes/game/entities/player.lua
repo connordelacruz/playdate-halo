@@ -173,10 +173,20 @@ end
 
 -- Handle A/B buttons.
 function Player:handleButtons(current, pressed, released)
-    -- TODO: Maybe it would feel better to mash or hold B for shooting instead of auto-shooting? Try it out once more stuff is implemented
-    -- Toggle weapon fire on B-press
+    self:handleWeaponInput(current, pressed, released)
+end
+
+-- Handle weapon firing.
+function Player:handleWeaponInput(current, pressed, released)
     if (pressed & pd.kButtonB) > 0 then
-        self:toggleWeaponFire()
+        -- First press = fire once (accounting for weapon cooldown)
+        self:attemptToFireWeapon()
+    elseif (current & pd.kButtonB) > 0 then
+        -- Held after first press = toggle fire on
+        self:toggleWeaponFire(true)
+    elseif (released & pd.kButtonB) > 0 then
+        -- Released = toggle fire off
+        self:toggleWeaponFire(false)
     end
 end
 
