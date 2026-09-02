@@ -29,17 +29,16 @@ class('Elite', {
     },
     walkingLoopDelay = 100,
     -- Death
-    -- TODO: need custom art for death. Prob a sprite wider than the running/idle
-    -- deathSpritesheet = gfx.imagetable.new('images/elite/elite-death'),
-    -- deathLoopFrames = {
-    --     [DIRECTION_RIGHT] = {
-    --         startFrame = 1,
-    --         endFrame = 4,
-    --     },
-    --     [DIRECTION_LEFT] = {
-    --         startFrame = 5,
-    --         endFrame = 8,
-    --     },
-    -- },
-    -- deathLoopDelay = 100,
+    deathSpritesheet = gfx.imagetable.new('images/elite/elite-death'),
+    deathLoopFrames = {
+        [DIRECTION_RIGHT] = {
+            startFrame = 1,
+            endFrame = 4,
+        },
+        [DIRECTION_LEFT] = {
+            startFrame = 5,
+            endFrame = 8,
+        },
+    },
+    deathLoopDelay = 100,
 }).extends('Enemy')
