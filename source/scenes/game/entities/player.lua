@@ -57,6 +57,7 @@ class('Player', {
     baseHealth = kPlayerBaseHealth,
     baseShields = kPlayerBaseShields,
     baseSpeed = kPlayerSpeed,
+    startingWeaponClass = MagnumWeapon,
     -- Event types:
     spawnEventType = EVENT_TYPES.playerSpawn,
     healthChangeEventType = EVENT_TYPES.playerHealthChange,
@@ -107,7 +108,6 @@ function Player:initImages()
         [DIRECTION_LEFT] = walkingLoopLeft,
     }
 
-    -- TODO: this animation is way too simple, but fine for now
     self.deathSpritesheet = gfx.imagetable.new('images/chief/chief-death')
     -- Frames 1-2 facing right, frames 3-4 facing left
     local deathDelay = 100

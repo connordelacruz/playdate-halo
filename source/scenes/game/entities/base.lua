@@ -72,6 +72,8 @@ class('Entity', {
     baseSpeed = 140,
     -- Point value if player kills an unfriendly entity
     points = 0,
+    -- Weapon class for starting weapon
+    startingWeaponClass = nil,
     -- Event types to emit
     spawnEventType = EVENT_TYPES.spawn,
     healthChangeEventType = EVENT_TYPES.healthChange,
@@ -85,10 +87,19 @@ class('Entity', {
     initialStateKey = EntityInactiveState.key,
 }).extends('FSMSprite')
 
--- TODO: UPDATE DOCS
--- Base constructor. Initializes instance variables and not much else.
--- Implementing classes should call <Class>.super.init(self, x, y) to initialize these,
--- then handle everything else, including adding to sprite list.
+-- Base constructor. Does the following:
+-- - Initializes Entity instance variables
+-- - Calls :initImages() and :setDefaultImage()
+-- - Sets collide rect to the size of the sprite
+-- - Sets z-index to Z_INDEX.entity
+-- - Moves to initial position
+-- - Adds to sprite list
+-- - Give starting weapon (if startingWeaponClass is defined)
+-- - Emits spawn event
+--
+-- Implementing classes will need to do the following:
+-- - Set collision tag
+-- - Call :initStatesAndSetInitial()
 function Entity:init(x, y)
     -- Held Weapon
     self.weapon = nil
@@ -121,6 +132,11 @@ function Entity:init(x, y)
     -- Move to initial position and add sprite
     self:moveTo(x, y)
     self:add()
+
+    -- Give entity its starting weapon (if defined)
+    if self.startingWeaponClass ~= nil then
+        self:giveWeapon(self.startingWeaponClass)
+    end
 
     -- Emit spawn event
     self:emitSpawnEvent()

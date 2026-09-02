@@ -12,16 +12,15 @@ class('Grunt', {
     baseShields = 0,
     baseSpeed = 50,
     points = 100,
+    startingWeaponClass = PlasmaPistolWeapon,
 }).extends('Enemy')
 
 function Grunt:init(x, y, player)
     Grunt.super.init(self, x, y, player)
 
-    -- Give grunts a plasma pistol
-    self:giveWeapon(PlasmaPistolWeapon)
-
     -- Initialize states
     self:initStatesAndSetInitial()
+    -- TODO: unnecessary:
     -- Move to initial position and add sprite
     self:moveTo(x, y)
     self:add()

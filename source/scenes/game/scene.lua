@@ -26,9 +26,8 @@ function GameScene:init()
 
     -- Initialize HUD
     self.hud = HUD()
-    -- Spawn player in the center, give magnum to start
+    -- Spawn player in the center
     self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
-    self.player:giveWeapon(MagnumWeapon)
 
     -- Create camera and attach to player's reticle
     self.camera = Camera()
