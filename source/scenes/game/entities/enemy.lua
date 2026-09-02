@@ -112,7 +112,7 @@ end
 -- Update: move sprite, update image
 function EnemyPatrolState:update()
     self.enemy:handleMove()
-    self.enemy:setActiveImage()
+    self.enemy:setIdleWalkingImage()
 
     self:changeStateIfPastDuration()
 end
@@ -120,7 +120,7 @@ end
 -- Exit: set not moving, set active image one last time.
 function EnemyPatrolState:exit()
     self.enemy.isMoving = false
-    self.enemy:setActiveImage()
+    self.enemy:setIdleWalkingImage()
 end
 
 -- --------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ end
 
 -- TODO: aiming and stuff, set active image
 function EnemyFiringState:update()
-    self.enemy:setActiveImage()
+    self.enemy:setIdleWalkingImage()
 
     self:changeStateIfPastDuration()
 end

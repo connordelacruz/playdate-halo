@@ -178,16 +178,6 @@ end
 -- Images
 -- --------------------------------------------------------------------------------
 
--- TODO: Better abstraction:
--- TODO: All entities should have idleImages, walkingLoops, deathLoops, and defaultImage
--- TODO:    - Pretty much all of these are the same except for spritesheet filepath and start/end frames
--- TODO:    - delay should be possible to override, but default to 100 cuz that's what we use everywhere
--- TODO: If we abstract the above, then we can also abstract these:
--- TODO:    - setActiveImage()
--- TODO:    - playDeathAnimation()
--- TODO:    - setDeathImage()
-
-
 -- Initialize images and animations based on attributes.
 -- The following arrays will be initialized. Their indexes are DIRECTION_RIGHT and DIRECTION_LEFT:
 -- - self.idleImages
@@ -234,26 +224,29 @@ function Entity:setDefaultImage()
     self:setImage(self.defaultImage)
 end
 
--- Set image for "active" states (i.e. Entity is alive, walking, idling, etc).
--- Put logic in here for animating walking, walking vs idling, facing direction, etc.
-function Entity:setActiveImage()
-    self:setDefaultImage()
+-- Set image for idle/walking based on self.isMoving and self.direction.
+function Entity:setIdleWalkingImage()
+    local newImage = self.defaultImage
+    if self.isMoving then
+        newImage = self.walkingLoops[self.direction]:image()
+    else
+        newImage = self.idleImages[self.direction]
+    end
+    self:setImage(newImage)
 end
 
 -- TODO: play death animation, set image from that, indicate when animation finishes
 
--- Function to call that starts the death animation loop for facing direction.
--- Implementing classes must initialize their death animation in initImages().
--- It should be paused when initialized, and this function should unpause it.
+-- Unpause death animation for current direction.
 function Entity:playDeathAnimation()
-    DEBUG_MANAGER:vPrint(self.className .. ':playDeathAnimation() not implemented')
+    self.deathLoops[self.direction].paused = false
 end
 
 -- Set image from death animation. The above function should be called first to unpause it.
 -- Return value should be true if the animation is still playing, false otherwise (i.e. :isValid())
 function Entity:setDeathImage()
-    self:setDefaultImage()
-    return false
+    self:setImage(self.deathLoops[self.direction]:image())
+    return self.deathLoops[self.direction]:isValid()
 end
 
 -- --------------------------------------------------------------------------------

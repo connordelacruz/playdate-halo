@@ -45,31 +45,3 @@ class('Grunt', {
     },
     deathLoopDelay = 100,
 }).extends('Enemy')
-
--- --------------------------------------------------------------------------------
--- Image
--- --------------------------------------------------------------------------------
-
--- TODO: figure out commonalities w/ Player, extract logic up to Entity
-
--- Set image for an active state (walking or idle).
-function Grunt:setActiveImage()
-    local newImage = self.defaultImage
-    if self.isMoving then
-        newImage = self.walkingLoops[self.direction]:image()
-    else
-        newImage = self.idleImages[self.direction]
-    end
-    self:setImage(newImage)
-end
-
--- Unpause death animation.
-function Grunt:playDeathAnimation()
-    self.deathLoops[self.direction].paused = false
-end
-
--- Set image from death animation. Return whether it's still playing.
-function Grunt:setDeathImage()
-    self:setImage(self.deathLoops[self.direction]:image())
-    return self.deathLoops[self.direction]:isValid()
-end

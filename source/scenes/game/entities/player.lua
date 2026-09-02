@@ -41,7 +41,7 @@ class('PlayerActiveState', {
 
 function PlayerActiveState:update()
     self.player:handleInput()
-    self.player:setActiveImage()
+    self.player:setIdleWalkingImage()
 end
 
 -- ================================================================================
@@ -110,32 +110,6 @@ function Player:init(x, y)
 
     -- Initialize states
     self:initStatesAndSetInitial()
-end
-
--- --------------------------------------------------------------------------------
--- Images and Animations
--- --------------------------------------------------------------------------------
-
--- TODO: all of this is shared between Player and Grunt, so if we ensure the appropriate image vars are set, we can move these all up to Entity:
-
--- Set image for active state (walking or idle).
-function Player:setActiveImage()
-    local newImage = self.defaultImage
-    if self.isMoving then
-        newImage = self.walkingLoops[self.direction]:image()
-    else
-        newImage = self.idleImages[self.direction]
-    end
-    self:setImage(newImage)
-end
-
-function Player:playDeathAnimation()
-    self.deathLoops[self.direction].paused = false
-end
-
-function Player:setDeathImage()
-    self:setImage(self.deathLoops[self.direction]:image())
-    return self.deathLoops[self.direction]:isValid()
 end
 
 -- --------------------------------------------------------------------------------
