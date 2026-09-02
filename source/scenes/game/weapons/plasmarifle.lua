@@ -1,10 +1,11 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 -- ================================================================================
--- Plasma Pistol Weapon and Projectiles
+-- Plasma Rifle Weapon and Projectiles
 -- ================================================================================
-local kPlasmaPistolFiringSound <const> = pd.sound.sampleplayer.new('sounds/weapons/plasma_fire.wav')
-kPlasmaPistolFiringSound:setVolume(0.25)
+-- TODO: vary sounds each shot? Or pull from a different game? make it distinct from pistol
+local kPlasmaRifleFiringSound <const> = pd.sound.sampleplayer.new('sounds/weapons/plasma_fire.wav')
+kPlasmaRifleFiringSound:setVolume(0.25)
 
 local function createImage()
     local image = gfx.image.new(8, 8)
@@ -14,26 +15,27 @@ local function createImage()
     gfx.popContext()
     return image
 end
-local kPlasmaPistolProjectileImage <const> = createImage()
+local kPlasmaRifleProjectileImage <const> = createImage()
 
 -- ================================================================================
 -- Projectile
 -- ================================================================================
-class('PlasmaPistolProjectile', {
-    image = kPlasmaPistolProjectileImage,
-    speed = 300,
+class('PlasmaRifleProjectile', {
+    image = kPlasmaRifleProjectileImage,
+    speed = 400,
     damage = 1,
     -- TODO: maxDistance
-    maxTime = 500,
+    maxTime = 400,
 }).extends('Projectile')
 
 -- ================================================================================
 -- Weapon
 -- ================================================================================
-class('PlasmaPistolWeapon', {
-    name = 'Plasma Pistol',
-    projectileClass = PlasmaPistolProjectile,
-    fireSound = kPlasmaPistolFiringSound,
-    timeBetweenShots = 400,
+class('PlasmaRifleWeapon', {
+    name = 'Plasma Rifle',
+    projectileClass = PlasmaRifleProjectile,
+    fireSound = kPlasmaRifleFiringSound,
+    timeBetweenShots = 200,
     bottomlessClip = true,
 }).extends('Weapon')
+

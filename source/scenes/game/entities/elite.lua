@@ -8,8 +8,7 @@ class('Elite', {
     baseShields = 3,
     baseSpeed = 80,
     points = 500,
-    -- TODO: plasma rifle
-    startingWeaponClass = PlasmaPistolWeapon,
+    startingWeaponClass = PlasmaRifleWeapon,
     -- Images/spritesheets, animation delays, start/end frames:
     -- Idle + walking
     idleWalkSpritesheet = gfx.imagetable.new('images/elite/elite-idle-walk'),
