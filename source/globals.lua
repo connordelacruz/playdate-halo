@@ -106,6 +106,8 @@ Z_INDEX = {
     popup = 9999,
     -- UI overlays
     ui = 8000,
+    -- Reticle
+    reticle = 6000,
     -- Entities
     entity = 1000,
     -- Stage background

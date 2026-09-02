@@ -256,7 +256,7 @@ class('Reticle').extends(gfx.sprite)
 function Reticle:init(originX, originY, degrees, radius)
     -- Radius for the invisible circle around player that the reticle rotates around
     self.radius = radius
-    -- TODO: z-index
+    self:setZIndex(Z_INDEX.reticle)
     self:setImage(self:createImage(kReticleSize, kReticleSize))
 
     self:updatePosition(originX, originY, degrees)
@@ -267,16 +267,24 @@ end
 -- Image
 -- --------------------------------------------------------------------------------
 
--- TODO: this honestly isn't bad, maybe just add white outlines around it
 function Reticle:createImage(w, h)
     local image = gfx.image.new(w, h)
     gfx.pushContext(image)
-        gfx.setLineWidth(1)
+        -- Background white circle
+        gfx.setLineWidth(3)
+        gfx.setColor(gfx.kColorWhite)
         gfx.drawCircleInRect(0, 0, w, h)
+        -- Reticle circle
+        gfx.setLineWidth(1)
+        gfx.setColor(gfx.kColorBlack)
+        gfx.drawCircleInRect(0, 0, w, h)
+        -- Reticle crosshair
         gfx.drawLine(0, h // 2, w, h // 2)
         gfx.drawLine(w // 2, 0, w // 2, h)
+        -- Cut a hole in the crosshair
         gfx.setColor(gfx.kColorWhite)
         gfx.drawCircleAtPoint(w / 2, h / 2, 1.5)
+        -- Center dot
         gfx.setColor(gfx.kColorBlack)
         gfx.drawPixel(w // 2, h // 2)
     gfx.popContext()
