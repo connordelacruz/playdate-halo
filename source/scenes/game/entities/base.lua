@@ -74,6 +74,8 @@ class('Entity', {
     points = 0,
     -- Weapon class for starting weapon
     startingWeaponClass = nil,
+    -- (TESTING) If true, entity health value will never change
+    invincible = false,
     -- Event types to emit
     spawnEventType = EVENT_TYPES.spawn,
     healthChangeEventType = EVENT_TYPES.healthChange,
@@ -274,6 +276,11 @@ end
 -- Set Entity health.
 -- Emit health change event.
 function Entity:setHealth(val)
+    -- (DEBUG) return if entity is invincible
+    if self.invincible then
+        return
+    end
+
     self.health = val
     self:emitHealthChangeEvent()
 end

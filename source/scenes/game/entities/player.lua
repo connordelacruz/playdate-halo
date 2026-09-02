@@ -95,6 +95,8 @@ class('Player', {
         },
     },
     deathLoopDelay = 100,
+    -- DEBUG
+    invincible = DEBUG_MANAGER:isFlagSet('degreelessnessMode'),
 }).extends('Entity')
 
 function Player:init(x, y)

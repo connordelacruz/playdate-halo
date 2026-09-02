@@ -1,3 +1,6 @@
+-- ================================================================================
+-- Core Imports
+-- ================================================================================
 -- Core libs
 import 'CoreLibs/animation'
 import 'CoreLibs/animator'
@@ -22,23 +25,17 @@ import 'util/data'
 import 'util/events'
 import 'util/music'
 -- import 'util/screenshake'
--- Scenes
-import 'scenes/__init__'
-
-
-local pd <const> = playdate
-local gfx <const> = pd.graphics
-
 -- ===============================================================================
 -- Debug
+-- (Initialize before game imports to allow conditional importing of test code)
 -- ===============================================================================
 -- Debug flag names
 local kDebugFlagNames <const> = {
     'skipTitleScreen',
+    'degreelessnessMode',
 }
 -- DebugManager object
 DEBUG_MANAGER = DebugManager(kDebugFlagNames)
-
 -- --------------------------------------------------------------------------------
 -- Uncomment to disable all debug flags
 -- --------------------------------------------------------------------------------
@@ -53,6 +50,23 @@ DEBUG_MANAGER:setFlag('verbose')
 -- --------------------------------------------------------------------------------
 -- Skip the title screen and start the game scene at launch
 DEBUG_MANAGER:setFlag('skipTitleScreen')
+-- --------------------------------------------------------------------------------
+-- Player
+-- --------------------------------------------------------------------------------
+-- Never lose health
+-- DEBUG_MANAGER:setFlag('degreelessnessMode')
+
+-- ===============================================================================
+-- Game Imports
+-- ===============================================================================
+-- Scenes
+import 'scenes/__init__'
+
+-- ===============================================================================
+-- Playdate Constants
+-- ===============================================================================
+local pd <const> = playdate
+local gfx <const> = pd.graphics
 
 -- ===============================================================================
 -- Utility Objects
