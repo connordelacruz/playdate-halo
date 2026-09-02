@@ -146,7 +146,7 @@ function EnemyFiringState:enter()
     self.enemy:toggleWeaponFire(true)
 end
 
--- TODO: aiming and stuff, set active image
+-- TODO: aiming and stuff
 function EnemyFiringState:update()
     self.enemy:setIdleWalkingImage()
 
@@ -171,8 +171,6 @@ class('Enemy', {
         EnemyPatrolState,
         EnemyFiringState,
     },
-    -- initialStateKey = EnemyIdleState.key,
-    -- TODO: TESTING 
     initialStateKey = EnemyPatrolState.key,
     -- Entity attributes:
     isFriendly = false,

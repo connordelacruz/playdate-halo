@@ -146,12 +146,6 @@ function Entity:init(x, y)
 
     -- Initialize images and animations, as well as default image.
     self:initImages()
-    -- TODO: this should no longer be needed since we know the above sets default image:
-    -- Implementing classes should set self.defaultImage in initImages().
-    -- But if they don't, set a graceful default here.
-    if self.defaultImage == nil then
-        self.defaultImage = kPlaceholderImage
-    end
     -- Set default image.
     self:setDefaultImage()
 
@@ -234,8 +228,6 @@ function Entity:setIdleWalkingImage()
     end
     self:setImage(newImage)
 end
-
--- TODO: play death animation, set image from that, indicate when animation finishes
 
 -- Unpause death animation for current direction.
 function Entity:playDeathAnimation()
@@ -340,7 +332,7 @@ end
 
 -- Returns the angle (in degrees) entity is aiming at.
 function Entity:calculateAimingAngle()
-    -- TODO: log if not implemented
+    DEBUG_MANAGER:vPrint(self.className .. ':calculateAimingAngle() not implemented')
     -- Return dummy value
     return 0
 end
@@ -352,7 +344,6 @@ function Entity:getOriginAndAngle()
 end
 
 -- Determine whether angle is facing left or right. For sprite images.
--- TODO: does this apply when not crankin it?:
 -- Angles relative to display:
 --       270
 --        |

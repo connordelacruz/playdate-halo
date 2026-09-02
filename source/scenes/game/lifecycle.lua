@@ -44,7 +44,6 @@ function GameOverState:enter()
 end
 
 function GameOverState:update()
-    -- TODO: could also allow for button press to end the state
     if self.gameOverTimestamp + kGameOverDuration <= pd.getCurrentTimeMilliseconds() then
         self:exit()
     end

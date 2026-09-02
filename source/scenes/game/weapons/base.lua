@@ -40,6 +40,7 @@ class('Projectile', {
     -- Damage
     damage = 1,
     -- Max time projectile can travel before expiring (ms)
+    -- TODO: use maxDistance instead, limit it to not go too far off screen
     maxTime = 700,
 }).extends(gfx.sprite)
 
@@ -67,7 +68,6 @@ end
 -- --------------------------------------------------------------------------------
 
 function Projectile:getTargetPosition()
-    -- TODO: this is pretty much the same as Enemy movement, extract?
     local rad = math.rad(self.angle)
     local newX = self.x + (self.speed * math.cos(rad) * DELTA_TIME)
     local newY = self.y + (self.speed * math.sin(rad) * DELTA_TIME)
@@ -88,16 +88,25 @@ function Projectile:handleCollisions(collisions)
         local collision = collisions[i]
         local other = collision.other
         local tag = other:getTag()
-        -- TODO: maybe just use single entity tag idk
         if
             (self.isFriendlyFire and tag == TAGS.enemy)
             or (not self.isFriendlyFire and tag == TAGS.player)
         then
-            -- TODO: prob extract this block to a function so we can implement rockets, snipers, etc differently:
-            other:applyDamage(self.damage)
+            -- Handle hitting a target
+            self:handleCollideWithTarget(other)
+        elseif tag == TAGS.wall then
+            -- Remove if we hit a wall
             self:remove()
         end
     end
+end
+
+-- Logic for when a target entity is hit.
+-- Assumes target is an Entity object whose isFriendly value is the opposite of self.isFriendlyFire.
+-- Basic projectiles just apply damage to the target and call self:remove().
+function Projectile:handleCollideWithTarget(targetEntity)
+    targetEntity:applyDamage(self.damage)
+    self:remove()
 end
 
 -- --------------------------------------------------------------------------------

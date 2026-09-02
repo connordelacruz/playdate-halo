@@ -18,11 +18,11 @@ local kMagnumProjectileImage <const> = createImage()
 -- ================================================================================
 -- Projectile Class
 -- ================================================================================
--- TODO: do the math, bullets shouldn't fly that far off screen
 class('MagnumProjectile', {
     image = kMagnumProjectileImage,
     speed = 800,
     damage = 1,
+    -- TODO: maxDistance
     maxTime = 500,
 }).extends('Projectile')
 

@@ -60,6 +60,7 @@ end
 -- --------------------------------------------------------------------------------
 class('HUDElement').extends(gfx.sprite)
 
+-- NOTE: child classes should initialize self.eventListeners before calling parent constructor
 function HUDElement:init(x, y, centerX, centerY)
     self:setZIndex(Z_INDEX.ui)
     self:setIgnoresDrawOffset(true)
@@ -68,7 +69,6 @@ function HUDElement:init(x, y, centerX, centerY)
 
     -- Event names mapped to listener functions.
     -- Implementing classes should define this before calling parent constructor.
-    -- TODO: document that in "doc block"
     if self.eventListeners == nil then
         self.eventListeners = {}
     end
@@ -148,7 +148,6 @@ function HealthHUDElement:init(...)
     HealthHUDElement.super.init(self, ...)
 end
 
--- TODO: temp UI, make pretty
 function HealthHUDElement:buildUITree()
     self.shieldsTxt = txt(
         'Shields: 0',
@@ -250,9 +249,7 @@ function WeaponHUDElement:init(...)
     WeaponHUDElement.super.init(self, ...)
 end
 
--- TODO: temp UI, make it pretty
 function WeaponHUDElement:buildUITree()
-    -- TODO: will there be a case where there's no weapon normally?
     self.weaponNameTxt = txt(
         'None',
         {
@@ -283,7 +280,6 @@ function WeaponHUDElement:buildUITree()
 end
 
 function WeaponHUDElement:updateValues(weapon)
-    -- TODO: account for nil??
     self:updateWeaponName(weapon.name)
     self:updateAmmo(weapon.ammo)
 end

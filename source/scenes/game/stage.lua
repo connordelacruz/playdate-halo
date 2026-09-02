@@ -20,7 +20,6 @@ end
 -- Background Image
 -- --------------------------------------------------------------------------------
 
--- TODO: placeholder
 function Stage:createPlaceholderImage(w, h)
     local image = gfx.image.new(w, h)
     gfx.pushContext(image)
