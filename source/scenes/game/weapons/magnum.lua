@@ -22,8 +22,6 @@ class('MagnumProjectile', {
     image = kMagnumProjectileImage,
     speed = 800,
     damage = 1,
-    -- TODO: maxDistance
-    maxTime = 500,
 }).extends('Projectile')
 
 -- ================================================================================

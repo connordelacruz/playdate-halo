@@ -39,16 +39,15 @@ class('Projectile', {
     speed = 700,
     -- Damage
     damage = 1,
-    -- Max time projectile can travel before expiring (ms)
-    -- TODO: use maxDistance instead, limit it to not go too far off screen
-    maxTime = 700,
+    -- Distance in px projectile can travel before expiring
+    maxDistance = 3 * SCREEN_HEIGHT / 4,
 }).extends(gfx.sprite)
 
 function Projectile:init(originX, originY, angle, isFriendlyFire)
+    self.originX = originX
+    self.originY = originY
     self.angle = angle
     self.isFriendlyFire = isFriendlyFire
-    -- Keep track of the time elapsed since fired
-    self.firedTimestamp = pd.getCurrentTimeMilliseconds()
 
     -- Image
     self:setImage(self.image)
@@ -113,9 +112,9 @@ end
 -- Lifecycle
 -- --------------------------------------------------------------------------------
 
--- Determine if maxTime has elapsed since projectile was fired
-function Projectile:isTimeUp()
-    return pd.getCurrentTimeMilliseconds() - self.firedTimestamp >= self.maxTime
+-- Determine if maxDistance has been traveled
+function Projectile:hasExceededMaxDistance()
+    return pd.geometry.distanceToPoint(self.originX, self.originY, self.x, self.y) >= self.maxDistance
 end
 
 -- --------------------------------------------------------------------------------
@@ -124,8 +123,7 @@ end
 
 function Projectile:update()
     self:updatePosition()
-    -- If projectile exceeds maxTime, despawn it
-    if self:isTimeUp() then
+    if self:hasExceededMaxDistance() then
         self:remove()
     end
 end

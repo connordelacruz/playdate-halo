@@ -24,8 +24,7 @@ class('PlasmaRifleProjectile', {
     image = kPlasmaRifleProjectileImage,
     speed = 400,
     damage = 1,
-    -- TODO: maxDistance
-    maxTime = 400,
+    maxDistance = SCREEN_HEIGHT / 2,
 }).extends('Projectile')
 
 -- ================================================================================

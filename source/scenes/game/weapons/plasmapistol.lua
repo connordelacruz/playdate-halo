@@ -23,8 +23,6 @@ class('PlasmaPistolProjectile', {
     image = kPlasmaPistolProjectileImage,
     speed = 300,
     damage = 1,
-    -- TODO: maxDistance
-    maxTime = 500,
 }).extends('Projectile')
 
 -- ================================================================================
