@@ -80,6 +80,37 @@ class('Entity', {
     shieldChangeEventType = EVENT_TYPES.shieldChange,
     deathEventType = EVENT_TYPES.death,
     weaponPickupEventType = EVENT_TYPES.weaponPickup,
+    -- Images/spritesheets, animation delays, start/end frames:
+    -- Idle + walking
+    idleWalkSpritesheet = gfx.imagetable.new('images/dummy/dummy-idle-walk'),
+    idleImageFrames = {
+        [DIRECTION_RIGHT] = 1,
+        [DIRECTION_LEFT] = 4,
+    },
+    walkingLoopFrames = {
+        [DIRECTION_RIGHT] = {
+            startFrame = 2,
+            endFrame = 3,
+        },
+        [DIRECTION_LEFT] = {
+            startFrame = 5,
+            endFrame = 6,
+        },
+    },
+    walkingLoopDelay = 100,
+    -- Death
+    deathSpritesheet = gfx.imagetable.new('images/dummy/dummy-death'),
+    deathLoopFrames = {
+        [DIRECTION_RIGHT] = {
+            startFrame = 1,
+            endFrame = 5,
+        },
+        [DIRECTION_LEFT] = {
+            startFrame = 6,
+            endFrame = 10,
+        },
+    },
+    deathLoopDelay = 100,
     -- Placeholder state stuff, implementing classes should override.
     stateClasses = {
         EntityInactiveState,
@@ -115,6 +146,7 @@ function Entity:init(x, y)
 
     -- Initialize images and animations, as well as default image.
     self:initImages()
+    -- TODO: this should no longer be needed since we know the above sets default image:
     -- Implementing classes should set self.defaultImage in initImages().
     -- But if they don't, set a graceful default here.
     if self.defaultImage == nil then
@@ -156,10 +188,44 @@ end
 -- TODO:    - setDeathImage()
 
 
--- Initialize images and animations.
--- Implementations should set self.defaultImage!
+-- Initialize images and animations based on attributes.
+-- The following arrays will be initialized. Their indexes are DIRECTION_RIGHT and DIRECTION_LEFT:
+-- - self.idleImages
+-- - self.walkingLoops 
+-- - self.deathLoops
+-- Will also set self.defaultImage to self.idleImages[DIRECTION_RIGHT]
 function Entity:initImages()
-    self.defaultImage = kPlaceholderImage
+    -- Idle
+    self.idleImages = {
+        [DIRECTION_RIGHT] = self.idleWalkSpritesheet[self.idleImageFrames[DIRECTION_RIGHT]],
+        [DIRECTION_LEFT] = self.idleWalkSpritesheet[self.idleImageFrames[DIRECTION_LEFT]],
+    }
+    -- Walking
+    local walkingLoopRight = gfx.animation.loop.new(self.walkingLoopDelay, self.idleWalkSpritesheet)
+    walkingLoopRight.startFrame = self.walkingLoopFrames[DIRECTION_RIGHT].startFrame
+    walkingLoopRight.endFrame = self.walkingLoopFrames[DIRECTION_RIGHT].endFrame
+    local walkingLoopLeft = gfx.animation.loop.new(self.walkingLoopDelay, self.idleWalkSpritesheet)
+    walkingLoopLeft.startFrame = self.walkingLoopFrames[DIRECTION_LEFT].startFrame
+    walkingLoopLeft.endFrame = self.walkingLoopFrames[DIRECTION_LEFT].endFrame
+    self.walkingLoops = {
+        [DIRECTION_RIGHT] = walkingLoopRight,
+        [DIRECTION_LEFT] = walkingLoopLeft,
+    }
+    -- Death
+    local deathLoopRight = gfx.animation.loop.new(self.deathLoopDelay, self.deathSpritesheet, false)
+    deathLoopRight.paused = true
+    deathLoopRight.startFrame = self.deathLoopFrames[DIRECTION_RIGHT].startFrame
+    deathLoopRight.endFrame = self.deathLoopFrames[DIRECTION_RIGHT].endFrame
+    local deathLoopLeft = gfx.animation.loop.new(self.deathLoopDelay, self.deathSpritesheet, false)
+    deathLoopLeft.paused = true
+    deathLoopLeft.startFrame = self.deathLoopFrames[DIRECTION_LEFT].startFrame
+    deathLoopLeft.endFrame = self.deathLoopFrames[DIRECTION_LEFT].endFrame
+    self.deathLoops = {
+        [DIRECTION_RIGHT] = deathLoopRight,
+        [DIRECTION_LEFT] = deathLoopLeft,
+    }
+    -- Default fallback image
+    self.defaultImage = self.idleImages[DIRECTION_RIGHT]
 end
 
 -- Set image to default.

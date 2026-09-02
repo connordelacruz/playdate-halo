@@ -64,6 +64,37 @@ class('Player', {
     shieldChangeEventType = EVENT_TYPES.playerShieldChange,
     deathEventType = EVENT_TYPES.playerDeath,
     weaponPickupEventType = EVENT_TYPES.playerWeaponPickup,
+    -- Images/spritesheets, animation delays, start/end frames:
+    -- Idle + walking
+    idleWalkSpritesheet = gfx.imagetable.new('images/chief/chief-idle-walk'),
+    idleImageFrames = {
+        [DIRECTION_RIGHT] = 1,
+        [DIRECTION_LEFT] = 5,
+    },
+    walkingLoopFrames = {
+        [DIRECTION_RIGHT] = {
+            startFrame = 2,
+            endFrame = 4,
+        },
+        [DIRECTION_LEFT] = {
+            startFrame = 6,
+            endFrame = 8,
+        },
+    },
+    walkingLoopDelay = 100,
+    -- Death
+    deathSpritesheet = gfx.imagetable.new('images/chief/chief-death'),
+    deathLoopFrames = {
+        [DIRECTION_RIGHT] = {
+            startFrame = 1,
+            endFrame = 2,
+        },
+        [DIRECTION_LEFT] = {
+            startFrame = 3,
+            endFrame = 4,
+        },
+    },
+    deathLoopDelay = 100,
 }).extends('Entity')
 
 function Player:init(x, y)
@@ -84,51 +115,6 @@ end
 -- --------------------------------------------------------------------------------
 -- Images and Animations
 -- --------------------------------------------------------------------------------
-
--- Initialize images and animations.
--- TODO: can probably abstract this even more, i.e. common loops for universal actions (idle, walking, death)
-function Player:initImages()
-    -- Idle and Walking
-    self.idleWalkSpritesheet = gfx.imagetable.new('images/chief/chief-idle-walk')
-    -- Frame 1 = idle, frames 2 - 4 = walk animation
-    -- Frames 1 - 4 = facing right, frames 5 - 8 = facing left
-    self.idleImages = {
-        [DIRECTION_RIGHT] = self.idleWalkSpritesheet[1],
-        [DIRECTION_LEFT] = self.idleWalkSpritesheet[5],
-    }
-    local walkingDelay = 100
-    local walkingLoopRight = gfx.animation.loop.new(walkingDelay, self.idleWalkSpritesheet)
-    walkingLoopRight.startFrame = 2
-    walkingLoopRight.endFrame = 4
-    local walkingLoopLeft = gfx.animation.loop.new(walkingDelay, self.idleWalkSpritesheet)
-    walkingLoopLeft.startFrame = 6
-    walkingLoopLeft.endFrame = 8
-    self.walkingLoops = {
-        [DIRECTION_RIGHT] = walkingLoopRight,
-        [DIRECTION_LEFT] = walkingLoopLeft,
-    }
-
-    self.deathSpritesheet = gfx.imagetable.new('images/chief/chief-death')
-    -- Frames 1-2 facing right, frames 3-4 facing left
-    local deathDelay = 100
-    local deathLoopRight = gfx.animation.loop.new(deathDelay, self.deathSpritesheet, false)
-    -- Pause until needed
-    deathLoopRight.paused = true
-    deathLoopRight.startFrame = 1
-    deathLoopRight.endFrame = 2
-    local deathLoopLeft = gfx.animation.loop.new(deathDelay, self.deathSpritesheet, false)
-    -- Pause until needed
-    deathLoopLeft.paused = true
-    deathLoopLeft.startFrame = 3
-    deathLoopLeft.endFrame = 4
-    self.deathLoops = {
-        [DIRECTION_RIGHT] = deathLoopRight,
-        [DIRECTION_LEFT] = deathLoopLeft,
-    }
-
-    -- Default fallback image
-    self.defaultImage = self.idleImages[DIRECTION_RIGHT]
-end
 
 -- TODO: all of this is shared between Player and Grunt, so if we ensure the appropriate image vars are set, we can move these all up to Entity:
 
