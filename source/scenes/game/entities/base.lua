@@ -466,10 +466,13 @@ end
 -- Lifecycle
 -- --------------------------------------------------------------------------------
 
--- Remove weapon (if one is held) when removing an Entity.
+-- Cleanup weapon and shield sprites too.
 function Entity:remove()
     if self.weapon ~= nil then
         self.weapon:remove()
+    end
+    if self.shield ~= nil then
+        self.shield:remove()
     end
     Entity.super.remove(self)
 end
