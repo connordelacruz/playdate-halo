@@ -16,8 +16,12 @@ class('EnemyState', {
     -- Min/max time (ms) before picking a new state (if applicable)
     minDuration = 2000,
     maxDuration = 4000,
+    -- TODO: boolean to disable duration
     -- Keys of states this one can randomly pick from when duration is up
     nextStateOptionKeys = {},
+    -- Attributes to set on enemy based on what we want with this state
+    isMoving = false,
+    faceAimingAngle = false,
 }).extends('State')
 
 function EnemyState:init(enemy)
@@ -60,9 +64,11 @@ function EnemyState:changeStateIfPastDuration()
     end
 end
 
--- Common enter(), sets duration.
+-- Common enter(), sets duration + state-based enemy attributes.
 function EnemyState:enter()
     self:setDuration()
+    self.enemy.isMoving = self.isMoving
+    self.enemy.faceAimingAngle = self.faceAimingAngle
 end
 
 -- Common update(), checks if duration has passed and transitions state accordingly.
@@ -87,6 +93,8 @@ class('EnemyIdleState', {
         kEnemyPatrolState,
     },
     minDuration = 500,
+    isMoving = false,
+    faceAimingAngle = false,
 }).extends('EnemyState')
 
 -- --------------------------------------------------------------------------------
@@ -99,15 +107,13 @@ class('EnemyPatrolState', {
         -- kEnemyPatrolState,
         kEnemyFiringState,
     },
+    isMoving = true,
+    faceAimingAngle = false,
 }).extends('EnemyState')
 
 -- On enter: pick random angle and set is moving
 function EnemyPatrolState:enter()
     EnemyPatrolState.super.enter(self)
-
-    -- TODO: make these state attributes, set in parent enter()
-    self.enemy.isMoving = true
-    self.enemy.faceAimingAngle = false
     self.enemy:setRandomAngle()
 end
 
@@ -133,21 +139,18 @@ class('EnemyFiringState', {
     minDuration = 1000,
     maxDuration = 2500,
     nextStateOptionKeys = {
-        -- TODO: refine behavior
         -- kEnemyFiringState,
         kEnemyPatrolState,
     },
+    isMoving = false,
+    faceAimingAngle = true,
 }).extends('EnemyState')
 
 function EnemyFiringState:enter()
     EnemyFiringState.super.enter(self)
-
-    self.enemy.isMoving = false
-    self.enemy.faceAimingAngle = true
     self.enemy:toggleWeaponFire(true)
 end
 
--- TODO: aiming and stuff
 function EnemyFiringState:update()
     self.enemy:setIdleWalkingImage()
     self.enemy:updateDirection()
@@ -216,8 +219,6 @@ end
 -- Set facing angle. Updates direction too.
 function Enemy:setAngle(angle)
     self.angle = self:constrainAngle(angle)
-    -- TODO: when shooting, direction should come from aiming angle
-    --       when not shooting, direction should come from self.angle
     self:updateDirection()
 end
 
