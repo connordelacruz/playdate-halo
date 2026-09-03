@@ -143,6 +143,8 @@ function Entity:init(x, y)
     self.speed = self.baseSpeed
     -- Whether or not the entity is currently moving
     self.isMoving = false
+    -- Whether self.direction should be set based on aiming angle or walking angle
+    self.faceAimingAngle = false
     -- Facing direction
     self.direction = DIRECTION_RIGHT
 
@@ -380,6 +382,22 @@ end
 -- Should be called anywhere aiming angle gets changed.
 function Entity:updateDirectionFromAimingAngle()
     self.direction = self:getDirectionFromAngle(self:calculateAimingAngle())
+end
+
+-- Update direction from walking angle.
+function Entity:updateDirectionFromWalkingAngle()
+    self.direction = self:getDirectionFromAngle(self.angle)
+end
+
+-- Update direction based on faceAimingAngle.
+-- If its true, call updateDirectionFromAimingAngle().
+-- Otherwise, call updateDirectionFromWalkingAngle().
+function Entity:updateDirection()
+    if self.faceAimingAngle then
+        self:updateDirectionFromAimingAngle()
+    else
+        self:updateDirectionFromWalkingAngle()
+    end
 end
 
 -- --------------------------------------------------------------------------------

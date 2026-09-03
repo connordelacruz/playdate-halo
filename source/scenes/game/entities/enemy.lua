@@ -105,7 +105,9 @@ class('EnemyPatrolState', {
 function EnemyPatrolState:enter()
     EnemyPatrolState.super.enter(self)
 
+    -- TODO: make these state attributes, set in parent enter()
     self.enemy.isMoving = true
+    self.enemy.faceAimingAngle = false
     self.enemy:setRandomAngle()
 end
 
@@ -141,14 +143,14 @@ function EnemyFiringState:enter()
     EnemyFiringState.super.enter(self)
 
     self.enemy.isMoving = false
-    -- TODO: random angle for testing
-    self.enemy:setRandomAngle()
+    self.enemy.faceAimingAngle = true
     self.enemy:toggleWeaponFire(true)
 end
 
 -- TODO: aiming and stuff
 function EnemyFiringState:update()
     self.enemy:setIdleWalkingImage()
+    self.enemy:updateDirection()
 
     self:changeStateIfPastDuration()
 end
@@ -214,7 +216,9 @@ end
 -- Set facing angle. Updates direction too.
 function Enemy:setAngle(angle)
     self.angle = self:constrainAngle(angle)
-    self:updateDirectionFromAimingAngle()
+    -- TODO: when shooting, direction should come from aiming angle
+    --       when not shooting, direction should come from self.angle
+    self:updateDirection()
 end
 
 -- Pick a random angle and set facing angle.
@@ -269,8 +273,9 @@ end
 -- Aiming
 -- --------------------------------------------------------------------------------
 
--- Default aiming angle to be the same as facing angle.
--- TODO: spread so aiming isn't too perfect?
+-- Aim at player.
 function Enemy:calculateAimingAngle()
-    return self.angle
+    local dx = self.player.x - self.x
+    local dy = self.player.y - self.y
+    return math.deg(math.atan(dy, dx))
 end

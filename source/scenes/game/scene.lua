@@ -35,11 +35,10 @@ function GameScene:init()
 
     -- DEBUG: Spawn some hard-coded enemies for testing
     self.enemies = {
-        GunnerDummy(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
-        -- Elite(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
-        -- Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
-        -- Elite(SCREEN_WIDTH - SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
-        -- Grunt(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
+        Elite(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
+        Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
+        Elite(SCREEN_WIDTH - SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
+        Grunt(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
     }
 end
 

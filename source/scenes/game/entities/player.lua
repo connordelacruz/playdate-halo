@@ -102,6 +102,8 @@ class('Player', {
 function Player:init(x, y)
     -- Initialize entity instance variables, images, collide rect
     Player.super.init(self, x, y)
+    -- Player always faces aiming angle
+    self.faceAimingAngle = true
 
     -- Collisions
     self:setTag(TAGS.player)

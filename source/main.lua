@@ -54,7 +54,7 @@ DEBUG_MANAGER:setFlag('skipTitleScreen')
 -- Player
 -- --------------------------------------------------------------------------------
 -- Never lose health
--- DEBUG_MANAGER:setFlag('degreelessnessMode')
+DEBUG_MANAGER:setFlag('degreelessnessMode')
 
 -- ===============================================================================
 -- Game Imports
