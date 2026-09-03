@@ -143,7 +143,9 @@ function HealthHUDElement:init(...)
         [EVENT_TYPES.playerHealthChange] = function (player)
             self:updateHealth(player.health)
         end,
-        -- TODO: listeners for shield updates
+        [EVENT_TYPES.playerShieldChange] = function (player)
+            self:updateShields(player.shield.value)
+        end,
     }
     HealthHUDElement.super.init(self, ...)
 end
@@ -177,7 +179,7 @@ function HealthHUDElement:buildUITree()
 end
 
 function HealthHUDElement:updateValues(player)
-    self:updateShields(player.shields)
+    self:updateShields(player.shield.value)
     self:updateHealth(player.health)
 end
 

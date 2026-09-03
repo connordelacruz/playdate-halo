@@ -48,6 +48,8 @@ local kEntityEventNames <const> = {
     'spawn',
     'healthChange',
     'shieldChange',
+    'shieldEmpty',
+    'shieldRecharging',
     'death',
     'weaponPickup',
 }

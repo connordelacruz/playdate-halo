@@ -80,6 +80,8 @@ class('Entity', {
     spawnEventType = EVENT_TYPES.spawn,
     healthChangeEventType = EVENT_TYPES.healthChange,
     shieldChangeEventType = EVENT_TYPES.shieldChange,
+    shieldEmptyEventType = EVENT_TYPES.shieldEmpty,
+    shieldRechargingEventType = EVENT_TYPES.shieldRecharging,
     deathEventType = EVENT_TYPES.death,
     weaponPickupEventType = EVENT_TYPES.weaponPickup,
     -- Images/spritesheets, animation delays, start/end frames:
@@ -138,7 +140,9 @@ function Entity:init(x, y)
     self.weapon = nil
     -- Current health and shields
     self.health = self.baseHealth
-    self.shields = self.baseShields
+    self.shield = self.baseShields > 0 and Shield(self) or nil
+    -- Timestamp since last time damage was applied
+    self.damageReceivedTimestamp = -1
     -- Movement speed
     self.speed = self.baseSpeed
     -- Whether or not the entity is currently moving
@@ -264,11 +268,27 @@ end
 -- Health, Shields, and Dying
 -- --------------------------------------------------------------------------------
 
+-- Update timestamp of last time entity received damage.
+function Entity:updateDamageReceivedTimestamp()
+    self.damageReceivedTimestamp = pd.getCurrentTimeMilliseconds()
+end
+
 -- Apply damage to this entity.
+-- Updatese timestamp.
 -- Kill if health is 0 or below.
 function Entity:applyDamage(damage)
-    -- TODO: implement shields and event emitter
-    self:subtractHealth(damage)
+    -- First attempt to apply damage to shields,
+    -- apply damage to health if those are empty
+    if self.shield ~= nil and not self.shield:isEmpty() then
+        local remainder = self.shield:subtractValue(damage)
+        -- TODO: if damage is greater than shield value, should remainder get applied to health?
+    else
+        self:subtractHealth(damage)
+    end
+    -- TODO: remove:
+    -- self:subtractHealth(damage)
+
+    self:updateDamageReceivedTimestamp()
     -- If damage was fatal, call kill()
     if self.health <= 0 then
         self:kill()
@@ -422,9 +442,16 @@ function Entity:emitHealthChangeEvent()
     EVENTS:emit(self.healthChangeEventType, self)
 end
 
--- TODO: prob want to distinguish between damage and recharge?
 function Entity:emitShieldChangeEvent()
     EVENTS:emit(self.shieldChangeEventType, self)
+end
+
+function Entity:emitShieldEmptyEvent()
+    EVENTS:emit(self.shieldEmptyEventType, self)
+end
+
+function Entity:emitShieldRechargingEvent()
+    EVENTS:emit(self.shieldRechargingEventType, self)
 end
 
 function Entity:emitDeathEvent()
