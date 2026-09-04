@@ -11,7 +11,7 @@ local gfx <const> = pd.graphics
 -- Durations
 -- --------------------------------------------------------------------------------
 -- Duration to wait after taking damage to begin recharging
-local kShieldRechargeAfterDamageDuration <const> = 4000
+local kShieldRechargeAfterDamageDuration <const> = 3000
 -- When recharging, wait this amount of time before incrementing shields again
 local kShieldRechargeCooldownDuration <const> = 500
 

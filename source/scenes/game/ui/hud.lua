@@ -30,6 +30,7 @@ local kContainerStyles <const> = {
 -- --------------------------------------------------------------------------------
 -- HUD sound effects
 -- --------------------------------------------------------------------------------
+local kShieldHitSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_hit.wav')
 local kShieldDepletedSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_depleted.wav')
 local kShieldRechargeSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_recharge.wav')
 
@@ -151,15 +152,17 @@ function HealthHUDElement:init(...)
         [EVENT_TYPES.playerShieldChange] = function (player)
             self:updateShields(player.shield.value)
         end,
+        [EVENT_TYPES.playerDamageReceived] = function (player, shieldsUpWhenDamaged)
+            self:handleDamageReceivedFeedback(player, shieldsUpWhenDamaged)
+        end,
         [EVENT_TYPES.playerShieldEmpty] = function (player)
-            self:toggleShieldDepletedSound(true)
+            self:handleShieldDepletedFeedback()
         end,
         [EVENT_TYPES.playerShieldRecharging] = function (player)
-            self:toggleShieldDepletedSound(false)
-            self:playShieldRechargeSound()
+            self:handleShieldRechargingFeedback()
         end,
         [EVENT_TYPES.playerDeath] = function (player)
-            self:toggleShieldDepletedSound(false)
+            self:handleDeathFeedback()
         end,
     }
     HealthHUDElement.super.init(self, ...)
@@ -208,6 +211,11 @@ function HealthHUDElement:updateHealth(val)
     self:updateUI()
 end
 
+-- Shield hit sound
+function HealthHUDElement:playShieldHitSound()
+    kShieldHitSound:play(1)
+end
+
 -- Shield recharging sound
 function HealthHUDElement:playShieldRechargeSound()
     kShieldRechargeSound:play(1)
@@ -221,6 +229,32 @@ function HealthHUDElement:toggleShieldDepletedSound(flag)
     else
         kShieldDepletedSound:stop()
     end
+end
+
+-- Audio/visual feedback for damage
+function HealthHUDElement:handleDamageReceivedFeedback(player, shieldsUpWhenDamaged)
+    if shieldsUpWhenDamaged then
+        self:playShieldHitSound()
+    end
+    -- TODO: if shields down, shake screen harder relative to the difference between base health and actual
+end
+
+-- Audio/visual feedback for shields down
+function HealthHUDElement:handleShieldDepletedFeedback()
+    self:toggleShieldDepletedSound(true)
+    -- TODO: shake the screen
+end
+
+-- Audio/visual feedback for shield recharging
+function HealthHUDElement:handleShieldRechargingFeedback()
+    self:toggleShieldDepletedSound(false)
+    self:playShieldRechargeSound()
+end
+
+-- Audio/visual feedback for player death
+function HealthHUDElement:handleDeathFeedback()
+    self:toggleShieldDepletedSound(false)
+    -- TODO: shake screen real hard
 end
 
 -- --------------------------------------------------------------------------------

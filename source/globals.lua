@@ -45,12 +45,21 @@ TAGS = generateTags()
 -- --------------------------------------------------------------------------------
 -- Events for Entity objects.
 local kEntityEventNames <const> = {
+    -- Entity is initialized
     'spawn',
+    -- Entity receives damage (to shields or health)
+    'damageReceived',
+    -- Health value changes
     'healthChange',
+    -- Shield value changes
     'shieldChange',
+    -- Shield value is 0
     'shieldEmpty',
+    -- Shield is recharging
     'shieldRecharging',
+    -- Entity dies
     'death',
+    -- Entity gets a new weapon
     'weaponPickup',
 }
 -- Events for player.

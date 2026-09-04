@@ -60,6 +60,7 @@ class('Player', {
     startingWeaponClass = MagnumWeapon,
     -- Event types:
     spawnEventType = EVENT_TYPES.playerSpawn,
+    damageReceivedEventType = EVENT_TYPES.playerDamageReceived,
     healthChangeEventType = EVENT_TYPES.playerHealthChange,
     shieldChangeEventType = EVENT_TYPES.playerShieldChange,
     shieldEmptyEventType = EVENT_TYPES.playerShieldEmpty,

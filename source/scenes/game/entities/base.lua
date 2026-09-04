@@ -78,6 +78,7 @@ class('Entity', {
     invincible = false,
     -- Event types to emit
     spawnEventType = EVENT_TYPES.spawn,
+    damageReceivedEventType = EVENT_TYPES.damageReceived,
     healthChangeEventType = EVENT_TYPES.healthChange,
     shieldChangeEventType = EVENT_TYPES.shieldChange,
     shieldEmptyEventType = EVENT_TYPES.shieldEmpty,
@@ -274,21 +275,24 @@ function Entity:updateDamageReceivedTimestamp()
 end
 
 -- Apply damage to this entity.
--- Updatese timestamp.
+-- Updates timestamp.
+-- Emits damage received event.
 -- Kill if health is 0 or below.
 function Entity:applyDamage(damage)
+    local shieldsUpWhenDamaged = true
     -- First attempt to apply damage to shields,
     -- apply damage to health if those are empty
     if self.shield ~= nil and not self.shield:isEmpty() then
         local remainder = self.shield:subtractValue(damage)
         -- TODO: if damage is greater than shield value, should remainder get applied to health?
     else
+        shieldsUpWhenDamaged = false
         self:subtractHealth(damage)
     end
-    -- TODO: remove:
-    -- self:subtractHealth(damage)
-
+    -- TODO: indicate whether it was shielded damage
+    self:emitDamageReceivedEvent(shieldsUpWhenDamaged)
     self:updateDamageReceivedTimestamp()
+
     -- If damage was fatal, call kill()
     if self.health <= 0 then
         self:kill()
@@ -436,6 +440,10 @@ end
 
 function Entity:emitSpawnEvent()
     EVENTS:emit(self.spawnEventType, self)
+end
+
+function Entity:emitDamageReceivedEvent(shieldsUpWhenDamaged)
+    EVENTS:emit(self.damageReceivedEventType, self, shieldsUpWhenDamaged)
 end
 
 function Entity:emitHealthChangeEvent()
