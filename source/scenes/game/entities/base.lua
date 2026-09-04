@@ -3,13 +3,11 @@ local gfx <const> = pd.graphics
 -- ================================================================================
 -- Constants
 -- ================================================================================
--- Placeholder image
-local kPlaceholderImage <const> = gfx.image.new(16, 20)
-gfx.pushContext(kPlaceholderImage)
-    gfx.setLineWidth(2)
-    gfx.setStrokeLocation(gfx.kStrokeInside)
-    gfx.drawRoundRect(0, 0, kPlaceholderImage.width, kPlaceholderImage.height, 4)
-gfx.popContext()
+-- --------------------------------------------------------------------------------
+-- Damage effects
+-- --------------------------------------------------------------------------------
+-- Amount of time after receiving damage to invert the draw mode
+local kDamageReceivedInvertEffectDuration <const> = 250
 
 -- ================================================================================
 -- States
@@ -334,6 +332,39 @@ function Entity:kill()
 end
 
 -- --------------------------------------------------------------------------------
+-- Feedback for getting damaged
+-- --------------------------------------------------------------------------------
+
+-- Returns true if Entity was damaged and is within the duration to apply invert effect
+function Entity:shouldApplyHitEffect()
+    return (self.damageReceivedTimestamp > 0) and (pd.getCurrentTimeMilliseconds() < self.damageReceivedTimestamp + kDamageReceivedInvertEffectDuration)
+end
+
+-- Visual feedback for damage hit
+function Entity:applyHitEffect()
+    self:setImageDrawMode(gfx.kDrawModeInverted)
+end
+
+-- Revert visual feedback for damage hit
+function Entity:removeHitEffect()
+    self:setImageDrawMode(gfx.kDrawModeCopy)
+end
+
+-- Toggle hit effect on or off
+function Entity:toggleHitEffect(flag)
+    if flag then
+        self:applyHitEffect()
+    else
+        self:removeHitEffect()
+    end
+end
+
+-- Check if hit effect should be applied and handle accordingly
+function Entity:handleHitEffect()
+    self:toggleHitEffect(self:shouldApplyHitEffect())
+end
+
+-- --------------------------------------------------------------------------------
 -- Weapons 
 -- --------------------------------------------------------------------------------
 
@@ -483,4 +514,10 @@ function Entity:remove()
         self.shield:remove()
     end
     Entity.super.remove(self)
+end
+
+-- Override update() to handle hit effects after running super's update()
+function Entity:update()
+    Entity.super.update(self)
+    self:handleHitEffect()
 end
