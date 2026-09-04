@@ -33,8 +33,9 @@ class('PlasmaRifleProjectile', {
 class('PlasmaRifleWeapon', {
     name = 'Plasma Rifle',
     projectileClass = PlasmaRifleProjectile,
+    icon = gfx.image.new('images/weapons/plasmarifle.png'),
     fireSound = kPlasmaRifleFiringSound,
-    timeBetweenShots = 200,
+    timeBetweenShots = 250,
     bottomlessClip = true,
 }).extends('Weapon')
 

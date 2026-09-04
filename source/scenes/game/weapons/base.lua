@@ -28,6 +28,14 @@ local kProjectileDefaultImage <const> = createImage()
 -- Default firing sound
 local kWeaponDefaultFiringSound <const> = pd.sound.sampleplayer.new('sounds/weapons/magnum_fire.wav')
 kWeaponDefaultFiringSound:setVolume(0.25)
+-- Dummy weapon icon
+local kWeaponDefaultIcon <const> = gfx.image.new(gfx.getTextSize('?'))
+gfx.pushContext(kWeaponDefaultIcon)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(0, 0, kWeaponDefaultIcon.width, kWeaponDefaultIcon.height)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawText('?', 0, 0, kWeaponDefaultIcon.width, kWeaponDefaultIcon.height)
+gfx.popContext()
 
 -- ================================================================================
 -- Projectile Class
@@ -175,7 +183,8 @@ class('Weapon', {
     name = 'Weapon',
     -- Class of the projectile this shoots
     projectileClass = Projectile,
-    -- TODO: weapon pickup image
+    -- Image for HUD/pickups
+    icon = kWeaponDefaultIcon,
     -- Sound to play when firing
     fireSound = kWeaponDefaultFiringSound,
     -- Time between shots (ms)

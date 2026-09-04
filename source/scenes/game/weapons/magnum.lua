@@ -30,6 +30,7 @@ class('MagnumProjectile', {
 class('MagnumWeapon', {
     name = 'Magnum',
     projectileClass = MagnumProjectile,
+    icon = gfx.image.new('images/weapons/magnum.png'),
     fireSound = kMagnumFiringSound,
     timeBetweenShots = 500,
     bottomlessClip = true,

@@ -321,6 +321,8 @@ end
 class('WeaponHUDElement').extends('HUDElement')
 
 function WeaponHUDElement:init(...)
+    self:initWeaponBackgroundImage()
+
     self.eventListeners = {
         [EVENT_TYPES.playerWeaponPickup] = function (weapon)
             self:updateValues(weapon)
@@ -330,6 +332,7 @@ function WeaponHUDElement:init(...)
 end
 
 function WeaponHUDElement:buildUITree()
+    -- TODO: remove weapon name stuff
     self.weaponNameTxt = txt(
         'None',
         {
@@ -339,31 +342,71 @@ function WeaponHUDElement:buildUITree()
         }
     )
     self.ammoTxt = txt(
-        'x0',
+        self:formatAmmo(0),
         {
             alignment = kTextAlignment.right,
             style = kTextStyles,
             stroke = kTextStroke,
         }
     )
+    self.weaponIconImg = img(self:createDummyWeaponImage())
+
+    -- TODO: white bg, 1 px border
     local container = box(
         {
-            hAlign = playout.kAlignEnd,
+            -- hAlign = playout.kAlignEnd,
+            direction = playout.kDirectionHorizontal,
             style = kContainerStyles,
         },
         {
-            self.weaponNameTxt,
+            -- self.weaponNameTxt,
             self.ammoTxt,
+            self.weaponIconImg,
         }
     )
     return playout.tree.new(container)
 end
 
+-- Initialize fixed-size image to use below weapon icons
+function WeaponHUDElement:initWeaponBackgroundImage()
+    -- This should be larger than all the currently-planned weapon images, and is fixed so we won't need to recompute the layout
+    self.backgroundImage = gfx.image.new(50, 20, gfx.kColorWhite)
+end
+
+-- Create image for weapon icon
+function WeaponHUDElement:createWeaponImage(weapon)
+    local image = self.backgroundImage:copy()
+    gfx.pushContext(image)
+        weapon.icon:drawAnchored(image.width / 2, image.height / 2, 0.5, 0.5)
+    gfx.popContext()
+    return image
+end
+
+-- Dummy image, use base Weapon class icon
+function WeaponHUDElement:createDummyWeaponImage()
+    return self:createWeaponImage(Weapon)
+end
+
+-- Helper to 0-pad ammo
+function WeaponHUDElement:formatAmmo(val)
+    return string.format('%03d', val)
+end
+
+-- TODO: UPDATE ALL TO USE ICON and REMOVE (or redesign??) NAME STUFF:
+-- TODO: after 0 pad, updateUI() calls should not recompute layout
+
 function WeaponHUDElement:updateValues(weapon)
-    self:updateWeaponName(weapon.name)
+    self:updateWeaponIcon(weapon)
+    -- self:updateWeaponName(weapon.name)
     self:updateAmmo(weapon.ammo)
 end
 
+function WeaponHUDElement:updateWeaponIcon(weapon)
+    self.weaponIconImg.img = self:createWeaponImage(weapon)
+    self:updateUI()
+end
+
+-- TODO: remove
 function WeaponHUDElement:updateWeaponName(name)
     DEBUG_MANAGER:vPrint(name)
     self.weaponNameTxt.text = name
@@ -372,7 +415,6 @@ end
 
 -- TODO: bottomless?
 function WeaponHUDElement:updateAmmo(ammo)
-    DEBUG_MANAGER:vPrint(ammo)
-    self.ammoTxt.text = 'x' .. tostring(ammo)
+    self.ammoTxt.text = self:formatAmmo(ammo)
     self:updateUI()
 end
