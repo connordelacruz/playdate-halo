@@ -5,7 +5,7 @@ local box <const> = playout.box.new
 local txt <const> = playout.text.new
 local img <const> = playout.image.new
 -- ================================================================================
--- Heads Up Display UI
+-- Heads Up Display UI and Related Sounds
 -- ================================================================================
 
 -- ================================================================================
@@ -27,6 +27,11 @@ local kContainerPadding <const> = 4
 local kContainerStyles <const> = {
     padding = kContainerPadding,
 }
+-- --------------------------------------------------------------------------------
+-- HUD sound effects
+-- --------------------------------------------------------------------------------
+local kShieldDepletedSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_depleted.wav')
+local kShieldRechargeSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_recharge.wav')
 
 -- ================================================================================
 -- HUD Sprite Class
@@ -146,6 +151,16 @@ function HealthHUDElement:init(...)
         [EVENT_TYPES.playerShieldChange] = function (player)
             self:updateShields(player.shield.value)
         end,
+        [EVENT_TYPES.playerShieldEmpty] = function (player)
+            self:toggleShieldDepletedSound(true)
+        end,
+        [EVENT_TYPES.playerShieldRecharging] = function (player)
+            self:toggleShieldDepletedSound(false)
+            self:playShieldRechargeSound()
+        end,
+        [EVENT_TYPES.playerDeath] = function (player)
+            self:toggleShieldDepletedSound(false)
+        end,
     }
     HealthHUDElement.super.init(self, ...)
 end
@@ -191,6 +206,21 @@ end
 function HealthHUDElement:updateHealth(val)
     self.healthTxt.text = 'Health: ' .. tostring(val)
     self:updateUI()
+end
+
+-- Shield recharging sound
+function HealthHUDElement:playShieldRechargeSound()
+    kShieldRechargeSound:play(1)
+end
+
+-- Shield depleted sound.
+-- Play on a loop. Should be toggled off when shields recharge or player dies.
+function HealthHUDElement:toggleShieldDepletedSound(flag)
+    if flag then
+        kShieldDepletedSound:play(0)
+    else
+        kShieldDepletedSound:stop()
+    end
 end
 
 -- --------------------------------------------------------------------------------

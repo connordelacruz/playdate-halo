@@ -27,7 +27,7 @@ function GameScene:init()
     -- Initialize HUD
     self.hud = HUD()
     -- Spawn player in the center
-    self.player = Player(SCREEN_CENTER_X, SCREEN_CENTER_Y)
+    self.player = Player(SCREEN_WIDTH / 4, SCREEN_CENTER_Y)
 
     -- Create camera and attach to player's reticle
     self.camera = Camera()
@@ -35,7 +35,7 @@ function GameScene:init()
 
     -- DEBUG: Spawn some hard-coded enemies for testing
     self.enemies = {
-        GunnerDummy(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
+        GunnerDummy(SCREEN_WIDTH * 3 / 4, SCREEN_CENTER_Y, self.player),
         -- Elite(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
         -- Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
         -- Elite(SCREEN_WIDTH - SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
