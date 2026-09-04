@@ -33,6 +33,17 @@ local kContainerStyles <const> = {
 local kShieldHitSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_hit.wav')
 local kShieldDepletedSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_depleted.wav')
 local kShieldRechargeSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_recharge.wav')
+-- --------------------------------------------------------------------------------
+-- Screen shake amounts
+-- --------------------------------------------------------------------------------
+-- Shield breaks
+local kShieldDepletedShakeAmount <const> = 5
+-- Base amount to shake screen when receiving health damage
+local kHealthDamageBaseShakeAmount <const> = 5
+-- Additional amount to shake screen for each point below base health
+local kHealthDamageShakeAmountModifier <const> = 2
+-- Screen shake on player death
+local kDeathShakeAmount <const> = 15
 
 -- ================================================================================
 -- HUD Sprite Class
@@ -235,14 +246,17 @@ end
 function HealthHUDElement:handleDamageReceivedFeedback(player, shieldsUpWhenDamaged)
     if shieldsUpWhenDamaged then
         self:playShieldHitSound()
+    else
+        local healthDiff = player.baseHealth - player.health
+        local shakeAmount = kHealthDamageBaseShakeAmount + (healthDiff * kHealthDamageShakeAmountModifier)
+        SCREEN_SHAKE:setShakeAmount(shakeAmount)
     end
-    -- TODO: if shields down, shake screen harder relative to the difference between base health and actual
 end
 
 -- Audio/visual feedback for shields down
 function HealthHUDElement:handleShieldDepletedFeedback()
     self:toggleShieldDepletedSound(true)
-    -- TODO: shake the screen
+    SCREEN_SHAKE:setShakeAmount(kShieldDepletedShakeAmount)
 end
 
 -- Audio/visual feedback for shield recharging
@@ -254,7 +268,7 @@ end
 -- Audio/visual feedback for player death
 function HealthHUDElement:handleDeathFeedback()
     self:toggleShieldDepletedSound(false)
-    -- TODO: shake screen real hard
+    SCREEN_SHAKE:setShakeAmount(kDeathShakeAmount)
 end
 
 -- --------------------------------------------------------------------------------

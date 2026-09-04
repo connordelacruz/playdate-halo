@@ -7,10 +7,11 @@ local gfx <const> = pd.graphics
 -- --------------------------------------------------------------------------------
 -- Player Attributes
 -- --------------------------------------------------------------------------------
+-- TODO: just move these to the class definition
 -- Base movement speed (px / sec)
 local kPlayerSpeed <const> = 120
 -- Base shields and health
-local kPlayerBaseHealth <const> = 3
+local kPlayerBaseHealth <const> = 5
 local kPlayerBaseShields <const> = 5
 -- --------------------------------------------------------------------------------
 -- Reticle

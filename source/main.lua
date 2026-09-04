@@ -24,7 +24,7 @@ import 'util/core/__init__'
 import 'util/data'
 import 'util/events'
 import 'util/music'
--- import 'util/screenshake'
+import 'util/screenshake'
 -- ===============================================================================
 -- Debug
 -- (Initialize before game imports to allow conditional importing of test code)
@@ -54,7 +54,7 @@ DEBUG_MANAGER:setFlag('skipTitleScreen')
 -- Player
 -- --------------------------------------------------------------------------------
 -- Never lose health
-DEBUG_MANAGER:setFlag('degreelessnessMode')
+-- DEBUG_MANAGER:setFlag('degreelessnessMode')
 
 -- ===============================================================================
 -- Game Imports
@@ -82,7 +82,7 @@ EVENTS = Events(DEBUG_MANAGER)
 MUSIC_MANAGER = MusicManager()
 
 -- Screen Shaker
--- SCREEN_SHAKE = ScreenShake()
+SCREEN_SHAKE = ScreenShake()
 
 -- ===============================================================================
 -- Scenes
