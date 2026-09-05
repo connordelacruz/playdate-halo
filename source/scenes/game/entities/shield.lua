@@ -14,6 +14,11 @@ local gfx <const> = pd.graphics
 local kShieldRechargeAfterDamageDuration <const> = 3000
 -- When recharging, wait this amount of time before incrementing shields again
 local kShieldRechargeCooldownDuration <const> = 500
+-- --------------------------------------------------------------------------------
+-- Sounds
+-- --------------------------------------------------------------------------------
+local kPlayerShieldPopSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_pop_spartan.wav')
+local kEnemyShieldPopSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_pop_elite.wav')
 
 -- ================================================================================
 -- States
@@ -75,6 +80,7 @@ class('ShieldEmptyState', {
 -- TODO: "particle" effect
 
 function ShieldEmptyState:enter()
+    self.shield:playPopSound()
     -- TODO: use a wrapper, should never be accessing values this deep
     self.shield.entity:emitShieldEmptyEvent()
 end
@@ -132,6 +138,7 @@ class('Shield', {
 
 function Shield:init(entity)
     self.entity = entity
+    self.isFriendly = entity.isFriendly
     -- Value when shields are full
     self.max = self.entity.baseShields
     -- Current shield value
@@ -218,6 +225,26 @@ end
 function Shield:attemptToRecharge()
     if self:isRechargeCooldownOver() then
         self:rechargeBy1()
+    end
+end
+
+-- --------------------------------------------------------------------------------
+-- Sounds
+-- --------------------------------------------------------------------------------
+
+function Shield:playPlayerPopSound()
+    kPlayerShieldPopSound:play(1)
+end
+
+function Shield:playEnemyPopSound()
+    kEnemyShieldPopSound:play(1)
+end
+
+function Shield:playPopSound()
+    if self.isFriendly then
+        self:playPlayerPopSound()
+    else
+        self:playEnemyPopSound()
     end
 end
 

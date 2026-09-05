@@ -32,6 +32,8 @@ local kContainerStyles <const> = {
 -- --------------------------------------------------------------------------------
 local kShieldHitSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_hit.wav')
 local kShieldLowSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_low.wav')
+-- TODO: move to Shield
+local kShieldPopSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_pop_spartan.wav')
 local kShieldDepletedSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_depleted.wav')
 local kShieldRechargeSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_recharge.wav')
 -- --------------------------------------------------------------------------------
@@ -288,8 +290,11 @@ end
 
 -- Audio/visual feedback for shields down
 function HealthHUDElement:handleShieldDepletedFeedback()
+    -- Disable low sound
     self:toggleShieldLowSound(false)
+    -- Start looping shield depleted sound
     self:toggleShieldDepletedSound(true)
+    -- Shake that screen
     SCREEN_SHAKE:setShakeAmount(kShieldDepletedShakeAmount)
 end
 
