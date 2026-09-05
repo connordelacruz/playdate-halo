@@ -279,6 +279,11 @@ end
 -- Emits damage received event.
 -- Kill if health is 0 or below.
 function Entity:applyDamage(damage)
+    -- Don't apply damage if entity is already dying
+    if self.state.key == EntityDeathState.key then
+        return
+    end
+
     local shieldsUpWhenDamaged = true
     -- First attempt to apply damage to shields,
     -- apply damage to health if those are empty
