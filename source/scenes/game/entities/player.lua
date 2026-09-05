@@ -64,6 +64,7 @@ class('Player', {
     damageReceivedEventType = EVENT_TYPES.playerDamageReceived,
     healthChangeEventType = EVENT_TYPES.playerHealthChange,
     shieldChangeEventType = EVENT_TYPES.playerShieldChange,
+    shieldLowEventType = EVENT_TYPES.playerShieldLow,
     shieldEmptyEventType = EVENT_TYPES.playerShieldEmpty,
     shieldRechargingEventType = EVENT_TYPES.playerShieldRecharging,
     deathEventType = EVENT_TYPES.playerDeath,

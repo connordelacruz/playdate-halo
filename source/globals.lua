@@ -53,6 +53,8 @@ local kEntityEventNames <const> = {
     'healthChange',
     -- Shield value changes
     'shieldChange',
+    -- Shield is between 1 and 0
+    'shieldLow',
     -- Shield value is 0
     'shieldEmpty',
     -- Shield is recharging

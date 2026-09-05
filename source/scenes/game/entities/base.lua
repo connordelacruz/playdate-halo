@@ -79,6 +79,7 @@ class('Entity', {
     damageReceivedEventType = EVENT_TYPES.damageReceived,
     healthChangeEventType = EVENT_TYPES.healthChange,
     shieldChangeEventType = EVENT_TYPES.shieldChange,
+    shieldLowEventType = EVENT_TYPES.shieldLow,
     shieldEmptyEventType = EVENT_TYPES.shieldEmpty,
     shieldRechargingEventType = EVENT_TYPES.shieldRecharging,
     deathEventType = EVENT_TYPES.death,
@@ -483,6 +484,10 @@ end
 
 function Entity:emitShieldChangeEvent()
     EVENTS:emit(self.shieldChangeEventType, self)
+end
+
+function Entity:emitShieldLowEvent()
+    EVENTS:emit(self.shieldLowEventType, self)
 end
 
 function Entity:emitShieldEmptyEvent()

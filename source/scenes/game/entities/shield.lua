@@ -168,6 +168,10 @@ function Shield:subtractValue(v)
         newValue = 0
     end
     self:setValue(newValue)
+    if self.value > 0 and self.value <= 1 then
+        -- TODO: is this the best place to emit this? also update doc
+        self.entity:emitShieldLowEvent()
+    end
     return remainingDamage
 end
 

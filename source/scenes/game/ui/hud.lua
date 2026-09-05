@@ -31,6 +31,7 @@ local kContainerStyles <const> = {
 -- HUD sound effects
 -- --------------------------------------------------------------------------------
 local kShieldHitSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_hit.wav')
+local kShieldLowSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_low.wav')
 local kShieldDepletedSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_depleted.wav')
 local kShieldRechargeSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_recharge.wav')
 -- --------------------------------------------------------------------------------
@@ -166,6 +167,9 @@ function HealthHUDElement:init(...)
         [EVENT_TYPES.playerDamageReceived] = function (player, shieldsUpWhenDamaged)
             self:handleDamageReceivedFeedback(player, shieldsUpWhenDamaged)
         end,
+        [EVENT_TYPES.playerShieldLow] = function (player)
+            self:handleShieldLowFeedback()
+        end,
         [EVENT_TYPES.playerShieldEmpty] = function (player)
             self:handleShieldDepletedFeedback()
         end,
@@ -236,6 +240,16 @@ function HealthHUDElement:playShieldRechargeSound()
     kShieldRechargeSound:play(1)
 end
 
+-- Shield low sound.
+-- Play on a loop. Should be toggled off when shields recharge, are depleted, or player dies.
+function HealthHUDElement:toggleShieldLowSound(flag)
+    if flag then
+        kShieldLowSound:play(0)
+    else
+        kShieldLowSound:stop()
+    end
+end
+
 -- Shield depleted sound.
 -- Play on a loop. Should be toggled off when shields recharge or player dies.
 function HealthHUDElement:toggleShieldDepletedSound(flag)
@@ -257,20 +271,28 @@ function HealthHUDElement:handleDamageReceivedFeedback(player, shieldsUpWhenDama
     end
 end
 
+-- Audio/visual feedback for shields low
+function HealthHUDElement:handleShieldLowFeedback()
+    self:toggleShieldLowSound(true)
+end
+
 -- Audio/visual feedback for shields down
 function HealthHUDElement:handleShieldDepletedFeedback()
+    self:toggleShieldLowSound(false)
     self:toggleShieldDepletedSound(true)
     SCREEN_SHAKE:setShakeAmount(kShieldDepletedShakeAmount)
 end
 
 -- Audio/visual feedback for shield recharging
 function HealthHUDElement:handleShieldRechargingFeedback()
+    self:toggleShieldLowSound(false)
     self:toggleShieldDepletedSound(false)
     self:playShieldRechargeSound()
 end
 
 -- Audio/visual feedback for player death
 function HealthHUDElement:handleDeathFeedback()
+    self:toggleShieldLowSound(false)
     self:toggleShieldDepletedSound(false)
     SCREEN_SHAKE:setShakeAmount(kDeathShakeAmount)
 end
