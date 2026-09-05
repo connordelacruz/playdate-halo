@@ -32,8 +32,6 @@ local kContainerStyles <const> = {
 -- --------------------------------------------------------------------------------
 local kShieldHitSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_hit.wav')
 local kShieldLowSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_low.wav')
--- TODO: move to Shield
-local kShieldPopSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_pop_spartan.wav')
 local kShieldDepletedSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_depleted.wav')
 local kShieldRechargeSound <const> = pd.sound.sampleplayer.new('sounds/shield/shield_recharge.wav')
 -- --------------------------------------------------------------------------------
