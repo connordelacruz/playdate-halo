@@ -20,10 +20,11 @@ import 'globals'
 import 'toyboxes'
 -- Core utilities
 import 'util/core/__init__'
--- Optional utilities (uncomment as needed)
 import 'util/data'
 import 'util/events'
+-- Additional utilities
 import 'util/music'
+import 'util/preferences'
 import 'util/screenshake'
 -- ===============================================================================
 -- Debug
@@ -80,6 +81,9 @@ EVENTS = Events(DEBUG_MANAGER)
 
 -- Music Manager (Note: Dependent on DATA_MANAGER for prefs)
 MUSIC_MANAGER = MusicManager()
+
+-- Preferences Manager (Note: Dependent on DATA_MANAGER)
+PREFERENCES = Preferences()
 
 -- Screen Shaker
 SCREEN_SHAKE = ScreenShake()

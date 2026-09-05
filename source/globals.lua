@@ -91,6 +91,11 @@ local kGameLifecycleEvents <const> = {
     'gameOver',
 }
 
+-- System events
+local kSystemEvents <const> = {
+    'preferenceChange',
+}
+
 -- Build event name list.
 local function generateEventNames()
     local eventNames = {}
@@ -105,6 +110,9 @@ local function generateEventNames()
     end
     for i=1,#kGameLifecycleEvents do
         eventNames[#eventNames+1] = kGameLifecycleEvents[i]
+    end
+    for i=1,#kSystemEvents do
+        eventNames[#eventNames+1] = kSystemEvents[i]
     end
 
     return eventNames
