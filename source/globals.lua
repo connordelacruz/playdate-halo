@@ -59,6 +59,8 @@ local kEntityEventNames <const> = {
     'shieldEmpty',
     -- Shield is recharging
     'shieldRecharging',
+    -- Shields full
+    'shieldFull',
     -- Entity dies
     'death',
     -- Entity gets a new weapon

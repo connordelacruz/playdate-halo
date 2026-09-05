@@ -31,6 +31,11 @@ class('ShieldFullState', {
     key = 'full',
 }).extends('ShieldState')
 
+function ShieldFullState:enter()
+    -- TODO: wrapper, no nested calls
+    self.shield.entity:emitShieldFullEvent()
+end
+
 -- Switch to partial/empty if no longer fully charged
 function ShieldFullState:update()
     if not self.shield:isFullyCharged() then
@@ -110,7 +115,6 @@ function ShieldRechargingState:update()
             self.shield:setFullState()
         end
     end
-
 end
 
 -- ================================================================================

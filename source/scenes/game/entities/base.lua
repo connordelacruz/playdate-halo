@@ -82,6 +82,7 @@ class('Entity', {
     shieldLowEventType = EVENT_TYPES.shieldLow,
     shieldEmptyEventType = EVENT_TYPES.shieldEmpty,
     shieldRechargingEventType = EVENT_TYPES.shieldRecharging,
+    shieldFullEventType = EVENT_TYPES.shieldFull,
     deathEventType = EVENT_TYPES.death,
     weaponPickupEventType = EVENT_TYPES.weaponPickup,
     -- Images/spritesheets, animation delays, start/end frames:
@@ -496,6 +497,10 @@ end
 
 function Entity:emitShieldRechargingEvent()
     EVENTS:emit(self.shieldRechargingEventType, self)
+end
+
+function Entity:emitShieldFullEvent()
+    EVENTS:emit(self.shieldFullEventType, self)
 end
 
 function Entity:emitDeathEvent()

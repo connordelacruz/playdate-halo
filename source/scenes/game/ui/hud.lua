@@ -176,6 +176,9 @@ function HealthHUDElement:init(...)
         [EVENT_TYPES.playerShieldRecharging] = function (player)
             self:handleShieldRechargingFeedback()
         end,
+        [EVENT_TYPES.playerShieldFull] = function (player)
+            self:stopShieldRechargeSound()
+        end,
         [EVENT_TYPES.playerDeath] = function (player)
             self:handleDeathFeedback()
         end,
@@ -240,6 +243,12 @@ function HealthHUDElement:playShieldRechargeSound()
     kShieldRechargeSound:play(1)
 end
 
+-- Stop recharging sound
+function HealthHUDElement:stopShieldRechargeSound()
+    -- TODO: fade out??
+    kShieldRechargeSound:stop()
+end
+
 -- Shield low sound.
 -- Play on a loop. Should be toggled off when shields recharge, are depleted, or player dies.
 function HealthHUDElement:toggleShieldLowSound(flag)
@@ -262,6 +271,7 @@ end
 
 -- Audio/visual feedback for damage
 function HealthHUDElement:handleDamageReceivedFeedback(player, shieldsUpWhenDamaged)
+    self:stopShieldRechargeSound()
     if shieldsUpWhenDamaged then
         self:playShieldHitSound()
     else

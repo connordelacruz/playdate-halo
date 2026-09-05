@@ -11,8 +11,8 @@ local gfx <const> = pd.graphics
 -- Base movement speed (px / sec)
 local kPlayerSpeed <const> = 120
 -- Base shields and health
-local kPlayerBaseHealth <const> = 5
-local kPlayerBaseShields <const> = 5
+local kPlayerBaseHealth <const> = 4
+local kPlayerBaseShields <const> = 6
 -- --------------------------------------------------------------------------------
 -- Reticle
 -- --------------------------------------------------------------------------------
@@ -67,6 +67,7 @@ class('Player', {
     shieldLowEventType = EVENT_TYPES.playerShieldLow,
     shieldEmptyEventType = EVENT_TYPES.playerShieldEmpty,
     shieldRechargingEventType = EVENT_TYPES.playerShieldRecharging,
+    shieldFullEventType = EVENT_TYPES.playerShieldFull,
     deathEventType = EVENT_TYPES.playerDeath,
     weaponPickupEventType = EVENT_TYPES.playerWeaponPickup,
     -- Images/spritesheets, animation delays, start/end frames:
