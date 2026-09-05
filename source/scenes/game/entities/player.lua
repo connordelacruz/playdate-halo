@@ -110,6 +110,16 @@ function Player:init(x, y)
     Player.super.init(self, x, y)
     -- Player always faces aiming angle
     self.faceAimingAngle = true
+    -- Stores the function to call when handling shooting input for the selected control style.
+    self.weaponInputHandler = nil
+    self:setShootControlStyle()
+    -- Event listeners
+    self.eventListeners = {
+        [EVENT_TYPES.preferenceChange] = function (...)
+            self:preferenceChangeListener(...)
+        end,
+    }
+    EVENTS:registerListeners(self.eventListeners)
 
     -- Collisions
     self:setTag(TAGS.player)
@@ -187,7 +197,21 @@ function Player:handleButtons(current, pressed, released)
 end
 
 -- Handle weapon firing.
+-- Note: self.weaponInputHandler must be set via setShootControlStyle() first.
 function Player:handleWeaponInput(current, pressed, released)
+    self:weaponInputHandler(current, pressed, released)
+end
+
+-- Control Style: Automatic
+function Player:handleWeaponInputAutomatic(current, pressed, released)
+    -- Toggle weapon fire on/off with B press
+    if (pressed & pd.kButtonB) > 0 then
+        self:toggleWeaponFire()
+    end
+end
+
+-- Control Style: Manual
+function Player:handleWeaponInputManual(current, pressed, released)
     if (pressed & pd.kButtonB) > 0 then
         -- First press = fire once (accounting for weapon cooldown)
         self:attemptToFireWeapon()
@@ -199,6 +223,32 @@ function Player:handleWeaponInput(current, pressed, released)
         self:toggleWeaponFire(false)
     end
 end
+
+-- Switch control styles.
+-- Setting param to true will enable auto shoot, otherwise enable manual.
+-- If not provided, will pull from system prefs.
+function Player:setShootControlStyle(automatic)
+    if automatic == nil then
+        automatic = PREFERENCES:get(PREFERENCES.keys.enableAutoShoot)
+    end
+    DEBUG_MANAGER:vPrint('Player: setting auto shoot to ' .. tostring(automatic))
+    if automatic then
+        self.weaponInputHandler = self.handleWeaponInputAutomatic
+    else
+        self.weaponInputHandler = self.handleWeaponInputManual
+    end
+end
+
+-- Event listener for pref changes.
+-- If autoshoot changed, update control style
+function Player:preferenceChangeListener(prefKey, val)
+    if prefKey == PREFERENCES.keys.enableAutoShoot then
+        -- Toggle fire off before switching styles
+        self:toggleWeaponFire(false)
+        self:setShootControlStyle()
+    end
+end
+
 
 -- --------------------------------------------------------------------------------
 -- Aiming and Direction
@@ -221,9 +271,10 @@ end
 -- Lifecycle
 -- --------------------------------------------------------------------------------
 
--- Remove reticle when Player is removed.
+-- Remove reticle and de-register event listeners when Player is removed.
 function Player:remove()
     self.reticle:remove()
+    EVENTS:deregisterListeners(self.eventListeners)
     Player.super.remove(self)
 end
 

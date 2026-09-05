@@ -70,6 +70,7 @@ function Preferences:registerMenuItems()
             self:set('enableAutoShoot', val)
         end
     )
+    -- TODO: print error!
 end
 
 -- --------------------------------------------------------------------------------
