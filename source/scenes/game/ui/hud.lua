@@ -20,6 +20,7 @@ local kTextStroke <const> = 1
 local kTextStyles <const> = {
     font = kHUDFont,
     -- NOTE: playout.text does not honor these styles:
+    -- TODO: move away from stroke in favor of backgrounds
     stroke = kTextStroke,
 }
 -- Containers
@@ -58,6 +59,9 @@ function HUD:init()
         HealthHUDElement(0, 0, 0.0, 0.0),
         ScoreHUDElement(SCREEN_CENTER_X, 0, 0.5, 0.0),
         WeaponHUDElement(SCREEN_WIDTH, 0, 1.0, 0.0),
+        -- Weird coordinates, but we're trying to put it over the B button.
+        -- Y is increased by 2 so bottom border is off-screen.
+        AutoShootHUDElement((SCREEN_WIDTH * 2 / 3) + 11, SCREEN_HEIGHT + 2, 0.5, 1.0),
     }
     self:add()
 end
@@ -71,11 +75,8 @@ function HUD:remove()
 end
 
 -- ================================================================================
--- HUD Elements
--- ================================================================================
--- --------------------------------------------------------------------------------
 -- Parent class for HUD elements
--- --------------------------------------------------------------------------------
+-- ================================================================================
 class('HUDElement').extends(gfx.sprite)
 
 -- NOTE: child classes should initialize self.eventListeners before calling parent constructor
@@ -148,9 +149,9 @@ function HUDElement:remove()
     HUDElement.super.remove(self)
 end
 
--- --------------------------------------------------------------------------------
+-- ================================================================================
 -- Health and Shields
--- --------------------------------------------------------------------------------
+-- ================================================================================
 class('HealthHUDElement').extends('HUDElement')
 
 function HealthHUDElement:init(...)
@@ -189,6 +190,10 @@ function HealthHUDElement:init(...)
     }
     HealthHUDElement.super.init(self, ...)
 end
+
+-- --------------------------------------------------------------------------------
+-- TODO: organize code, add comment section headers:
+-- --------------------------------------------------------------------------------
 
 function HealthHUDElement:buildUITree()
     self.shieldsTxt = txt(
@@ -310,9 +315,9 @@ function HealthHUDElement:handleDeathFeedback()
     SCREEN_SHAKE:setShakeAmount(kDeathShakeAmount)
 end
 
--- --------------------------------------------------------------------------------
+-- ================================================================================
 -- Score
--- --------------------------------------------------------------------------------
+-- ================================================================================
 class('ScoreHUDElement').extends('HUDElement')
 
 function ScoreHUDElement:init(...)
@@ -354,9 +359,9 @@ function ScoreHUDElement:updateScore(score)
     self:updateUI(true)
 end
 
--- --------------------------------------------------------------------------------
+-- ================================================================================
 -- Weapon and Ammo
--- --------------------------------------------------------------------------------
+-- ================================================================================
 class('WeaponHUDElement').extends('HUDElement')
 
 function WeaponHUDElement:init(...)
@@ -457,4 +462,59 @@ end
 function WeaponHUDElement:updateAmmo(ammo)
     self.ammoTxt.text = self:formatAmmo(ammo)
     self:updateUI()
+end
+
+-- ================================================================================
+-- Auto-Shoot State
+-- ================================================================================
+class('AutoShootHUDElement').extends('HUDElement')
+
+-- TODO: need to listen for weapon state somehow
+
+function AutoShootHUDElement:init(...)
+    self.eventListeners = {
+        [EVENT_TYPES.preferenceChange] = function (prefKey, val)
+            if prefKey == PREFERENCES.keys.enableAutoShoot then
+                self:toggleVisibityFromPreferences()
+            end
+        end,
+        -- TODO: listen for player fire toggle
+    }
+    AutoShootHUDElement.super.init(self, ...)
+    -- Set initial visibility
+    self:toggleVisibityFromPreferences()
+end
+
+function AutoShootHUDElement:buildUITree()
+    -- TODO: come up with a nicer design
+    self.stateTxt = txt(
+        'OFF',
+        {
+            alignment = kTextAlignment.center,
+            style = kTextStyles,
+        }
+    )
+    local container = box(
+        {
+            backgroundColor = gfx.kColorWhite,
+            border = 2,
+            borderRadius = 2,
+            style = kContainerStyles,
+        },
+        {
+            self.stateTxt,
+        }
+    )
+    return playout.tree.new(container)
+end
+
+function AutoShootHUDElement:updateState(isFiring)
+    self.stateTxt.text = isFiring and 'ON' or 'OFF'
+    self:setImageDrawMode(isFiring and gfx.kDrawModeInverted or gfx.kDrawModeCopy)
+    self:updateUI()
+end
+
+-- Toggle visibility based on control scheme
+function AutoShootHUDElement:toggleVisibityFromPreferences()
+    self:setVisible(PREFERENCES:get(PREFERENCES.keys.enableAutoShoot))
 end
