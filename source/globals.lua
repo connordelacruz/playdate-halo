@@ -62,6 +62,7 @@ local kEntityEventNames <const> = {
     -- Entity gets a new weapon
     'weaponPickup',
 }
+
 -- Events for player.
 -- All Entity events, but prefixed with 'player' and honoring camel case.
 -- (E.g. 'spawn' -> 'playerSpawn')
@@ -75,9 +76,15 @@ local function generatePlayerEventNames()
     return playerEventNames
 end
 local kPlayerEventNames <const> = generatePlayerEventNames()
+
 -- Events for scoring.
 local kScoreEventNames <const> = {
     'scoreChange',
+}
+
+-- Events for game lifecycle
+local kGameLifecycleEvents <const> = {
+    'gameOver',
 }
 
 -- Build event name list.
@@ -91,6 +98,9 @@ local function generateEventNames()
     end
     for i=1,#kScoreEventNames do
         eventNames[#eventNames+1] = kScoreEventNames[i]
+    end
+    for i=1,#kGameLifecycleEvents do
+        eventNames[#eventNames+1] = kGameLifecycleEvents[i]
     end
 
     return eventNames

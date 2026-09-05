@@ -28,6 +28,8 @@ function GameScene:init()
     self.hud = HUD()
     -- Spawn player in the center
     self.player = Player(SCREEN_WIDTH / 4, SCREEN_CENTER_Y)
+    -- TODO: test a more fun weapon
+    self.player:giveWeapon(PlasmaRifleWeapon)
 
     -- Create camera and attach to player's reticle
     self.camera = Camera()

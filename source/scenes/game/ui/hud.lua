@@ -175,6 +175,10 @@ function HealthHUDElement:init(...)
         [EVENT_TYPES.playerDeath] = function (player)
             self:handleDeathFeedback()
         end,
+        [EVENT_TYPES.gameOver] = function (gm)
+            -- Stop shield depleted loop
+            self:toggleShieldDepletedSound(false)
+        end,
     }
     HealthHUDElement.super.init(self, ...)
 end
@@ -392,6 +396,7 @@ function WeaponHUDElement:formatAmmo(val)
     return string.format('%03d', val)
 end
 
+-- TODO: SMALL ICONS LOOK WEIRD. Maybe do recompute image layout and just not ammo?
 -- TODO: UPDATE ALL TO USE ICON and REMOVE (or redesign??) NAME STUFF:
 -- TODO: after 0 pad, updateUI() calls should not recompute layout
 

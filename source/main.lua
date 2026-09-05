@@ -49,7 +49,7 @@ DEBUG_MANAGER:setFlag('verbose')
 -- Scenes
 -- --------------------------------------------------------------------------------
 -- Skip the title screen and start the game scene at launch
-DEBUG_MANAGER:setFlag('skipTitleScreen')
+-- DEBUG_MANAGER:setFlag('skipTitleScreen')
 -- --------------------------------------------------------------------------------
 -- Player
 -- --------------------------------------------------------------------------------
