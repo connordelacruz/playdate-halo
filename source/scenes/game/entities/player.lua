@@ -207,6 +207,8 @@ function Player:handleWeaponInputAutomatic(current, pressed, released)
     -- Toggle weapon fire on/off with B press
     if (pressed & pd.kButtonB) > 0 then
         self:toggleWeaponFire()
+        -- Emit event for weapon fire toggle so HUD element can update
+        self:emitPlayerAutoShootToggleEvent()
     end
 end
 
@@ -245,6 +247,7 @@ function Player:preferenceChangeListener(prefKey, val)
     if prefKey == PREFERENCES.keys.enableAutoShoot then
         -- Toggle fire off before switching styles
         self:toggleWeaponFire(false)
+        self:emitPlayerAutoShootToggleEvent()
         self:setShootControlStyle()
     end
 end
@@ -265,6 +268,14 @@ end
 function Player:handleAiming()
     self:updateDirectionFromAimingAngle()
     self.reticle:updatePosition(self.x, self.y, self:calculateAimingAngle())
+end
+
+-- --------------------------------------------------------------------------------
+-- Event Emitters
+-- --------------------------------------------------------------------------------
+
+function Player:emitPlayerAutoShootToggleEvent()
+    EVENTS:emit(EVENT_TYPES.playerAutoShootToggle, self.weapon:isFiring())
 end
 
 -- --------------------------------------------------------------------------------

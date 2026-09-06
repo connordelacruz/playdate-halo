@@ -478,7 +478,9 @@ function AutoShootHUDElement:init(...)
                 self:toggleVisibityFromPreferences()
             end
         end,
-        -- TODO: listen for player fire toggle
+        [EVENT_TYPES.playerAutoShootToggle] = function (isFiring)
+            self:updateState(isFiring)
+        end,
     }
     AutoShootHUDElement.super.init(self, ...)
     -- Set initial visibility

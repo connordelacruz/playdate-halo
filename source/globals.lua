@@ -68,6 +68,11 @@ local kEntityEventNames <const> = {
 }
 
 -- Events for player.
+-- Additional events that are specific to the player entity:
+local kPlayerSpecificEventNames <const> = {
+    -- If auto-shoot is enabled, this event gets triggered when firing is toggled by input
+    'playerAutoShootToggle',
+}
 -- All Entity events, but prefixed with 'player' and honoring camel case.
 -- (E.g. 'spawn' -> 'playerSpawn')
 local function generatePlayerEventNames()
@@ -75,7 +80,10 @@ local function generatePlayerEventNames()
     for i=1,#kEntityEventNames do
         local name = kEntityEventNames[i]
         -- Prefix and capitalize first letter of generic name
-        playerEventNames[i] = 'player' .. name:gsub('^%l', string.upper)
+        playerEventNames[#playerEventNames+1] = 'player' .. name:gsub('^%l', string.upper)
+    end
+    for i=1,#kPlayerSpecificEventNames do
+        playerEventNames[#playerEventNames+1] = kPlayerSpecificEventNames[i]
     end
     return playerEventNames
 end
