@@ -1,5 +1,6 @@
 import 'scenes/game/ui/__init__'
 import 'scenes/game/weapons/__init__'
+import 'scenes/game/items/__init__'
 import 'scenes/game/entities/__init__'
 import 'scenes/game/lifecycle'
 import 'scenes/game/camera'
@@ -42,6 +43,11 @@ function GameScene:init()
         -- Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
         Elite(SCREEN_WIDTH - SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
         -- Grunt(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
+    }
+
+    -- DEBUG: Spawn items for testing
+    self.items = {
+        WeaponPickup(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, PlasmaRifleWeapon)
     }
 end
 

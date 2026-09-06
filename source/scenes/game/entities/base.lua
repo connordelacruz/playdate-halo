@@ -375,9 +375,20 @@ end
 -- Weapons 
 -- --------------------------------------------------------------------------------
 
+-- Remove currently held weapon.
+function Entity:removeWeapon()
+    if self.weapon ~= nil then
+        -- Stop shooting first
+        self:toggleWeaponFire(false)
+        self.weapon:remove()
+    end
+end
+
 -- Give the entity a new weapon.
+-- Removes the old weapon first.
 -- Emits weapon pickup event.
 function Entity:giveWeapon(weaponClass)
+    self:removeWeapon()
     self.weapon = weaponClass(self)
     self:emitWeaponPickupEvent()
 end

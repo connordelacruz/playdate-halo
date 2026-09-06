@@ -181,9 +181,26 @@ function Player:handleMovement(current, pressed, released)
         -- Calculate desired position and move with collisions
         local targetX = self.x + dx * distance
         local targetY = self.y + dy * distance
-        self:moveWithCollisions(targetX, targetY)
+        local _, _, collisions, _ = self:moveWithCollisions(targetX, targetY)
+        self:handleCollisions(collisions)
     else
         self.isMoving = false
+    end
+end
+
+-- --------------------------------------------------------------------------------
+-- Collisions
+-- --------------------------------------------------------------------------------
+
+function Player:handleCollisions(collisions)
+    for i=1,#collisions do
+        local collision = collisions[i]
+        local other = collision.other
+        local tag = other:getTag()
+        -- Item pickups
+        if tag == TAGS.item then
+            other:pickup(self)
+        end
     end
 end
 
@@ -207,8 +224,6 @@ function Player:handleWeaponInputAutomatic(current, pressed, released)
     -- Toggle weapon fire on/off with B press
     if (pressed & pd.kButtonB) > 0 then
         self:toggleWeaponFire()
-        -- Emit event for weapon fire toggle so HUD element can update
-        self:emitPlayerAutoShootToggleEvent()
     end
 end
 
@@ -268,6 +283,18 @@ end
 function Player:handleAiming()
     self:updateDirectionFromAimingAngle()
     self.reticle:updatePosition(self.x, self.y, self:calculateAimingAngle())
+end
+
+-- --------------------------------------------------------------------------------
+-- Weapons
+-- --------------------------------------------------------------------------------
+
+-- Override toggleWeaponFire() to emit auto shoot toggle event
+function Player:toggleWeaponFire(flag)
+    Player.super.toggleWeaponFire(self, flag)
+    if PREFERENCES:get(PREFERENCES.keys.enableAutoShoot) then
+        self:emitPlayerAutoShootToggleEvent()
+    end
 end
 
 -- --------------------------------------------------------------------------------

@@ -26,6 +26,8 @@ local kTagNames <const> = {
     'enemy',
     -- Projectiles
     'projectile',
+    -- Pickups
+    'item',
     -- Level boundaries
     'wall',
 }
@@ -151,6 +153,8 @@ Z_INDEX = {
     reticle = 6000,
     -- Entities
     entity = 1000,
+    -- Items
+    item = 900,
     -- Stage background
     background = -9999,
 }
