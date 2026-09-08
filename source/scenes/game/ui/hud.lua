@@ -16,17 +16,16 @@ local img <const> = playout.image.new
 -- --------------------------------------------------------------------------------
 -- Text
 local kHUDFont <const> = gfx.font.new('fonts/Roobert-11-Mono-Condensed')
-local kTextStroke <const> = 1
 local kTextStyles <const> = {
     font = kHUDFont,
-    -- NOTE: playout.text does not honor these styles:
-    -- TODO: move away from stroke in favor of backgrounds
-    stroke = kTextStroke,
 }
 -- Containers
 local kContainerPadding <const> = 4
 local kContainerStyles <const> = {
-    padding = kContainerPadding,
+    backgroundColor = gfx.kColorWhite,
+    border = 1,
+    borderRadius = 4,
+    padding = 3,
 }
 -- --------------------------------------------------------------------------------
 -- HUD sound effects
@@ -121,7 +120,6 @@ function HUDElement:buildUITree()
         'placeholder',
         {
             alignment = kTextAlignment.center,
-            stroke = 1,
         }
     )
     local tmpContainer = box(
@@ -200,14 +198,12 @@ function HealthHUDElement:buildUITree()
         'Shields: 0',
         {
             style = kTextStyles,
-            stroke = kTextStroke,
         }
     )
     self.healthTxt = txt(
         'Health: 0',
         {
             style = kTextStyles,
-            stroke = kTextStroke,
         }
     )
     local container = box(
@@ -340,7 +336,6 @@ function ScoreHUDElement:buildUITree()
         {
             alignment = kTextAlignment.center,
             style = kTextStyles,
-            stroke = kTextStroke,
         }
     )
     local container = box(
@@ -384,17 +379,12 @@ function WeaponHUDElement:buildUITree()
         {
             alignment = kTextAlignment.right,
             style = kTextStyles,
-            stroke = kTextStroke,
         }
     )
     self.weaponIconImg = img(self:createDummyWeaponImage())
 
     local container = box(
         {
-            -- TODO: make styles more uniform and extract to resusable table
-            backgroundColor = gfx.kColorWhite,
-            border = 1,
-            borderRadius = 4,
             direction = playout.kDirectionHorizontal,
             style = kContainerStyles,
         },
@@ -408,6 +398,7 @@ end
 
 -- Initialize fixed-size image to use below weapon icons
 function WeaponHUDElement:initWeaponBackgroundImage()
+    -- TODO: 1px left border and 1px "padding" next to it, update width to account for it
     -- This should be larger than all the currently-planned weapon images, and is fixed so we won't need to recompute the layout
     self.backgroundImage = gfx.image.new(50, 20, gfx.kColorWhite)
 end
@@ -416,6 +407,7 @@ end
 function WeaponHUDElement:createWeaponImage(weapon)
     local image = self.backgroundImage:copy()
     gfx.pushContext(image)
+        -- TODO: after updating above to add left border, position weapon icon left aligned but 2px to the right
         weapon.icon:drawAnchored(image.width / 2, image.height / 2, 0.5, 0.5)
     gfx.popContext()
     return image
