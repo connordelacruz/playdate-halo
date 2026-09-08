@@ -49,11 +49,54 @@ function GameScene:init()
     self.items = {
         WeaponPickup(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, PlasmaRifleWeapon)
     }
+
+    -- Register end game menu item
+    self:registerMenuItems()
 end
+
+-- Register "end game" menu item
+function GameScene:registerMenuItems()
+    self.menuItems = {}
+    local menu = pd.getSystemMenu()
+    local quitToTitleMenuItem, error = menu:addMenuItem(
+        'End Game',
+        function ()
+            DEBUG_MANAGER:vPrint('GameScene: "End Game" menu item clicked')
+            -- Kill player to trigger game over
+            self.player:kill()
+            -- De-register menu item so game over can't be double triggered
+            self:deregisterMenuItems()
+        end
+    )
+    if quitToTitleMenuItem == nil then
+        DEBUG_MANAGER:vPrint('GameScene: Failed to add menu item:')
+        DEBUG_MANAGER:vPrint(error, 1)
+    else
+        self.menuItems[#self.menuItems+1] = quitToTitleMenuItem
+    end
+end
+
+function GameScene:deregisterMenuItems()
+    local menu = pd.getSystemMenu()
+    for i=1,#self.menuItems do
+        menu:removeMenuItem(self.menuItems[i])
+    end
+    self.menuItems = {}
+end
+
+-- --------------------------------------------------------------------------------
+-- Lifecycle
+-- --------------------------------------------------------------------------------
 
 -- Show crank indicator if docked.
 function GameScene:update()
     if pd.isCrankDocked() then
         pd.ui.crankIndicator:draw()
     end
+end
+
+-- De-register any menu items on remove()
+function GameScene:remove()
+    self:deregisterMenuItems()
+    GameScene.super.remove(self)
 end

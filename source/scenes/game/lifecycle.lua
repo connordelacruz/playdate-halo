@@ -68,8 +68,6 @@ class('GameMaster', {
 function GameMaster:init()
     self:initStatesAndSetInitial()
 
-    self:registerMenuItem()
-
     self.eventListeners = {
         [EVENT_TYPES.playerDeath] = function(entity)
             self:onPlayerDeath(entity)
@@ -78,25 +76,6 @@ function GameMaster:init()
     EVENTS:registerListeners(self.eventListeners)
 
     self:add()
-end
-
--- --------------------------------------------------------------------------------
--- Menu Items
--- --------------------------------------------------------------------------------
-
-function GameMaster:registerMenuItem()
-    local menu = pd.getSystemMenu()
-    local quitToTitleMenuItem, error = menu:addMenuItem(
-        'Quit Game',
-        function ()
-            DEBUG_MANAGER:vPrint('GameMaster: "Quit Game" menu item clicked')
-            self:triggerGameOver()
-        end
-    )
-    if quitToTitleMenuItem == nil then
-        DEBUG_MANAGER:vPrint('GameMaster: Failed to add menu item:')
-        DEBUG_MANAGER:vPrint(error, 1)
-    end
 end
 
 -- --------------------------------------------------------------------------------
