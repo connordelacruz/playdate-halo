@@ -70,6 +70,8 @@ class('Player', {
     shieldFullEventType = EVENT_TYPES.playerShieldFull,
     deathEventType = EVENT_TYPES.playerDeath,
     weaponPickupEventType = EVENT_TYPES.playerWeaponPickup,
+    ammoChangeEventType = EVENT_TYPES.playerAmmoChange,
+    ammoEmptyEventType = EVENT_TYPES.playerAmmoEmpty,
     -- Images/spritesheets, animation delays, start/end frames:
     -- Idle + walking
     idleWalkSpritesheet = gfx.imagetable.new('images/chief/chief-idle-walk'),

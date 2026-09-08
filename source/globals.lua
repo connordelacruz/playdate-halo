@@ -74,6 +74,10 @@ local kEntityEventNames <const> = {
 local kPlayerSpecificEventNames <const> = {
     -- If auto-shoot is enabled, this event gets triggered when firing is toggled by input
     'playerAutoShootToggle',
+    -- When ammo changes on player weapon
+    'playerAmmoChange',
+    -- When player is out of ammo
+    'playerAmmoEmpty',
 }
 -- All Entity events, but prefixed with 'player' and honoring camel case.
 -- (E.g. 'spawn' -> 'playerSpawn')

@@ -74,7 +74,7 @@ class('Entity', {
     startingWeaponClass = nil,
     -- (TESTING) If true, entity health value will never change
     invincible = false,
-    -- Event types to emit
+    -- Event types to emit:
     spawnEventType = EVENT_TYPES.spawn,
     damageReceivedEventType = EVENT_TYPES.damageReceived,
     healthChangeEventType = EVENT_TYPES.healthChange,
@@ -85,6 +85,9 @@ class('Entity', {
     shieldFullEventType = EVENT_TYPES.shieldFull,
     deathEventType = EVENT_TYPES.death,
     weaponPickupEventType = EVENT_TYPES.weaponPickup,
+    -- Note: The plan is to only worry about ammo for the player. If these event types are nil, the emit functions will just return
+    ammoChangeEventType = nil,
+    ammoEmptyEventType = nil,
     -- Images/spritesheets, animation delays, start/end frames:
     -- Idle + walking
     idleWalkSpritesheet = gfx.imagetable.new('images/dummy/dummy-idle-walk'),
@@ -525,6 +528,20 @@ end
 
 function Entity:emitWeaponPickupEvent()
     EVENTS:emit(self.weaponPickupEventType, self.weapon)
+end
+
+function Entity:emitAmmoChangeEvent()
+    if self.ammoChangeEventType == nil then
+        return
+    end
+    EVENTS:emit(self.ammoChangeEventType, self.weapon)
+end
+
+function Entity:emitAmmoEmptyEvent()
+    if self.ammoEmptyEventType == nil then
+        return
+    end
+    EVENTS:emit(self.ammoEmptyEventType, self.weapon)
 end
 
 -- --------------------------------------------------------------------------------

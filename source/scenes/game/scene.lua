@@ -30,7 +30,7 @@ function GameScene:init()
     -- Spawn player in the center
     self.player = Player(SCREEN_WIDTH / 4, SCREEN_CENTER_Y)
     -- Start with an assault rifle
-    self.player:giveWeapon(AssaultRifleWeapon)
+    -- self.player:giveWeapon(AssaultRifleWeapon)
 
     -- Create camera and attach to player's reticle
     self.camera = Camera()
@@ -47,7 +47,7 @@ function GameScene:init()
 
     -- DEBUG: Spawn items for testing
     self.items = {
-        WeaponPickup(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, PlasmaRifleWeapon)
+        WeaponPickup(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, AssaultRifleWeapon),
     }
 
     -- Register end game menu item

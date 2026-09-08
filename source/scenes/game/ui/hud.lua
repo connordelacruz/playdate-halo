@@ -371,6 +371,9 @@ function WeaponHUDElement:init(...)
         [EVENT_TYPES.playerWeaponPickup] = function (weapon)
             self:updateValues(weapon)
         end,
+        [EVENT_TYPES.playerAmmoChange] = function (weapon)
+            self:updateAmmo(weapon.ammo)
+        end,
     }
     WeaponHUDElement.super.init(self, ...)
 end

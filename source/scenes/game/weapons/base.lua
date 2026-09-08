@@ -25,6 +25,8 @@ local kProjectileDefaultImage <const> = createImage()
 -- --------------------------------------------------------------------------------
 -- Weapons
 -- --------------------------------------------------------------------------------
+-- Max ammo any weapon can carry
+local kWeaponMaxAmmo <const> = 999
 -- Default firing sound
 local kWeaponDefaultFiringSound <const> = pd.sound.sampleplayer.new('sounds/weapons/magnum_fire.wav')
 kWeaponDefaultFiringSound:setVolume(0.25)
@@ -189,7 +191,6 @@ class('Weapon', {
     fireSound = kWeaponDefaultFiringSound,
     -- Time between shots (ms)
     timeBetweenShots = 600,
-    -- TODO: implement ammo
     -- If true, ammo is unlimited
     bottomlessClip = true,
     -- Initial amount of ammo (ignored if bottomlessClip is true)
@@ -202,6 +203,10 @@ function Weapon:init(carrierEntity)
     self.isFriendlyFire = self.carrierEntity.isFriendly
     -- TODO: implement ammo
     self.ammo = self.startingAmmo
+    -- If carrier is any Entity other than Player, don't worry about ammo
+    if self.carrierEntity.className ~= 'Player' then
+        self.bottomlessClip = true
+    end
     -- Timestamp since last shot. Default to -1 so we can start firing right away
     self.lastShotTimestamp = -1
 
@@ -228,8 +233,13 @@ end
 -- Takes shot origin and angle.
 function Weapon:attemptToFire()
     if self:isCooldownOver() then
-        local originX, originY, angle = self.carrierEntity:getOriginAndAngle()
-        self:fire(originX, originY, angle)
+        if self:isOutOfAmmo() then
+            -- TODO: if isOutOfAmmo(), play dry fire sound?
+            DEBUG_MANAGER:vPrint('Weapon: attempted to fire, but out of ammo')
+        else
+            local originX, originY, angle = self.carrierEntity:getOriginAndAngle()
+            self:fire(originX, originY, angle)
+        end
     end
 end
 
@@ -241,6 +251,8 @@ function Weapon:fire(originX, originY, angle)
     self:updateLastShotTimestamp()
     -- Play fire sound effect
     self.fireSound:play(1)
+    -- Decrease ammo
+    self:updateAmmoAfterShotFired()
 end
 
 -- Set whether weapon should be firing or inactive.
@@ -264,4 +276,52 @@ function Weapon:toggleFire(flag)
         flag = self.state.key == WeaponInactiveState.key
     end
     self:setIsFiring(flag)
+end
+
+-- --------------------------------------------------------------------------------
+-- Ammo
+-- --------------------------------------------------------------------------------
+
+-- Set the weapon's ammo and tell carrier entity to emit ammo change event.
+-- If ammo is now 0, will also tell carrier entity to emit ammo empty event.    
+function Weapon:setAmmo(val)
+    self.ammo = val
+    self.carrierEntity:emitAmmoChangeEvent()
+    if self.ammo == 0 then
+        self.carrierEntity:emitAmmoEmptyEvent()
+    end
+end
+
+-- Add ammo to weapon.
+-- Will never exceed kWeaponMaxAmmo.
+function Weapon:addAmmo(val)
+    local newAmmo = self.ammo + val
+    if newAmmo > kWeaponMaxAmmo then
+        newAmmo = kWeaponMaxAmmo
+    end
+    self:setAmmo(newAmmo)
+end
+
+-- Remove ammo from weapon.
+-- Value will never go below 0.
+function Weapon:subtractAmmo(val)
+    local newAmmo = self.ammo - val
+    if newAmmo < 0 then
+        newAmmo = 0
+    end
+    self:setAmmo(newAmmo)
+end
+
+-- Shorthand to subtract 1 from ammo when a shot is taken.
+-- If bottomlessClip is true, just return.
+function Weapon:updateAmmoAfterShotFired()
+    if self.bottomlessClip then
+        return
+    end
+    self:subtractAmmo(1)
+end
+
+-- Returns true if ammo is 0 and bottomlessClip is false.
+function Weapon:isOutOfAmmo()
+    return not self.bottomlessClip and self.ammo <= 0
 end
