@@ -34,5 +34,5 @@ class('PlasmaPistolWeapon', {
     icon = gfx.image.new('images/weapons/plasmapistol.png'),
     fireSound = kPlasmaPistolFiringSound,
     timeBetweenShots = 400,
-    bottomlessClip = true,
+    startingAmmo = 100,
 }).extends('Weapon')

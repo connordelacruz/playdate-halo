@@ -194,7 +194,7 @@ class('Weapon', {
     -- If true, ammo is unlimited.
     -- This always gets set to true for NPCs.
     -- Can be overridden per-instance with the 2nd optional param.
-    bottomlessClip = true,
+    bottomlessClip = false,
     -- Initial amount of ammo (ignored if bottomlessClip is true)
     startingAmmo = 999,
 }).extends('FSMSprite')

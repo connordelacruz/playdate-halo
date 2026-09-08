@@ -47,7 +47,7 @@ function GameScene:init()
 
     -- DEBUG: Spawn items for testing
     self.items = {
-        WeaponPickup(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, AssaultRifleWeapon),
+        -- WeaponPickup(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, PlasmaRifleWeapon),
     }
 
     -- Register end game menu item

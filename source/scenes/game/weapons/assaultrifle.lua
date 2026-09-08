@@ -35,8 +35,6 @@ class('AssaultRifleWeapon', {
     icon = gfx.image.new('images/weapons/assaultrifle.png'),
     fireSound = kAssaultRifleFiringSound,
     timeBetweenShots = 120,
-    -- TODO: bigger starting clip, this is just for ammo testing:
-    startingAmmo = 32,
-    bottomlessClip = false,
+    startingAmmo = 192,
 }).extends('Weapon')
 
