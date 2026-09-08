@@ -372,22 +372,13 @@ function WeaponHUDElement:init(...)
             self:updateValues(weapon)
         end,
         [EVENT_TYPES.playerAmmoChange] = function (weapon)
-            self:updateAmmo(weapon.ammo)
+            self:updateAmmo(weapon)
         end,
     }
     WeaponHUDElement.super.init(self, ...)
 end
 
 function WeaponHUDElement:buildUITree()
-    -- TODO: remove weapon name stuff
-    self.weaponNameTxt = txt(
-        'None',
-        {
-            alignment = kTextAlignment.right,
-            style = kTextStyles,
-            stroke = kTextStroke,
-        }
-    )
     self.ammoTxt = txt(
         self:formatAmmo(0),
         {
@@ -398,15 +389,16 @@ function WeaponHUDElement:buildUITree()
     )
     self.weaponIconImg = img(self:createDummyWeaponImage())
 
-    -- TODO: white bg, 1 px border
     local container = box(
         {
-            -- hAlign = playout.kAlignEnd,
+            -- TODO: make styles more uniform and extract to resusable table
+            backgroundColor = gfx.kColorWhite,
+            border = 1,
+            borderRadius = 4,
             direction = playout.kDirectionHorizontal,
             style = kContainerStyles,
         },
         {
-            -- self.weaponNameTxt,
             self.ammoTxt,
             self.weaponIconImg,
         }
@@ -440,39 +432,27 @@ function WeaponHUDElement:formatAmmo(val)
 end
 
 -- TODO: SMALL ICONS LOOK WEIRD. Maybe do recompute image layout and just not ammo?
--- TODO: UPDATE ALL TO USE ICON and REMOVE (or redesign??) NAME STUFF:
--- TODO: after 0 pad, updateUI() calls should not recompute layout
 
 function WeaponHUDElement:updateValues(weapon)
     self:updateWeaponIcon(weapon)
-    -- self:updateWeaponName(weapon.name)
-    self:updateAmmo(weapon.ammo)
+    self:updateAmmo(weapon)
 end
 
 function WeaponHUDElement:updateWeaponIcon(weapon)
     self.weaponIconImg.img = self:createWeaponImage(weapon)
-    self:updateUI()
+    self:updateUI(true)
 end
 
--- TODO: remove
-function WeaponHUDElement:updateWeaponName(name)
-    DEBUG_MANAGER:vPrint(name)
-    self.weaponNameTxt.text = name
-    self:updateUI()
-end
-
--- TODO: bottomless?
-function WeaponHUDElement:updateAmmo(ammo)
+function WeaponHUDElement:updateAmmo(weapon)
+    local ammo = weapon.bottomlessClip and 999 or weapon.ammo
     self.ammoTxt.text = self:formatAmmo(ammo)
-    self:updateUI()
+    self:updateUI(true)
 end
 
 -- ================================================================================
 -- Auto-Shoot State
 -- ================================================================================
 class('AutoShootHUDElement').extends('HUDElement')
-
--- TODO: need to listen for weapon state somehow
 
 function AutoShootHUDElement:init(...)
     self.eventListeners = {
