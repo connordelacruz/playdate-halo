@@ -191,20 +191,22 @@ class('Weapon', {
     fireSound = kWeaponDefaultFiringSound,
     -- Time between shots (ms)
     timeBetweenShots = 600,
-    -- If true, ammo is unlimited
+    -- If true, ammo is unlimited.
+    -- This always gets set to true for NPCs.
+    -- Can be overridden per-instance with the 2nd optional param.
     bottomlessClip = true,
     -- Initial amount of ammo (ignored if bottomlessClip is true)
     startingAmmo = 999,
 }).extends('FSMSprite')
 
-function Weapon:init(carrierEntity)
+function Weapon:init(carrierEntity, forceBottomless)
     self.carrierEntity = carrierEntity
     -- Whether this is a player's weapon or an enemy's
     self.isFriendlyFire = self.carrierEntity.isFriendly
-    -- TODO: implement ammo
+    -- Current ammo count
     self.ammo = self.startingAmmo
     -- If carrier is any Entity other than Player, don't worry about ammo
-    if self.carrierEntity.className ~= 'Player' then
+    if self.carrierEntity.className ~= 'Player' or forceBottomless then
         self.bottomlessClip = true
     end
     -- Timestamp since last shot. Default to -1 so we can start firing right away

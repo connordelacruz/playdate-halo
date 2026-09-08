@@ -171,9 +171,9 @@ function Entity:init(x, y)
     self:moveTo(x, y)
     self:add()
 
-    -- Give entity its starting weapon (if defined)
+    -- Initialize starting weapon
     if self.startingWeaponClass ~= nil then
-        self:giveWeapon(self.startingWeaponClass)
+        self:giveStartingWeapon()
     end
 
     -- Emit spawn event
@@ -390,10 +390,21 @@ end
 -- Give the entity a new weapon.
 -- Removes the old weapon first.
 -- Emits weapon pickup event.
-function Entity:giveWeapon(weaponClass)
+function Entity:giveWeapon(weaponClass, forceBottomless)
     self:removeWeapon()
-    self.weapon = weaponClass(self)
+    self.weapon = weaponClass(self, forceBottomless)
     self:emitWeaponPickupEvent()
+end
+
+-- Shorthand to give Entity starting weapon (if defined).
+-- Will also ensure that starting weapon always has bottomlessClip = true.
+function Entity:giveStartingWeapon()
+    if self.startingWeaponClass == nil then
+        DEBUG_MANAGER:vPrint(self.className .. ': attempted to give starting weapon, but startingWeaponClass is not defined.')
+        return
+    end
+    -- Give starting weapon, set bottomlessClip to true
+    self:giveWeapon(self.startingWeaponClass, true)
 end
 
 -- Attempt to fire single projectile.

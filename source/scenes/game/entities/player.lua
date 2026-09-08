@@ -120,6 +120,9 @@ function Player:init(x, y)
         [EVENT_TYPES.preferenceChange] = function (...)
             self:preferenceChangeListener(...)
         end,
+        [EVENT_TYPES.playerAmmoEmpty] = function (weapon)
+            self:onPlayerAmmoEmpty()
+        end,
     }
     EVENTS:registerListeners(self.eventListeners)
 
@@ -297,6 +300,16 @@ function Player:toggleWeaponFire(flag)
     if PREFERENCES:get(PREFERENCES.keys.enableAutoShoot) then
         self:emitPlayerAutoShootToggleEvent()
     end
+end
+
+-- Event listener for running out of ammo.
+-- Switch to starting weapon.
+function Player:onPlayerAmmoEmpty()
+    -- TODO: some kinda feedback to indicate weapon switch due to no ammo
+    -- Stop firing
+    self:toggleWeaponFire(false)
+    -- Switch to starting weapon
+    self:giveStartingWeapon()
 end
 
 -- --------------------------------------------------------------------------------
