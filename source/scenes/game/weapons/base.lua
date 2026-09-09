@@ -49,6 +49,7 @@ class('Projectile', {
     speed = 700,
     -- Damage
     damage = 1,
+    -- TODO: move this to range in Weapon? pass to Projectile?
     -- Distance in px projectile can travel before expiring
     maxDistance = 3 * SCREEN_HEIGHT / 4,
 }).extends(gfx.sprite)
@@ -167,8 +168,16 @@ class('WeaponFiringState', {
     key = kFiringState,
 }).extends('WeaponState')
 
+function WeaponFiringState:enter()
+    self.weapon:resetShotCount()
+end
+
 function WeaponFiringState:update()
     self.weapon:attemptToFire()
+end
+
+function WeaponFiringState:exit()
+    self.weapon:resetShotCount()
 end
 
 -- ================================================================================
@@ -211,6 +220,8 @@ function Weapon:init(carrierEntity, forceBottomless)
     end
     -- Timestamp since last shot. Default to -1 so we can start firing right away
     self.lastShotTimestamp = -1
+    -- Keep track of consecutive shots fired while in firing state
+    self.consecutiveShotCount = 0
 
     self:initStatesAndSetInitial()
     self:add()
@@ -253,6 +264,10 @@ function Weapon:fire(originX, originY, angle)
     self:updateLastShotTimestamp()
     -- Play fire sound effect
     self.fireSound:play(1)
+    -- Increment shot count
+    -- NOTE: This might have issues with manual fire since the single shot mode doesn't change state.
+    --       But this is mostly for enemy behavior, and I don't know if we're keeping manual fire anyway.
+    self:incrementShotCount()
     -- Decrease ammo
     self:updateAmmoAfterShotFired()
 end
@@ -278,6 +293,25 @@ function Weapon:toggleFire(flag)
         flag = self.state.key == WeaponInactiveState.key
     end
     self:setIsFiring(flag)
+end
+
+-- --------------------------------------------------------------------------------
+-- Shot count
+-- --------------------------------------------------------------------------------
+
+-- Reset consecutive shot count
+function Weapon:resetShotCount()
+    self.consecutiveShotCount = 0
+end
+
+-- Add 1 to consecutive shot count
+function Weapon:incrementShotCount()
+    self.consecutiveShotCount += 1
+end
+
+-- Returns the number of consecutive shots while in the firing state
+function Weapon:getShotCount()
+    return self.consecutiveShotCount
 end
 
 -- --------------------------------------------------------------------------------
