@@ -49,7 +49,6 @@ class('Projectile', {
     speed = 700,
     -- Damage
     damage = 1,
-    -- TODO: move this to range in Weapon? pass to Projectile?
     -- Distance in px projectile can travel before expiring
     maxDistance = 3 * SCREEN_HEIGHT / 4,
 }).extends(gfx.sprite)
@@ -360,4 +359,13 @@ end
 -- Returns true if ammo is 0 and bottomlessClip is false.
 function Weapon:isOutOfAmmo()
     return not self.bottomlessClip and self.ammo <= 0
+end
+
+-- --------------------------------------------------------------------------------
+-- Projectile Helpers
+-- --------------------------------------------------------------------------------
+
+-- Returns the maxDistance of the projectile class
+function Weapon:getRange()
+    return self.projectileClass.maxDistance
 end

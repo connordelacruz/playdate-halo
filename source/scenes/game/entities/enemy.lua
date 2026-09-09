@@ -146,6 +146,8 @@ class('EnemyFiringState', {
     faceAimingAngle = true,
 }).extends('EnemyState')
 
+-- TODO: pause between shots based on Enemy attributes
+
 function EnemyFiringState:enter()
     EnemyFiringState.super.enter(self)
     self.enemy:toggleWeaponFire(true)
@@ -161,11 +163,6 @@ end
 function EnemyFiringState:exit()
     self.enemy:toggleWeaponFire(false)
 end
-
--- --------------------------------------------------------------------------------
--- TODO: common enemy states:
--- idle, searching, chasing, firing, retreating, dying
--- --------------------------------------------------------------------------------
 
 -- ================================================================================
 -- Enemy Entity Base Class
@@ -183,6 +180,8 @@ class('Enemy', {
     baseShields = 0,
     baseSpeed = 50,
     points = 100,
+    -- Distance that enemy becomes aware of player
+    visionDistance = SCREEN_WIDTH,
 }).extends('Entity')
 
 function Enemy:init(x, y, player)
@@ -268,6 +267,29 @@ function Enemy:handleCollisions(collisions)
             end
         end
     end
+end
+
+-- --------------------------------------------------------------------------------
+-- Player Distance/Awareness
+-- --------------------------------------------------------------------------------
+
+-- Returns the distance between this enemy and the player
+function Enemy:getDistanceFromPlayer()
+    return pd.geometry.distanceToPoint(self.x, self.y, self.player.x, self.player.y)
+end
+
+-- Returns true if the distance to the player is <= the distance this enemy becomes aware of them
+function Enemy:canSeePlayer()
+    return self:getDistanceFromPlayer() <= self.visionDistance
+end
+
+-- Returns true if player is within firing range
+function Enemy:isWithinRangeOfPlayer()
+    -- No weapon = no range
+    if self.weapon == nil then
+        return false
+    end
+    return self:getDistanceFromPlayer() <= self.weapon:getRange()
 end
 
 -- --------------------------------------------------------------------------------
