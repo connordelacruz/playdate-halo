@@ -50,7 +50,7 @@ function TiledParser.loadLevel(jsonPath)
 
     for i=1,#decoded.layers do
         local layer = decoded.layers[i]
-        -- TODO: gotta define our naming conventions, but for now this is fine
+        -- TODO: can't guarantee layer will be named 'spawns', maybe make more generic? e.g. check that it's an object layer
         if layer.name == 'spawns' then
             levelData.spawns = TiledParser.parseSpawns(layer)
         end

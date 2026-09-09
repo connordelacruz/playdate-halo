@@ -23,7 +23,10 @@ function GameScene:init()
     -- Initialize HUD
     self.hud = HUD()
 
-    self.levelData = TiledParser.loadLevel('tiled/stage1.json')
+    -- TODO: DEBUG: test scene
+    self.levelData = TiledParser.loadLevel('tiled/test_gunnerdummy.json')
+    -- self.levelData = TiledParser.loadLevel('tiled/stage1.json')
+
     -- Initialize stage, player, and enemies
     self:initLevel()
     -- Create camera and attach to player's reticle
@@ -64,6 +67,11 @@ function GameScene:initLevel()
         Elite = Elite,
         Grunt = Grunt,
     }
+    -- Add test enemies if debug is enabled
+    if DEBUG_MANAGER.enabled then
+        enemyClassMap.GunnerDummy = GunnerDummy
+    end
+
     for i=1,#enemySpawns do
         local enemySpawn = enemySpawns[i]
         if enemySpawn ~= nil and enemyClassMap[enemySpawn.type] ~= nil then

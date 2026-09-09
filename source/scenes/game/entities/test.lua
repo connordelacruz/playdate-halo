@@ -22,6 +22,8 @@ function GunnerDummyFiringState:update()
     self.enemy:updateDirection()
 end
 
+-- TODO: re-work to use normal firing state and just never move
+
 class('GunnerDummy', {
     stateClasses = {GunnerDummyFiringState},
     initialStateKey = GunnerDummyFiringState.key,

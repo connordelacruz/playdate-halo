@@ -8,14 +8,16 @@
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 440,
+                "x": 370,
                 "y": 206.66666666666674
             }
         }
     },
-    "last.exportedFilePath": "/Users/connordelacruz/Downloads/tiled test",
+    "last.exportedFilePath": "/Users/connordelacruz/Projects/playdate/halo-crank-evolved/source/tiled",
+    "map.height": 10,
     "map.lastUsedExportFilter": "All Files (*)",
     "map.lastUsedFormat": "tmx",
+    "map.width": 15,
     "openFiles": [
         "stage1.tmx"
     ],
