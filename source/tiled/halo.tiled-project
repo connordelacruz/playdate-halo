@@ -11,14 +11,28 @@
     ],
     "propertyTypes": [
         {
+            "id": 3,
+            "name": "EnemyClass",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Elite",
+                "Grunt",
+                "GunnerDummy",
+                "NONE"
+            ],
+            "valuesAsFlags": false
+        },
+        {
             "color": "#ffb33e65",
             "drawFill": true,
             "id": 1,
             "members": [
                 {
                     "name": "type",
+                    "propertyType": "EnemyClass",
                     "type": "string",
-                    "value": "Grunt"
+                    "value": "NONE"
                 }
             ],
             "name": "EnemySpawn",

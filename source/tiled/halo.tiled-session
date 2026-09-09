@@ -20,6 +20,7 @@
         "stage1.tmx"
     ],
     "project": "halo.tiled-project",
+    "property.type": "EnemyClass",
     "recentFiles": [
         "stage1.tmx"
     ]

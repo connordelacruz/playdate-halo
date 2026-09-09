@@ -83,12 +83,17 @@ function TiledParser.parseEnemySpawn(enemySpawnObject)
         y = enemySpawnObject.y,
         type = 'Grunt',
     }
-    -- TODO: eventually we'll want to be more dynamic with what gets spawned, but for now do this to practice with custom props
-    for i=1,#enemySpawnObject.properties do
-        local prop = enemySpawnObject.properties[i]
-        if prop.name == 'type' then
-            enemySpawn.type = prop.value
+    if enemySpawnObject.properties ~= nil then
+        -- TODO: eventually we'll want to be more dynamic with what gets spawned, but for now do this to practice with custom props
+        for i = 1, #enemySpawnObject.properties do
+            local prop = enemySpawnObject.properties[i]
+            if prop.name == 'type' then
+                enemySpawn.type = prop.value
+            end
         end
+    else
+        DEBUG_MANAGER:vPrint('TiledParser: WARNING: attempted to parse enemy spawn, but no properties were set. Defaulting type to Grunt.')
     end
+
     return enemySpawn
 end

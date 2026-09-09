@@ -58,6 +58,7 @@
                  "properties":[
                         {
                          "name":"type",
+                         "propertytype":"EnemyClass",
                          "type":"string",
                          "value":"Elite"
                         }],
@@ -76,6 +77,7 @@
                  "properties":[
                         {
                          "name":"type",
+                         "propertytype":"EnemyClass",
                          "type":"string",
                          "value":"Elite"
                         }],
@@ -94,6 +96,7 @@
                  "properties":[
                         {
                          "name":"type",
+                         "propertytype":"EnemyClass",
                          "type":"string",
                          "value":"Elite"
                         }],
@@ -112,6 +115,7 @@
                  "properties":[
                         {
                          "name":"type",
+                         "propertytype":"EnemyClass",
                          "type":"string",
                          "value":"Elite"
                         }],
@@ -130,6 +134,7 @@
                  "properties":[
                         {
                          "name":"type",
+                         "propertytype":"EnemyClass",
                          "type":"string",
                          "value":"Grunt"
                         }],
@@ -148,6 +153,7 @@
                  "properties":[
                         {
                          "name":"type",
+                         "propertytype":"EnemyClass",
                          "type":"string",
                          "value":"Grunt"
                         }],
@@ -166,6 +172,7 @@
                  "properties":[
                         {
                          "name":"type",
+                         "propertytype":"EnemyClass",
                          "type":"string",
                          "value":"Grunt"
                         }],
@@ -184,6 +191,7 @@
                  "properties":[
                         {
                          "name":"type",
+                         "propertytype":"EnemyClass",
                          "type":"string",
                          "value":"Grunt"
                         }],
