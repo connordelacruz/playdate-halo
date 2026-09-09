@@ -6,8 +6,6 @@ import 'scenes/game/lifecycle'
 import 'scenes/game/camera'
 import 'scenes/game/scorekeeper'
 import 'scenes/game/levels/__init__'
--- TODO: move/merge with stuff in levels/
-import 'scenes/game/stage'
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -28,28 +26,8 @@ function GameScene:init()
     self.levelData = TiledParser.loadLevel('scenes/game/levels/stage1.json')
     -- Initialize stage, player, and enemies
     self:initLevel()
-
-    -- TODO: move this initialization to level parser
-    -- Create stage and boundaries
-    -- self.stage = Stage(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2)
-
-    -- Spawn player in the center
-    -- self.player = Player(SCREEN_WIDTH / 4, SCREEN_CENTER_Y)
-    -- Start with an assault rifle
-    -- self.player:giveWeapon(AssaultRifleWeapon)
-
     -- Create camera and attach to player's reticle
-    self.camera = Camera()
-    self.camera:attachTo(self.player.reticle)
-
-    -- DEBUG: Spawn some hard-coded enemies for testing
-    -- self.enemies = {
-    --     -- GunnerDummy(SCREEN_WIDTH * 3 / 4, SCREEN_CENTER_Y, self.player),
-    --     Elite(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
-    --     Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
-    --     Elite(SCREEN_WIDTH - SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
-    --     Grunt(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
-    -- }
+    self.camera = Camera(self.player.reticle)
 
     -- DEBUG: Spawn items for testing
     self.items = {
@@ -66,14 +44,16 @@ end
 
 -- Note: self.levelData must first be set to return value of TiledParser.loadLevel()
 function GameScene:initLevel()
-    -- TODO: LOGGING!
+    DEBUG_MANAGER:vPrint('GameScene: initializing scene...')
     local levelData = self.levelData
     -- Initialize stage boundaries
     self.stage = Stage(levelData.stage.width, levelData.stage.height)
+    DEBUG_MANAGER:vPrint('GameScene.stage: ' .. tostring(self.stage.width) .. 'x' .. tostring(self.stage.height))
 
     local spawns = levelData.spawns
     -- Spawn player
     self.player = Player(spawns.player.x, spawns.player.y)
+    DEBUG_MANAGER:vPrint('GameScene.player spawned @ (' .. tostring(self.player.x) .. ', ' .. tostring(self.player.y) .. ')')
     -- TODO: "power weapon" start extracted somewhere else?
     self.player:giveWeapon(AssaultRifleWeapon)
     -- Spawn enemies
@@ -86,8 +66,16 @@ function GameScene:initLevel()
     }
     for i=1,#enemySpawns do
         local enemySpawn = enemySpawns[i]
-        self.enemies[#self.enemies+1] = enemyClassMap[enemySpawn.type](enemySpawn.x, enemySpawn.y, self.player)
+        if enemySpawn ~= nil and enemyClassMap[enemySpawn.type] ~= nil then
+            local newEnemy = enemyClassMap[enemySpawn.type](enemySpawn.x, enemySpawn.y, self.player)
+            self.enemies[#self.enemies + 1] = newEnemy
+            DEBUG_MANAGER:vPrint('GameScene: ' .. enemySpawn.type .. ' spawned @ (' .. tostring(newEnemy.x) .. ', ' .. tostring(newEnemy.y) .. ')')
+        else
+            DEBUG_MANAGER:vPrint('GameScene: WARNING: unable to spawn enemy from map object:')
+            DEBUG_MANAGER:vPrintTable(enemySpawn, 1)
+        end
     end
+    -- TODO: emit initialized event?
 end
 
 -- --------------------------------------------------------------------------------

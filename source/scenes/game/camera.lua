@@ -15,9 +15,11 @@ local kLerpSmoothSpeed <const> = 0.06
 -- ================================================================================
 class('Camera').extends(gfx.sprite)
 
-function Camera:init()
+function Camera:init(target)
     -- Sprite camera is attached to
-    self.target = nil
+    self.target = target
+    -- Lock onto target if set
+    self:setInitialDrawOffset()
 
     self:add()
 end
@@ -27,14 +29,26 @@ function Camera:attachTo(sprite)
     self.target = sprite
 end
 
--- Update draw offset to center on target.
--- Will reset offset if no target is set.
-function Camera:updateDrawOffset()
+-- Returns targetOffsetX, targetOffsetY.
+-- If self.target is not set, returns 0,0
+function Camera:getTargetOffset()
     local targetOffsetX, targetOffsetY = 0, 0
     if self.target ~= nil then
         targetOffsetX = -(self.target.x - SCREEN_CENTER_X)
         targetOffsetY = -(self.target.y - SCREEN_CENTER_Y)
     end
+    return targetOffsetX, targetOffsetY
+end
+
+-- Set initial draw offset (no smoothing)
+function Camera:setInitialDrawOffset()
+    gfx.setDrawOffset(self:getTargetOffset())
+end
+
+-- Update draw offset to center on target.
+-- Will reset offset if no target is set.
+function Camera:updateDrawOffset()
+    local targetOffsetX, targetOffsetY = self:getTargetOffset()
     gfx.setDrawOffset(self:smoothOffset(targetOffsetX, targetOffsetY))
 end
 
