@@ -1,0 +1,26 @@
+{
+    "activeFile": "stage1.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "stage1.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 440,
+                "y": 206.66666666666674
+            }
+        }
+    },
+    "last.exportedFilePath": "/Users/connordelacruz/Downloads/tiled test",
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "stage1.tmx"
+    ],
+    "project": "halo.tiled-project",
+    "recentFiles": [
+        "stage1.tmx"
+    ]
+}

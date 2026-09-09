@@ -1,0 +1,45 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+        {
+            "color": "#ffb33e65",
+            "drawFill": true,
+            "id": 1,
+            "members": [
+                {
+                    "name": "type",
+                    "type": "string",
+                    "value": "Grunt"
+                }
+            ],
+            "name": "EnemySpawn",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object"
+            ]
+        },
+        {
+            "color": "#ff37b36d",
+            "drawFill": true,
+            "id": 2,
+            "members": [
+            ],
+            "name": "PlayerSpawn",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object"
+            ]
+        }
+    ]
+}

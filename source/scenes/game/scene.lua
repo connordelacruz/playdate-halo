@@ -23,7 +23,7 @@ function GameScene:init()
     -- Initialize HUD
     self.hud = HUD()
 
-    self.levelData = TiledParser.loadLevel('scenes/game/levels/stage1.json')
+    self.levelData = TiledParser.loadLevel('tiled/stage1.json')
     -- Initialize stage, player, and enemies
     self:initLevel()
     -- Create camera and attach to player's reticle

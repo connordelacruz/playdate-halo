@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="11">
+ <editorsettings>
+  <export target="stage1.json" format="json"/>
+ </editorsettings>
+ <layer id="1" name="Tile Layer 1" width="30" height="20">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="2" name="spawns">
+  <object id="1" name="playerSpawn" type="PlayerSpawn" x="464" y="304" width="32" height="32"/>
+  <object id="2" name="enemySpawn_NW" type="EnemySpawn" x="96" y="96" width="32" height="32">
+   <properties>
+    <property name="type" value="Elite"/>
+   </properties>
+  </object>
+  <object id="4" name="enemySpawn_SW" type="EnemySpawn" x="96" y="512" width="32" height="32">
+   <properties>
+    <property name="type" value="Elite"/>
+   </properties>
+  </object>
+  <object id="5" name="enemySpawn_NE" type="EnemySpawn" x="832" y="96" width="32" height="32">
+   <properties>
+    <property name="type" value="Elite"/>
+   </properties>
+  </object>
+  <object id="6" name="enemySpawn_SE" type="EnemySpawn" x="832" y="512" width="32" height="32">
+   <properties>
+    <property name="type" value="Elite"/>
+   </properties>
+  </object>
+  <object id="7" name="enemySpawn_W" type="EnemySpawn" x="96" y="304" width="32" height="32">
+   <properties>
+    <property name="type" value="Grunt"/>
+   </properties>
+  </object>
+  <object id="8" name="enemySpawn_N" type="EnemySpawn" x="464" y="96" width="32" height="32">
+   <properties>
+    <property name="type" value="Grunt"/>
+   </properties>
+  </object>
+  <object id="9" name="enemySpawn_S" type="EnemySpawn" x="464" y="512" width="32" height="32">
+   <properties>
+    <property name="type" value="Grunt"/>
+   </properties>
+  </object>
+  <object id="10" name="enemySpawn_E" type="EnemySpawn" x="832" y="304" width="32" height="32">
+   <properties>
+    <property name="type" value="Grunt"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
