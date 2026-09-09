@@ -5,6 +5,8 @@ import 'scenes/game/entities/__init__'
 import 'scenes/game/lifecycle'
 import 'scenes/game/camera'
 import 'scenes/game/scorekeeper'
+import 'scenes/game/levels/__init__'
+-- TODO: move/merge with stuff in levels/
 import 'scenes/game/stage'
 
 local pd <const> = playdate
@@ -19,8 +21,11 @@ class('GameScene', {
 function GameScene:init()
     self.gm = GameMaster()
 
+    self.levelData = TiledParser.loadLevel('scenes/game/levels/stage1.json')
+    -- TODO: init Stage with levelData.stage dimensions. Update so that center is at 0,0
+
+    -- TODO: move this initialization to level parser
     -- Create stage and boundaries
-    -- TODO: stage size + using stage to place entities instead of PD coordinates
     self.stage = Stage(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2)
     -- Initialize score keeper
     self.scoreKeeper = ScoreKeeper()
@@ -40,14 +45,14 @@ function GameScene:init()
     self.enemies = {
         -- GunnerDummy(SCREEN_WIDTH * 3 / 4, SCREEN_CENTER_Y, self.player),
         Elite(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
-        -- Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
+        Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
         Elite(SCREEN_WIDTH - SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
-        -- Grunt(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
+        Grunt(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
     }
 
     -- DEBUG: Spawn items for testing
     self.items = {
-        WeaponPickup(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, PlasmaPistolWeapon),
+        -- WeaponPickup(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, PlasmaPistolWeapon),
     }
 
     -- Register end game menu item
