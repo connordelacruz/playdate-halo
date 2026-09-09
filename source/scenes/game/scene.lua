@@ -20,35 +20,36 @@ class('GameScene', {
 
 function GameScene:init()
     self.gm = GameMaster()
+    -- Initialize score keeper
+    self.scoreKeeper = ScoreKeeper()
+    -- Initialize HUD
+    self.hud = HUD()
 
     self.levelData = TiledParser.loadLevel('scenes/game/levels/stage1.json')
-    -- TODO: init Stage with levelData.stage dimensions. Update so that center is at 0,0
+    -- Initialize stage, player, and enemies
+    self:initLevel()
 
     -- TODO: move this initialization to level parser
     -- Create stage and boundaries
-    self.stage = Stage(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2)
-    -- Initialize score keeper
-    self.scoreKeeper = ScoreKeeper()
+    -- self.stage = Stage(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2)
 
-    -- Initialize HUD
-    self.hud = HUD()
     -- Spawn player in the center
-    self.player = Player(SCREEN_WIDTH / 4, SCREEN_CENTER_Y)
+    -- self.player = Player(SCREEN_WIDTH / 4, SCREEN_CENTER_Y)
     -- Start with an assault rifle
-    self.player:giveWeapon(AssaultRifleWeapon)
+    -- self.player:giveWeapon(AssaultRifleWeapon)
 
     -- Create camera and attach to player's reticle
     self.camera = Camera()
     self.camera:attachTo(self.player.reticle)
 
     -- DEBUG: Spawn some hard-coded enemies for testing
-    self.enemies = {
-        -- GunnerDummy(SCREEN_WIDTH * 3 / 4, SCREEN_CENTER_Y, self.player),
-        Elite(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
-        Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
-        Elite(SCREEN_WIDTH - SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
-        Grunt(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
-    }
+    -- self.enemies = {
+    --     -- GunnerDummy(SCREEN_WIDTH * 3 / 4, SCREEN_CENTER_Y, self.player),
+    --     Elite(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
+    --     Grunt(SCREEN_WIDTH - SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, self.player),
+    --     Elite(SCREEN_WIDTH - SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
+    --     Grunt(SCREEN_WIDTH / 4, 3 * SCREEN_HEIGHT / 4, self.player),
+    -- }
 
     -- DEBUG: Spawn items for testing
     self.items = {
@@ -58,6 +59,40 @@ function GameScene:init()
     -- Register end game menu item
     self:registerMenuItems()
 end
+
+-- --------------------------------------------------------------------------------
+-- Initialize level objects
+-- --------------------------------------------------------------------------------
+
+-- Note: self.levelData must first be set to return value of TiledParser.loadLevel()
+function GameScene:initLevel()
+    -- TODO: LOGGING!
+    local levelData = self.levelData
+    -- Initialize stage boundaries
+    self.stage = Stage(levelData.stage.width, levelData.stage.height)
+
+    local spawns = levelData.spawns
+    -- Spawn player
+    self.player = Player(spawns.player.x, spawns.player.y)
+    -- TODO: "power weapon" start extracted somewhere else?
+    self.player:giveWeapon(AssaultRifleWeapon)
+    -- Spawn enemies
+    self.enemies = {}
+    local enemySpawns = spawns.enemies
+    -- TODO: prob abstract this
+    local enemyClassMap = {
+        Elite = Elite,
+        Grunt = Grunt,
+    }
+    for i=1,#enemySpawns do
+        local enemySpawn = enemySpawns[i]
+        self.enemies[#self.enemies+1] = enemyClassMap[enemySpawn.type](enemySpawn.x, enemySpawn.y, self.player)
+    end
+end
+
+-- --------------------------------------------------------------------------------
+-- Menu Items
+-- --------------------------------------------------------------------------------
 
 -- Register "end game" menu item
 function GameScene:registerMenuItems()

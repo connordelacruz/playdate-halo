@@ -9,8 +9,9 @@ function Stage:init(stageWidth, stageHeight)
     self:setImage(self:createPlaceholderImage(stageWidth, stageHeight))
     -- Z-index
     self:setZIndex(Z_INDEX.background)
-    -- Move to center and add
-    self:moveTo(SCREEN_CENTER_X, SCREEN_CENTER_Y)
+    -- Set center so 0,0 is aligned with playdate's coordinates
+    self:setCenter(0, 0)
+    self:moveTo(0, 0)
     self:add()
     -- Create boundary walls
     self:createBoundaries()
@@ -40,23 +41,25 @@ function Stage:createBoundaries()
     gfx.pushContext(sideWallImage)
         gfx.fillRect(0, 0, sideWallImage.width, sideWallImage.height)
     gfx.popContext()
-    local topBottomWallImage = gfx.image.new(self.width + (2 * SCREEN_WIDTH), SCREEN_HEIGHT)
+    -- Top and bottom walls cover corners, so they're as wide as the stage width + 2 * side wall width
+    local topBottomWallImage = gfx.image.new(self.width + (2 * sideWallImage.width), SCREEN_HEIGHT)
     gfx.pushContext(topBottomWallImage)
         gfx.fillRect(0, 0, topBottomWallImage.width, topBottomWallImage.height)
     gfx.popContext()
+
     -- Initialize wall sprites
     local topWall = gfx.sprite.new(topBottomWallImage)
-    topWall:setCenter(0.5, 1.0)
-    topWall:moveTo(self.x, self.y - (self.height / 2))
+    topWall:setCenter(0, 1.0)
+    topWall:moveTo(self.x - sideWallImage.width, self.y)
     local bottomWall = gfx.sprite.new(topBottomWallImage)
-    bottomWall:setCenter(0.5, 0)
-    bottomWall:moveTo(self.x, self.y + (self.height / 2))
+    bottomWall:setCenter(0, 0)
+    bottomWall:moveTo(self.x - sideWallImage.width, self.y + self.height)
     local leftWall = gfx.sprite.new(sideWallImage)
-    leftWall:setCenter(1.0, 0.5)
-    leftWall:moveTo(self.x - (self.width / 2), self.y)
+    leftWall:setCenter(1.0, 0)
+    leftWall:moveTo(self.x, self.y)
     local rightWall = gfx.sprite.new(sideWallImage)
-    rightWall:setCenter(0, 0.5)
-    rightWall:moveTo(self.x + (self.width / 2), self.y)
+    rightWall:setCenter(0, 0)
+    rightWall:moveTo(self.x + self.width, self.y)
 
     self.walls = {
         topWall,
