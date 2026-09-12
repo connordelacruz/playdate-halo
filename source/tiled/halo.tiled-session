@@ -1,15 +1,26 @@
 {
-    "activeFile": "stage1.tmx",
+    "activeFile": "test_gunnerdummy.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
         "stage1.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 370,
                 "y": 206.66666666666674
+            }
+        },
+        "test_gunnerdummy.tmx": {
+            "scale": 1.7654166666666666,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 239.88671229643614,
+                "y": 91.76303988671228
             }
         }
     },
@@ -19,11 +30,13 @@
     "map.lastUsedFormat": "tmx",
     "map.width": 15,
     "openFiles": [
-        "stage1.tmx"
+        "stage1.tmx",
+        "test_gunnerdummy.tmx"
     ],
     "project": "halo.tiled-project",
     "property.type": "EnemyClass",
     "recentFiles": [
-        "stage1.tmx"
+        "stage1.tmx",
+        "test_gunnerdummy.tmx"
     ]
 }

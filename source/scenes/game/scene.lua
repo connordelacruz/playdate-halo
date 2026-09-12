@@ -24,8 +24,8 @@ function GameScene:init()
     self.hud = HUD()
 
     -- TODO: DEBUG: test scene
-    self.levelData = TiledParser.loadLevel('tiled/test_gunnerdummy.json')
-    -- self.levelData = TiledParser.loadLevel('tiled/stage1.json')
+    -- self.levelData = TiledParser.loadLevel('tiled/test_gunnerdummy.json')
+    self.levelData = TiledParser.loadLevel('tiled/stage1.json')
 
     -- Initialize stage, player, and enemies
     self:initLevel()
