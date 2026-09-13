@@ -36,6 +36,6 @@ class('AssaultRifleWeapon', {
     fireSound = kAssaultRifleFiringSound,
     timeBetweenShots = 120,
     -- TODO: more? or have ammo pickups during gameplay? I want to be lenient with ammo since firing is so awkward lol
-    startingAmmo = 192,
+    startingAmmo = 320,
 }).extends('Weapon')
 

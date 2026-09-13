@@ -23,6 +23,7 @@ class('PlasmaPistolProjectile', {
     image = kPlasmaPistolProjectileImage,
     speed = 300,
     damage = 1,
+    maxDistance = SCREEN_HEIGHT / 2,
 }).extends('Projectile')
 
 -- ================================================================================

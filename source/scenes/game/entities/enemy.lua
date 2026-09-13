@@ -124,12 +124,12 @@ function EnemyPatrolState:update()
     EnemyPatrolState.super.update(self)
 end
 
+-- TODO: make sure we no longer need this and remove:
 -- Exit: set not moving, set active image one last time.
--- TODO: remove, EnemyState:enter() now sets initial image
--- function EnemyPatrolState:exit()
---     self.enemy.isMoving = false
---     self.enemy:setIdleWalkingImage()
--- end
+function EnemyPatrolState:exit()
+    self.enemy.isMoving = false
+    self.enemy:setIdleWalkingImage()
+end
 
 -- --------------------------------------------------------------------------------
 -- Move in towards player
@@ -226,7 +226,7 @@ class('Enemy', {
     -- Number of consecutive this enemy fires in the firing state before pausing
     shotCountBeforePause = 4,
     -- How long to pause after firing shotCountBeforePause shots (ms)
-    pauseFiringDuration = 500,
+    pauseFiringDuration = 750,
 }).extends('Entity')
 
 function Enemy:init(x, y, player)
