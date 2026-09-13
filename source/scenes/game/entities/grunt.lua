@@ -4,10 +4,11 @@ local gfx <const> = pd.graphics
 -- Grunt Entity Class
 -- ================================================================================
 class('Grunt', {
-    baseHealth = 1,
+    baseHealth = 2,
     baseShields = 0,
     baseSpeed = 50,
     points = 100,
+    shotCountBeforePause = 3,
     startingWeaponClass = PlasmaPistolWeapon,
     -- Images/spritesheets, animation delays, start/end frames:
     -- Idle + walking

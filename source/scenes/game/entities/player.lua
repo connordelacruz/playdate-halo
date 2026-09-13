@@ -5,15 +5,6 @@ local gfx <const> = pd.graphics
 -- Constants
 -- ================================================================================
 -- --------------------------------------------------------------------------------
--- Player Attributes
--- --------------------------------------------------------------------------------
--- TODO: just move these to the class definition
--- Base movement speed (px / sec)
-local kPlayerSpeed <const> = 120
--- Base shields and health
-local kPlayerBaseHealth <const> = 4
-local kPlayerBaseShields <const> = 6
--- --------------------------------------------------------------------------------
 -- Reticle
 -- --------------------------------------------------------------------------------
 -- Size of the reticle sprite
@@ -55,9 +46,9 @@ class('Player', {
     initialStateKey = PlayerActiveState.key,
     -- Entity attributes:
     isFriendly = true,
-    baseHealth = kPlayerBaseHealth,
-    baseShields = kPlayerBaseShields,
-    baseSpeed = kPlayerSpeed,
+    baseHealth = 4,
+    baseShields = 8,
+    baseSpeed = 140,
     startingWeaponClass = MagnumWeapon,
     -- Event types:
     spawnEventType = EVENT_TYPES.playerSpawn,
