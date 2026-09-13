@@ -90,3 +90,24 @@ function Events:log(text, indentLevel)
         self.debugManager:vPrint(text, indentLevel)
     end
 end
+
+-- DEBUG: Print names of events with registered handlers
+function Events:printEventTypesWithHandlers()
+    DEBUG_MANAGER:vPrint('Events: event types with registerd handlers:')
+    for event,handlers in pairs(self.callbacks) do
+        if handlers ~= nil and #handlers > 0 then
+            DEBUG_MANAGER:vPrint('- ' .. event .. ': ' .. tostring(#handlers), 1)
+        end
+    end
+end
+
+-- DEBUG: given a list of event types, cross-reference registered handlers and 
+-- print event types that have no handlers
+function Events:printEventTypesWithNoHandlers(eventTypes)
+    DEBUG_MANAGER:vPrint('Events: event types with no registered handlers:')
+    for _,eventType in pairs(eventTypes) do
+        if self.callbacks[eventType] == nil or #self.callbacks[eventType] < 1 then
+            DEBUG_MANAGER:vPrint('- ' .. eventType, 1)
+        end
+    end
+end

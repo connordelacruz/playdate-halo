@@ -227,6 +227,16 @@ class('Enemy', {
     shotCountBeforePause = 4,
     -- How long to pause after firing shotCountBeforePause shots (ms)
     pauseFiringDuration = 750,
+    -- False out event types that aren't necessary for enemies
+    spawnEventType = false,
+    damageReceivedEventType = false,
+    healthChangeEventType = false,
+    shieldChangeEventType = false,
+    shieldLowEventType = false,
+    shieldEmptyEventType = false,
+    shieldRechargingEventType = false,
+    shieldFullEventType = false,
+    weaponPickupEventType = false,
 }).extends('Entity')
 
 function Enemy:init(x, y, player)

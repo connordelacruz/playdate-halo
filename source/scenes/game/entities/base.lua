@@ -75,6 +75,7 @@ class('Entity', {
     -- (TESTING) If true, entity health value will never change
     invincible = false,
     -- Event types to emit:
+    -- (Note: for any events that implementing classes don't need to emit, set them to false)
     spawnEventType = EVENT_TYPES.spawn,
     damageReceivedEventType = EVENT_TYPES.damageReceived,
     healthChangeEventType = EVENT_TYPES.healthChange,
@@ -501,58 +502,67 @@ end
 -- Events
 -- --------------------------------------------------------------------------------
 
+-- Emit an event, unless type is false-y (then do nothing)
+function Entity:emitEvent(type, ...)
+    if type then
+        EVENTS:emit(type, ...)
+    end
+end
+
+-- TODO: update to use emit event function
+
 function Entity:emitSpawnEvent()
-    EVENTS:emit(self.spawnEventType, self)
+    self:emitEvent(self.spawnEventType, self)
 end
 
 function Entity:emitDamageReceivedEvent(shieldsUpWhenDamaged)
-    EVENTS:emit(self.damageReceivedEventType, self, shieldsUpWhenDamaged)
+    self:emitEvent(self.damageReceivedEventType, self, shieldsUpWhenDamaged)
 end
 
 function Entity:emitHealthChangeEvent()
-    EVENTS:emit(self.healthChangeEventType, self)
+    self:emitEvent(self.healthChangeEventType, self)
 end
 
 function Entity:emitShieldChangeEvent()
-    EVENTS:emit(self.shieldChangeEventType, self)
+    self:emitEvent(self.shieldChangeEventType, self)
 end
 
 function Entity:emitShieldLowEvent()
-    EVENTS:emit(self.shieldLowEventType, self)
+    self:emitEvent(self.shieldLowEventType, self)
 end
 
 function Entity:emitShieldEmptyEvent()
-    EVENTS:emit(self.shieldEmptyEventType, self)
+    self:emitEvent(self.shieldEmptyEventType, self)
 end
 
 function Entity:emitShieldRechargingEvent()
-    EVENTS:emit(self.shieldRechargingEventType, self)
+    self:emitEvent(self.shieldRechargingEventType, self)
 end
 
 function Entity:emitShieldFullEvent()
-    EVENTS:emit(self.shieldFullEventType, self)
+    self:emitEvent(self.shieldFullEventType, self)
 end
 
 function Entity:emitDeathEvent()
-    EVENTS:emit(self.deathEventType, self)
+    self:emitEvent(self.deathEventType, self)
 end
 
 function Entity:emitWeaponPickupEvent()
-    EVENTS:emit(self.weaponPickupEventType, self.weapon)
+    self:emitEvent(self.weaponPickupEventType, self.weapon)
 end
 
 function Entity:emitAmmoChangeEvent()
     if self.ammoChangeEventType == nil then
         return
     end
-    EVENTS:emit(self.ammoChangeEventType, self.weapon)
+    self:emitEvent(self.ammoChangeEventType, self.weapon)
 end
 
 function Entity:emitAmmoEmptyEvent()
     if self.ammoEmptyEventType == nil then
         return
     end
-    EVENTS:emit(self.ammoEmptyEventType, self.weapon)
+    self:emitEvent(self.ammoEmptyEventType, self.weapon)
 end
 
 -- --------------------------------------------------------------------------------
