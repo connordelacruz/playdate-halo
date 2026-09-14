@@ -189,14 +189,11 @@ function EnemyFiringState:enter()
     self.enemy:aimAtPlayer()
     self.enemy:updateDirection()
     self.enemy:toggleWeaponFire(true)
-    -- TODO: increment burst counter
+    self.enemy:incrementBurstCounter()
 end
 
 function EnemyFiringState:update()
     self.enemy:setIdleWalkingImage()
-    -- TODO: moved to enter(), prob good cuz we don't keep adjusting angle each shot anymore
-    -- self.enemy:updateDirection()
-
     -- Pause firing if we've hit the shot count limit
     if self.enemy:shouldPauseFire() then
         self.enemy:setPauseFiringState()
@@ -217,10 +214,16 @@ class('EnemyPauseFiringState', {
 }).extends('EnemyState')
 
 function EnemyPauseFiringState:update()
-    -- TODO: if maxConsecutiveFireBursts reached, switch to evade and reset counter
     -- If duration has passed, decide which state we're switching to
     if pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.enemy.pauseFiringDuration then
-        self.enemy:setStateBasedOnPlayerDistance()
+        -- If enemy has had the max number of consecutive fire/pause cycles,
+        -- reset burst counter and switch to evade state
+        if self.enemy:hasBurstLimitBeenReached() then
+            self.enemy:resetBurstCounter()
+            self.enemy:setEvadeState()
+        else
+            self.enemy:setStateBasedOnPlayerDistance()
+        end
     end
 end
 
@@ -279,7 +282,6 @@ class('Enemy', {
     -- How long to pause after firing shotCountBeforePause shots (ms)
     pauseFiringDuration = 750,
     -- Max number of consecutive fire/pause cycles before evading
-    -- TODO: IMPLMEMENT
     maxConsecutiveFireBursts = 3,
     -- False out event types that aren't necessary for enemies
     spawnEventType = false,
@@ -303,6 +305,10 @@ function Enemy:init(x, y, player)
     -- Angle to aim weapon at. Gets set in aimAtPlayer().
     -- calculateAimingAngle() returns this value.
     self.aimingAngle = 0
+    -- Number of consecutive "burst fires".
+    -- If enemy has cycled thru fire/pause for maxConsecutiveFireBursts times,
+    -- switch to evade state (so it's not just nonstop fire)
+    self.consecutiveFireBursts = 0
 
     -- Keep track of last state change
     self.lastStateChangeTimestamp = pd.getCurrentTimeMilliseconds()
@@ -342,6 +348,10 @@ end
 
 function Enemy:setPauseFiringState()
     self:setState(EnemyPauseFiringState.key)
+end
+
+function Enemy:setEvadeState()
+    self:setState(EnemyEvadeState.key)
 end
 
 -- Randomly pick an "unaware" state
@@ -539,4 +549,19 @@ function Enemy:shouldPauseFire()
         return true
     end
     return self.weapon:getShotCount() >= self.shotCountBeforePause
+end
+
+-- Increment consecutive fire burst counter
+function Enemy:incrementBurstCounter()
+    self.consecutiveFireBursts += 1
+end
+
+-- Reset consecutive fire burst counter
+function Enemy:resetBurstCounter()
+    self.consecutiveFireBursts = 0
+end
+
+-- Returns true if consecutiveFireBursts has hit the max
+function Enemy:hasBurstLimitBeenReached()
+    return self.consecutiveFireBursts >= self.maxConsecutiveFireBursts
 end
