@@ -298,7 +298,6 @@ function Entity:applyDamage(damage)
         shieldsUpWhenDamaged = false
         self:subtractHealth(damage)
     end
-    -- TODO: indicate whether it was shielded damage
     self:emitDamageReceivedEvent(shieldsUpWhenDamaged)
     self:updateDamageReceivedTimestamp()
 
@@ -335,6 +334,11 @@ function Entity:restoreHealthToMax()
     self:setHealth(self.baseHealth)
 end
 
+-- Returns true if entity has a shield and its value is > 0
+function Entity:isShieldUp()
+    return self.shield ~= nil and not self.shield:isEmpty()
+end
+
 -- Transition to death state.
 -- Emits 'death' event.
 function Entity:kill()
@@ -351,9 +355,11 @@ function Entity:shouldApplyHitEffect()
     return (self.damageReceivedTimestamp > 0) and (pd.getCurrentTimeMilliseconds() < self.damageReceivedTimestamp + kDamageReceivedInvertEffectDuration)
 end
 
--- Visual feedback for damage hit
+-- Visual feedback for damage hit.
+-- Different effect when shields are up vs down
 function Entity:applyHitEffect()
-    self:setImageDrawMode(gfx.kDrawModeInverted)
+    local drawMode = self:isShieldUp() and gfx.kDrawModeNXOR or gfx.kDrawModeInverted
+    self:setImageDrawMode(drawMode)
 end
 
 -- Revert visual feedback for damage hit
@@ -509,8 +515,6 @@ function Entity:emitEvent(type, ...)
     end
 end
 
--- TODO: update to use emit event function
-
 function Entity:emitSpawnEvent()
     self:emitEvent(self.spawnEventType, self)
 end
@@ -552,16 +556,10 @@ function Entity:emitWeaponPickupEvent()
 end
 
 function Entity:emitAmmoChangeEvent()
-    if self.ammoChangeEventType == nil then
-        return
-    end
     self:emitEvent(self.ammoChangeEventType, self.weapon)
 end
 
 function Entity:emitAmmoEmptyEvent()
-    if self.ammoEmptyEventType == nil then
-        return
-    end
     self:emitEvent(self.ammoEmptyEventType, self.weapon)
 end
 

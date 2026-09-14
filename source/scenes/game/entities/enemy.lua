@@ -253,6 +253,7 @@ class('Enemy', {
     isFriendly = false,
     baseHealth = 1,
     baseShields = 0,
+    -- TODO: speed modifier for evade?
     baseSpeed = 50,
     points = 100,
     -- Distance that enemy becomes aware of player

@@ -5,7 +5,7 @@ local gfx <const> = pd.graphics
 -- ================================================================================
 class('Elite', {
     baseHealth = 2,
-    baseShields = 3,
+    baseShields = 5,
     baseSpeed = 80,
     points = 500,
     shotCountBeforePause = 3,
@@ -42,3 +42,7 @@ class('Elite', {
     },
     deathLoopDelay = 100,
 }).extends('Enemy')
+
+-- TODO: applyDamage() override:
+-- - call super
+-- - if after super health > 0 but shields are now 0, have a chance to evade?
