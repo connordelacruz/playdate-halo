@@ -12,20 +12,7 @@ local gfx <const> = pd.graphics
 -- --------------------------------------------------------------------------------
 -- Common Constructor
 -- --------------------------------------------------------------------------------
--- TODO: min/max duration may only really apply to idle/patrol?
--- TODO: don't bother with next state stuff, simplify it and clean up code
--- TODO: setIdleWalkingImage() in this class?
-
 class('EnemyState', {
-    -- TODO: MOVE TO UNAWARE:
-    -- Min/max time (ms) before picking a new state (if applicable)
-    minDuration = 2000,
-    maxDuration = 4000,
-    -- TODO: boolean to disable duration
-    -- Keys of states this one can randomly pick from when duration is up
-    nextStateOptionKeys = {},
-    -- TODO: END MOVE
-
     -- Attributes to set on enemy based on what we want with this state
     isMoving = false,
     faceAimingAngle = false,
@@ -44,25 +31,52 @@ function EnemyState:enter()
 end
 
 -- --------------------------------------------------------------------------------
+-- Common constructor for states that keep track of duration
+-- --------------------------------------------------------------------------------
+class('EnemyDurationState', {
+    -- Fixed duration of state
+    duration = 1000,
+}).extends('EnemyState')
+
+-- Helper to determine if duration has passed
+function EnemyDurationState:hasDurationPassed()
+    return pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.duration
+end
+
+-- --------------------------------------------------------------------------------
+-- Common constructor for duration states that have a randomized duration value
+-- --------------------------------------------------------------------------------
+class('EnemyRandomDurationState', {
+    -- For these, duration gets picked on enter()
+    duration = -1,
+    -- Min/max possible durations
+    minDuration = 2000,
+    maxDuration = 4000,
+}).extends('EnemyDurationState')
+
+function EnemyRandomDurationState:enter()
+    EnemyRandomDurationState.super.enter(self)
+    self:setDuration()
+end
+
+-- Set duration (ms) for the current state.
+-- Parameter is optional, default behavior is to pick a random duration
+-- between minDuration and maxDuration.
+function EnemyRandomDurationState:setDuration(duration)
+    if duration == nil then
+        duration = math.random(self.minDuration, self.maxDuration)
+    end
+    self.duration = duration
+end
+
+-- --------------------------------------------------------------------------------
 -- "Unaware" States (can't see player)
 -- --------------------------------------------------------------------------------
 class('EnemyUnawareState', {
     -- Min/max time (ms) before picking a new state (if applicable)
     minDuration = 2000,
     maxDuration = 4000,
-}).extends('EnemyState')
-
-function EnemyUnawareState:init(enemy)
-    EnemyUnawareState.super.init(self, enemy)
-    -- How long to stay in this unaware state before picking another one.
-    self.duration = -1
-end
-
--- Call parent :enter() and then set duration
-function EnemyUnawareState:enter()
-    EnemyUnawareState.super.enter(self)
-    self:setDuration()
-end
+}).extends('EnemyRandomDurationState')
 
 -- Common update. Call AFTER doing implementation-specific updates.
 -- Will check enemy awareness of player and switch to an appropriate aware state based on their distance.
@@ -76,20 +90,6 @@ function EnemyUnawareState:update()
     end
 end
 
--- Set duration (ms) for current state.
--- Parameter is optional, default behavior is to pick a random value between min and max.
-function EnemyUnawareState:setDuration(duration)
-    if duration == nil then
-        duration = math.random(self.minDuration, self.maxDuration)
-    end
-    self.duration = duration
-end
-
--- Returns true if duration has passed since state change.
-function EnemyUnawareState:hasDurationPassed()
-    return pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.duration
-end
-
 -- --------------------------------------------------------------------------------
 -- Idle
 -- --------------------------------------------------------------------------------
@@ -97,8 +97,8 @@ class('EnemyIdleState', {
     key = 'idle',
     isMoving = false,
     faceAimingAngle = false,
-    minDuration = 500,
-    maxDuration = 1000,
+    minDuration = 750,
+    maxDuration = 1500,
 }).extends('EnemyUnawareState')
 
 -- --------------------------------------------------------------------------------
@@ -124,13 +124,6 @@ function EnemyPatrolState:update()
     EnemyPatrolState.super.update(self)
 end
 
--- TODO: can we remove this? or abstract it? it's also used in chase
--- Exit: set not moving, set active image one last time.
-function EnemyPatrolState:exit()
-    self.enemy.isMoving = false
-    self.enemy:setIdleWalkingImage()
-end
-
 -- --------------------------------------------------------------------------------
 -- Move in towards player
 -- --------------------------------------------------------------------------------
@@ -140,13 +133,7 @@ class('EnemyChaseState', {
     faceAimingAngle = false,
     -- Duration to continue chase to last known player location before forcing a state switch
     duration = 1000,
-}).extends('EnemyState')
-
--- Helper: check if chase duration has passed
--- TODO: this is verbatim the same as unaware. Abstract
-function EnemyChaseState:hasDurationPassed()
-    return pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.duration
-end
+}).extends('EnemyDurationState')
 
 function EnemyChaseState:enter()
     EnemyChaseState.super.enter(self)
@@ -160,19 +147,12 @@ function EnemyChaseState:update()
         self.enemy:setFiringState()
     -- If duration has not passed, keep moving on current trajectory
     elseif not self:hasDurationPassed() then
-        self.enemy:handleMove()
-        self.enemy:setIdleWalkingImage()
+        self.enemy:handleMoveAndSetImage()
     -- If duration has passed and we haven't switched to shooting state,
     -- restart chase if player is visible, otherwise switch to unaware
     else
         self.enemy:setChaseOrUnawareState()
     end
-end
-
--- Exit: set not moving, set active image one last time.
-function EnemyChaseState:exit()
-    self.enemy.isMoving = false
-    self.enemy:setIdleWalkingImage()
 end
 
 -- --------------------------------------------------------------------------------
@@ -211,11 +191,17 @@ class('EnemyPauseFiringState', {
     key = 'pause-firing',
     isMoving = false,
     faceAimingAngle = true,
-}).extends('EnemyState')
+}).extends('EnemyDurationState')
+
+function EnemyPauseFiringState:init(enemy)
+    EnemyPauseFiringState.super.init(self,enemy)
+    -- Pull fixed duration val from enemy attributes
+    self.duration = self.enemy.pauseFiringDuration
+end
 
 function EnemyPauseFiringState:update()
     -- If duration has passed, decide which state we're switching to
-    if pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.enemy.pauseFiringDuration then
+    if self:hasDurationPassed() then
         -- If enemy has had the max number of consecutive fire/pause cycles,
         -- reset burst counter and switch to evade state
         if self.enemy:hasBurstLimitBeenReached() then
@@ -234,15 +220,9 @@ class('EnemyEvadeState', {
     key = 'evade',
     isMoving = true,
     faceAimingAngle = false,
-    -- TODO: min/max duration? need to abstract this duration stuff
+    -- TODO: min/max duration? or keep fixed?
     duration = 2000,
-}).extends('EnemyState')
-
--- Helper: check if chase duration has passed
--- TODO: this is verbatim the same as chase and unaware. Abstract
-function EnemyEvadeState:hasDurationPassed()
-    return pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.duration
-end
+}).extends('EnemyDurationState')
 
 function EnemyEvadeState:enter()
     EnemyEvadeState.super.enter(self)
@@ -374,8 +354,6 @@ function Enemy:setChaseOrUnawareState()
     end
 end
 
--- TODO: I think the following 2 functions can be consolidated or something, maybe even removed since chase sets firing:
-
 -- Set "aware" state based on player distance.
 -- If player is within range, switch to firing state.
 -- If player is within vision distance, switch to chase state.
@@ -450,7 +428,6 @@ function Enemy:handleMove()
     self:handleCollisions(collisions)
 end
 
--- TODO: implement everywhere!
 -- Shorthand to call handleMove() and then setIdleWalkingImage()
 function Enemy:handleMoveAndSetImage()
     self:handleMove()
