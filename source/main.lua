@@ -23,6 +23,7 @@ import 'util/core/__init__'
 import 'util/data'
 import 'util/events'
 -- Additional utilities
+import 'util/handy'
 import 'util/music'
 import 'util/preferences'
 import 'util/screenshake'

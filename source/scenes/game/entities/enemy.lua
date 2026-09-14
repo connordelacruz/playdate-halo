@@ -187,12 +187,15 @@ class('EnemyFiringState', {
 function EnemyFiringState:enter()
     EnemyFiringState.super.enter(self)
     self.enemy:aimAtPlayer()
+    self.enemy:updateDirection()
     self.enemy:toggleWeaponFire(true)
+    -- TODO: increment burst counter
 end
 
 function EnemyFiringState:update()
     self.enemy:setIdleWalkingImage()
-    self.enemy:updateDirection()
+    -- TODO: moved to enter(), prob good cuz we don't keep adjusting angle each shot anymore
+    -- self.enemy:updateDirection()
 
     -- Pause firing if we've hit the shot count limit
     if self.enemy:shouldPauseFire() then
@@ -214,8 +217,38 @@ class('EnemyPauseFiringState', {
 }).extends('EnemyState')
 
 function EnemyPauseFiringState:update()
+    -- TODO: if maxConsecutiveFireBursts reached, switch to evade and reset counter
     -- If duration has passed, decide which state we're switching to
     if pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.enemy.pauseFiringDuration then
+        self.enemy:setStateBasedOnPlayerDistance()
+    end
+end
+
+-- --------------------------------------------------------------------------------
+-- Move in the opposite direction of the player
+-- --------------------------------------------------------------------------------
+class('EnemyEvadeState', {
+    key = 'evade',
+    isMoving = true,
+    faceAimingAngle = false,
+    -- TODO: min/max duration? need to abstract this duration stuff
+    duration = 2000,
+}).extends('EnemyState')
+
+-- Helper: check if chase duration has passed
+-- TODO: this is verbatim the same as chase and unaware. Abstract
+function EnemyEvadeState:hasDurationPassed()
+    return pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.duration
+end
+
+function EnemyEvadeState:enter()
+    EnemyEvadeState.super.enter(self)
+    self.enemy:setAngleAwayFromPlayer()
+end
+
+function EnemyEvadeState:update()
+    self.enemy:handleMoveAndSetImage()
+    if self:hasDurationPassed() then
         self.enemy:setStateBasedOnPlayerDistance()
     end
 end
@@ -230,6 +263,7 @@ class('Enemy', {
         EnemyChaseState,
         EnemyFiringState,
         EnemyPauseFiringState,
+        EnemyEvadeState,
     },
     initialStateKey = EnemyPatrolState.key,
     -- Entity attributes:
@@ -241,9 +275,12 @@ class('Enemy', {
     -- Distance that enemy becomes aware of player
     visionDistance = SCREEN_WIDTH // 2,
     -- Number of consecutive this enemy fires in the firing state before pausing
-    shotCountBeforePause = 4,
+    shotCountBeforePause = 3,
     -- How long to pause after firing shotCountBeforePause shots (ms)
     pauseFiringDuration = 750,
+    -- Max number of consecutive fire/pause cycles before evading
+    -- TODO: IMPLMEMENT
+    maxConsecutiveFireBursts = 3,
     -- False out event types that aren't necessary for enemies
     spawnEventType = false,
     damageReceivedEventType = false,
@@ -377,6 +414,11 @@ function Enemy:setAngleTowardsPlayer()
     self:setAngle(self:getAngleTowardsPlayer())
 end
 
+-- Set facing angle away from player's current location.
+function Enemy:setAngleAwayFromPlayer()
+    self:setAngle(self:getAngleAwayFromPlayer())
+end
+
 -- Flip x direction.
 function Enemy:flipX()
     self:setAngle(180 - self.angle)
@@ -398,6 +440,7 @@ function Enemy:handleMove()
     self:handleCollisions(collisions)
 end
 
+-- TODO: implement everywhere!
 -- Shorthand to call handleMove() and then setIdleWalkingImage()
 function Enemy:handleMoveAndSetImage()
     self:handleMove()
@@ -464,10 +507,12 @@ end
 
 -- Return angle towards player.
 function Enemy:getAngleTowardsPlayer()
-    local px, py = self.player.x, self.player.y
-    local dx = px - self.x
-    local dy = py - self.y
-    return math.deg(math.atan(dy, dx))
+    return getAngleBetweenPoints(self.x, self.y, self.player.x, self.player.y)
+end
+
+-- Returns the angle away from player (opposite of above)
+function Enemy:getAngleAwayFromPlayer()
+    return getAngleBetweenPoints(self.player.x, self.player.y, self.x, self.y)
 end
 
 -- Set self.aimingAngle to point at player.
