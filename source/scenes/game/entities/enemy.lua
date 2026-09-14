@@ -138,17 +138,34 @@ class('EnemyChaseState', {
     key = 'chase',
     isMoving = true,
     faceAimingAngle = false,
+    -- Duration to continue chase to last known player location before forcing a state switch
+    duration = 1000,
 }).extends('EnemyState')
 
+-- Helper: check if chase duration has passed
+-- TODO: this is verbatim the same as unaware. Abstract
+function EnemyChaseState:hasDurationPassed()
+    return pd.getCurrentTimeMilliseconds() >= self.enemy.lastStateChangeTimestamp + self.duration
+end
+
+function EnemyChaseState:enter()
+    EnemyChaseState.super.enter(self)
+    -- Get current player coordinates and move towards them
+    self.enemy:setAngleTowardsPlayer()
+end
+
 function EnemyChaseState:update()
+    -- If we are within firing range, shoot at the player
     if self.enemy:isWithinRangeOfPlayer() then
         self.enemy:setFiringState()
-    elseif self.enemy:canSeePlayer() then
-        self.enemy:setAngleTowardsPlayer()
+    -- If duration has not passed, keep moving on current trajectory
+    elseif not self:hasDurationPassed() then
         self.enemy:handleMove()
         self.enemy:setIdleWalkingImage()
+    -- If duration has passed and we haven't switched to shooting state,
+    -- restart chase if player is visible, otherwise switch to unaware
     else
-        self.enemy:setUnawareState()
+        self.enemy:setChaseOrUnawareState()
     end
 end
 
@@ -169,7 +186,7 @@ class('EnemyFiringState', {
 
 function EnemyFiringState:enter()
     EnemyFiringState.super.enter(self)
-    self.enemy:aimAtPlayer(true)
+    self.enemy:aimAtPlayer()
     self.enemy:toggleWeaponFire(true)
 end
 
@@ -244,9 +261,6 @@ function Enemy:init(x, y, player)
     Enemy.super.init(self, x, y)
     -- Keep reference to player for enemy AI logic
     self.player = player
-    -- Enemy shouldn't always know player's exact location, so when they become
-    -- aware of the player, store coordinates at time of awareness here
-    self.lastKnownPlayerCoords = {0,0}
     -- Angle enemy is facing/walking
     self.angle = 0
     -- Angle to aim weapon at. Gets set in aimAtPlayer().
@@ -303,6 +317,18 @@ function Enemy:setUnawareState()
     end
 end
 
+-- Set chase state if player is visible, otherwise set unaware state.
+-- Chase will switch to fire on update if player is within range.
+function Enemy:setChaseOrUnawareState()
+    if self:canSeePlayer() then
+        self:setChaseState()
+    else
+        self:setUnawareState()
+    end
+end
+
+-- TODO: I think the following 2 functions can be consolidated or something, maybe even removed since chase sets firing:
+
 -- Set "aware" state based on player distance.
 -- If player is within range, switch to firing state.
 -- If player is within vision distance, switch to chase state.
@@ -325,12 +351,8 @@ end
 -- If player is within vision distance, switch to chase state.
 -- If player is too far away, switch to an unaware state.
 function Enemy:setStateBasedOnPlayerDistance()
-    -- TODO: leverage above function?
-    if self:isWithinRangeOfPlayer() then
-        self:setFiringState()
-    elseif self:canSeePlayer() then
-        self:setChaseState()
-    else
+    local wasStateChanged = self:attemptToSetAwareState()
+    if not wasStateChanged then
         self:setUnawareState()
     end
 end
@@ -352,8 +374,7 @@ end
 
 -- Set facing angle towards player's current position.
 function Enemy:setAngleTowardsPlayer()
-    -- TODO: precise = false when lastKnownPlayerCoords are implemented?
-    self:setAngle(self:getAngleTowardsPlayer(true))
+    self:setAngle(self:getAngleTowardsPlayer())
 end
 
 -- Flip x direction.
@@ -417,12 +438,6 @@ end
 -- Player Distance/Awareness
 -- --------------------------------------------------------------------------------
 
--- TODO: implement, set whenever player is seen
--- Sets lastKnownPlayerCoords to player's current position
-function Enemy:updateLastKnownPlayerCoords()
-    self.lastKnownPlayerCoords = {self.player.x, self.player.y}
-end
-
 -- Returns the distance between this enemy and the player
 function Enemy:getDistanceFromPlayer()
     return pd.geometry.distanceToPoint(self.x, self.y, self.player.x, self.player.y)
@@ -448,23 +463,16 @@ end
 -- --------------------------------------------------------------------------------
 
 -- Return angle towards player.
--- If precise = true, use player's current position. Otherwise, use self.lastKnownPlayerCoords
-function Enemy:getAngleTowardsPlayer(precise)
-    local px, py
-    if precise then
-        px, py = self.player.x, self.player.y
-    else
-        px, py = table.unpack(self.lastKnownPlayerCoords)
-    end
+function Enemy:getAngleTowardsPlayer()
+    local px, py = self.player.x, self.player.y
     local dx = px - self.x
     local dy = py - self.y
     return math.deg(math.atan(dy, dx))
 end
 
 -- Set self.aimingAngle to point at player.
--- If precise = true, use player's current position. Otherwise, use self.lastKnownPlayerCoords
-function Enemy:aimAtPlayer(precise)
-    self.aimingAngle = self:getAngleTowardsPlayer(precise)
+function Enemy:aimAtPlayer()
+    self.aimingAngle = self:getAngleTowardsPlayer()
 end
 
 -- Returns self.aimingAngle.
