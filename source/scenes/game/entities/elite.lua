@@ -8,7 +8,7 @@ class('Elite', {
     baseShields = 3,
     baseSpeed = 80,
     points = 500,
-    shotCountBeforePause = 4,
+    shotCountBeforePause = 3,
     startingWeaponClass = PlasmaRifleWeapon,
     -- Images/spritesheets, animation delays, start/end frames:
     -- Idle + walking

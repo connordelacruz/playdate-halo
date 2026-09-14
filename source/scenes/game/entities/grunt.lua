@@ -8,7 +8,7 @@ class('Grunt', {
     baseShields = 0,
     baseSpeed = 50,
     points = 100,
-    shotCountBeforePause = 3,
+    shotCountBeforePause = 2,
     startingWeaponClass = PlasmaPistolWeapon,
     -- Images/spritesheets, animation delays, start/end frames:
     -- Idle + walking

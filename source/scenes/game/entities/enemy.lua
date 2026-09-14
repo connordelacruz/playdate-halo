@@ -124,7 +124,7 @@ function EnemyPatrolState:update()
     EnemyPatrolState.super.update(self)
 end
 
--- TODO: make sure we no longer need this and remove:
+-- TODO: can we remove this? or abstract it? it's also used in chase
 -- Exit: set not moving, set active image one last time.
 function EnemyPatrolState:exit()
     self.enemy.isMoving = false
@@ -154,7 +154,6 @@ end
 
 -- Exit: set not moving, set active image one last time.
 function EnemyChaseState:exit()
-    -- TODO: can we abstract this? it's reused from patrol
     self.enemy.isMoving = false
     self.enemy:setIdleWalkingImage()
 end
@@ -170,6 +169,7 @@ class('EnemyFiringState', {
 
 function EnemyFiringState:enter()
     EnemyFiringState.super.enter(self)
+    self.enemy:aimAtPlayer(true)
     self.enemy:toggleWeaponFire(true)
 end
 
@@ -244,8 +244,15 @@ function Enemy:init(x, y, player)
     Enemy.super.init(self, x, y)
     -- Keep reference to player for enemy AI logic
     self.player = player
+    -- Enemy shouldn't always know player's exact location, so when they become
+    -- aware of the player, store coordinates at time of awareness here
+    self.lastKnownPlayerCoords = {0,0}
     -- Angle enemy is facing/walking
     self.angle = 0
+    -- Angle to aim weapon at. Gets set in aimAtPlayer().
+    -- calculateAimingAngle() returns this value.
+    self.aimingAngle = 0
+
     -- Keep track of last state change
     self.lastStateChangeTimestamp = pd.getCurrentTimeMilliseconds()
 
@@ -345,7 +352,8 @@ end
 
 -- Set facing angle towards player's current position.
 function Enemy:setAngleTowardsPlayer()
-    self:setAngle(self:calculateAimingAngle())
+    -- TODO: precise = false when lastKnownPlayerCoords are implemented?
+    self:setAngle(self:getAngleTowardsPlayer(true))
 end
 
 -- Flip x direction.
@@ -409,6 +417,12 @@ end
 -- Player Distance/Awareness
 -- --------------------------------------------------------------------------------
 
+-- TODO: implement, set whenever player is seen
+-- Sets lastKnownPlayerCoords to player's current position
+function Enemy:updateLastKnownPlayerCoords()
+    self.lastKnownPlayerCoords = {self.player.x, self.player.y}
+end
+
 -- Returns the distance between this enemy and the player
 function Enemy:getDistanceFromPlayer()
     return pd.geometry.distanceToPoint(self.x, self.y, self.player.x, self.player.y)
@@ -425,6 +439,7 @@ function Enemy:isWithinRangeOfPlayer()
     if self.weapon == nil then
         return false
     end
+    -- TODO: maybe reduce this? Getting shot from off screen all the time isn't super fun
     return self:getDistanceFromPlayer() <= self.weapon:getRange()
 end
 
@@ -432,12 +447,32 @@ end
 -- Aiming
 -- --------------------------------------------------------------------------------
 
--- Aim at player.
--- Also used to move towards player.
-function Enemy:calculateAimingAngle()
-    local dx = self.player.x - self.x
-    local dy = self.player.y - self.y
+-- Return angle towards player.
+-- If precise = true, use player's current position. Otherwise, use self.lastKnownPlayerCoords
+function Enemy:getAngleTowardsPlayer(precise)
+    local px, py
+    if precise then
+        px, py = self.player.x, self.player.y
+    else
+        px, py = table.unpack(self.lastKnownPlayerCoords)
+    end
+    local dx = px - self.x
+    local dy = py - self.y
     return math.deg(math.atan(dy, dx))
+end
+
+-- Set self.aimingAngle to point at player.
+-- If precise = true, use player's current position. Otherwise, use self.lastKnownPlayerCoords
+function Enemy:aimAtPlayer(precise)
+    self.aimingAngle = self:getAngleTowardsPlayer(precise)
+end
+
+-- Returns self.aimingAngle.
+-- Call aimAtPlayer() before this to update aimingAngle.
+function Enemy:calculateAimingAngle()
+    -- Just return aiming angle instead of running expensive atan calc each shot.
+    -- Also makes it less brutal since enemy isn't firing every shot with perfect accuracy.
+    return self.aimingAngle
 end
 
 -- --------------------------------------------------------------------------------
