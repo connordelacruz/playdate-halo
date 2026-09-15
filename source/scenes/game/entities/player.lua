@@ -46,6 +46,7 @@ class('Player', {
     initialStateKey = PlayerActiveState.key,
     -- Entity attributes:
     isFriendly = true,
+    -- TODO: make base health 10 for longevity? and/or periodically spawn health packs?
     baseHealth = 5,
     baseShields = 10,
     baseSpeed = 140,
