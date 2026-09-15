@@ -159,6 +159,8 @@ Z_INDEX = {
     entity = 1000,
     -- Items
     item = 900,
+    -- Shadows
+    shadow = 500,
     -- Stage background
     background = -9999,
 }

@@ -120,6 +120,7 @@ class('Entity', {
         },
     },
     deathLoopDelay = 100,
+    -- TODO: shadowWidth override! enemy shadows are too big
     -- Placeholder state stuff, implementing classes should override.
     stateClasses = {
         EntityInactiveState,
@@ -171,6 +172,9 @@ function Entity:init(x, y)
     -- Move to initial position and add sprite
     self:moveTo(x, y)
     self:add()
+
+    -- Cast a shadow
+    self.shadow = Shadow(self)
 
     -- Initialize starting weapon
     if self.startingWeaponClass ~= nil then
@@ -567,7 +571,7 @@ end
 -- Lifecycle
 -- --------------------------------------------------------------------------------
 
--- Cleanup weapon and shield sprites too.
+-- Cleanup shadow, weapon, and shield sprites too.
 function Entity:remove()
     if self.weapon ~= nil then
         self.weapon:remove()
@@ -575,11 +579,17 @@ function Entity:remove()
     if self.shield ~= nil then
         self.shield:remove()
     end
+    if self.shadow ~= nil then
+        self.shadow:remove()
+    end
     Entity.super.remove(self)
 end
 
--- Override update() to handle hit effects after running super's update()
+-- Override update() to:
+-- - update shadow position
+-- - handle hit effects after running super's update()
 function Entity:update()
     Entity.super.update(self)
+    self.shadow:updatePosition()
     self:handleHitEffect()
 end
