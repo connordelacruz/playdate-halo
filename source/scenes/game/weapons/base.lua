@@ -50,7 +50,8 @@ class('Projectile', {
     -- Damage
     damage = 1,
     -- Distance in px projectile can travel before expiring
-    maxDistance = 3 * SCREEN_HEIGHT / 4,
+    -- TODO: we have speed in px / sec, so maybe use math to convert distance to time and check timestamp. could be more efficient than calculating distance each frame
+    maxDistance = SCREEN_HEIGHT * 0.75,
 }).extends(gfx.sprite)
 
 function Projectile:init(originX, originY, angle, isFriendlyFire)

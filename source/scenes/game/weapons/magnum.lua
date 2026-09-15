@@ -22,6 +22,7 @@ class('MagnumProjectile', {
     image = kMagnumProjectileImage,
     speed = 800,
     damage = 1,
+    maxDistance = SCREEN_HEIGHT * 0.75,
 }).extends('Projectile')
 
 -- ================================================================================

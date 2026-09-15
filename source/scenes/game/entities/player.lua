@@ -46,8 +46,8 @@ class('Player', {
     initialStateKey = PlayerActiveState.key,
     -- Entity attributes:
     isFriendly = true,
-    baseHealth = 4,
-    baseShields = 8,
+    baseHealth = 5,
+    baseShields = 10,
     baseSpeed = 140,
     startingWeaponClass = MagnumWeapon,
     -- Event types:

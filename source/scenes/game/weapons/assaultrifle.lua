@@ -8,7 +8,7 @@ local kAssaultRifleFiringSound <const> = pd.sound.sampleplayer.new('sounds/weapo
 kAssaultRifleFiringSound:setVolume(0.25)
 
 local function createImage()
-    local image = gfx.image.new(8, 8)
+    local image = gfx.image.new(7, 7)
     gfx.pushContext(image)
         gfx.fillCircleInRect(0, 0, image:getSize())
     gfx.popContext()
@@ -21,9 +21,9 @@ local kAssaultRifleProjectileImage <const> = createImage()
 -- ================================================================================
 class('AssaultRifleProjectile', {
     image = kAssaultRifleProjectileImage,
-    speed = 400,
+    speed = 500,
     damage = 1,
-    maxDistance = SCREEN_HEIGHT / 2,
+    maxDistance = SCREEN_HEIGHT * 0.75,
 }).extends('Projectile')
 
 -- ================================================================================
@@ -34,7 +34,7 @@ class('AssaultRifleWeapon', {
     projectileClass = AssaultRifleProjectile,
     icon = gfx.image.new('images/weapons/assaultrifle.png'),
     fireSound = kAssaultRifleFiringSound,
-    timeBetweenShots = 120,
+    timeBetweenShots = 110,
     -- TODO: more? or have ammo pickups during gameplay? I want to be lenient with ammo since firing is so awkward lol
     startingAmmo = 320,
 }).extends('Weapon')

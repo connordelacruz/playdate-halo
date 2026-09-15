@@ -8,7 +8,7 @@ local gfx <const> = pd.graphics
 -- Constants
 -- ================================================================================
 -- Lerp smooth speed (TODO: gotta be a better way to describe this)
-local kLerpSmoothSpeed <const> = 0.06
+local kLerpSmoothSpeed <const> = 0.16
 
 -- ================================================================================
 -- Camera "sprite" class
